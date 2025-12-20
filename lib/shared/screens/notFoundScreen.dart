@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appButton.dart';
 class NotFoundScreen extends ConsumerWidget {
   const NotFoundScreen({super.key});
@@ -34,7 +35,7 @@ class NotFoundScreen extends ConsumerWidget {
               const SizedBox(height: 48),
               AppButton(
                 text: 'Go Home',
-                onPressed: () => context.go('/'),
+                onPressed: () => context.go(Routes.splash),
                 icon: Icons.home,
               ),
             ],

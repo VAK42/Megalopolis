@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appButton.dart';
 class SessionExpiredScreen extends ConsumerWidget {
   const SessionExpiredScreen({super.key});
@@ -29,7 +30,7 @@ class SessionExpiredScreen extends ConsumerWidget {
               const SizedBox(height: 48),
               AppButton(
                 text: 'Log In Again',
-                onPressed: () => context.go('/login'),
+                onPressed: () => context.go(Routes.login),
                 icon: Icons.login,
               ),
             ],
