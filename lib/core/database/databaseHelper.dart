@@ -30,7 +30,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE items (
   id TEXT PRIMARY KEY,
@@ -47,7 +47,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (sellerId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE orders (
   id TEXT PRIMARY KEY,
@@ -66,7 +66,7 @@ class DatabaseHelper {
   FOREIGN KEY (driverId) REFERENCES users (id),
   FOREIGN KEY (providerId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE addresses (
   id TEXT PRIMARY KEY,
@@ -79,7 +79,7 @@ class DatabaseHelper {
   isSavedPlace INTEGER DEFAULT 0,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE payments (
   id TEXT PRIMARY KEY,
@@ -89,7 +89,7 @@ class DatabaseHelper {
   isDefault INTEGER DEFAULT 0,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE transactions (
   id TEXT PRIMARY KEY,
@@ -101,7 +101,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE chats (
   id TEXT PRIMARY KEY,
@@ -110,7 +110,7 @@ class DatabaseHelper {
   lastMessageAt INTEGER,
   type TEXT DEFAULT 'direct'
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE messages (
   id TEXT PRIMARY KEY,
@@ -122,7 +122,7 @@ class DatabaseHelper {
   FOREIGN KEY (chatId) REFERENCES chats (id),
   FOREIGN KEY (senderId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE reviews (
   id TEXT PRIMARY KEY,
@@ -135,7 +135,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE bookings (
   id TEXT PRIMARY KEY,
@@ -149,7 +149,7 @@ class DatabaseHelper {
   FOREIGN KEY (providerId) REFERENCES users (id),
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE friends (
   id TEXT PRIMARY KEY,
@@ -160,7 +160,7 @@ class DatabaseHelper {
   FOREIGN KEY (userId) REFERENCES users (id),
   FOREIGN KEY (friendId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE promotions (
   id TEXT PRIMARY KEY,
@@ -173,7 +173,7 @@ class DatabaseHelper {
   type TEXT DEFAULT 'general',
   usageCount INTEGER DEFAULT 0
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE tickets (
   id TEXT PRIMARY KEY,
@@ -185,7 +185,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE reports (
   id TEXT PRIMARY KEY,
@@ -197,7 +197,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (reporterId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE notifications (
   id TEXT PRIMARY KEY,
@@ -209,7 +209,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE cartItems (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -220,7 +220,7 @@ class DatabaseHelper {
   FOREIGN KEY (userId) REFERENCES users (id),
   FOREIGN KEY (itemId) REFERENCES items (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE favorites (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -231,7 +231,7 @@ class DatabaseHelper {
   FOREIGN KEY (userId) REFERENCES users (id),
   FOREIGN KEY (itemId) REFERENCES items (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE bills (
   id TEXT PRIMARY KEY,
@@ -246,7 +246,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE giftCards (
   id TEXT PRIMARY KEY,
@@ -259,7 +259,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE walletCards (
   id TEXT PRIMARY KEY,
@@ -270,20 +270,7 @@ class DatabaseHelper {
   expiry TEXT,
   balance REAL
   )
- ''');
-  await db.execute('''
-  CREATE TABLE promotions (
-  id TEXT PRIMARY KEY,
-  title TEXT NOT NULL,
-  subtitle TEXT NOT NULL,
-  type TEXT NOT NULL,
-  gradient TEXT,
-  isActive INTEGER DEFAULT 1,
-  startDate INTEGER,
-  endDate INTEGER,
-  createdAt INTEGER NOT NULL
-  )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE searchHistory (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -292,7 +279,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE sellers (
   id TEXT PRIMARY KEY,
@@ -306,7 +293,7 @@ class DatabaseHelper {
   isVerified INTEGER DEFAULT 0,
   createdAt INTEGER NOT NULL
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE appSettings (
   key TEXT PRIMARY KEY,
@@ -314,7 +301,7 @@ class DatabaseHelper {
   type TEXT NOT NULL,
   updatedAt INTEGER NOT NULL
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE challenges (
   id TEXT PRIMARY KEY,
@@ -325,7 +312,7 @@ class DatabaseHelper {
   type TEXT NOT NULL,
   createdAt INTEGER NOT NULL
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE userChallenges (
   id TEXT PRIMARY KEY,
@@ -336,7 +323,7 @@ class DatabaseHelper {
   FOREIGN KEY (userId) REFERENCES users (id),
   FOREIGN KEY (challengeId) REFERENCES challenges (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE driverIncentives (
   id TEXT PRIMARY KEY,
@@ -348,7 +335,7 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (driverId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE driverDocuments (
   id TEXT PRIMARY KEY,
@@ -360,7 +347,7 @@ class DatabaseHelper {
   uploadedAt INTEGER NOT NULL,
   FOREIGN KEY (driverId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE driverTraining (
   id TEXT PRIMARY KEY,
@@ -371,7 +358,7 @@ class DatabaseHelper {
   completedAt INTEGER,
   FOREIGN KEY (driverId) REFERENCES users (id)
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE reportTypes (
   id TEXT PRIMARY KEY,
@@ -382,7 +369,7 @@ class DatabaseHelper {
   sortOrder INTEGER DEFAULT 0,
   createdAt INTEGER NOT NULL
   )
- ''');
+  ''');
   await db.execute('''
   CREATE TABLE spinWheelOptions (
   id TEXT PRIMARY KEY,
@@ -392,7 +379,7 @@ class DatabaseHelper {
   sortOrder INTEGER DEFAULT 0,
   createdAt INTEGER NOT NULL
   )
- ''');
+  ''');
  }
  Future<void> close() async {
   final db = await instance.database;
