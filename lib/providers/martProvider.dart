@@ -176,5 +176,7 @@ final martSearchHistoryProvider = FutureProvider.family<List<String>, String>((r
 });
 final popularSearchesProvider = FutureProvider((ref) async {
  final repository = ref.watch(martRepositoryProvider);
- return await repository.getPopularSearches();
+ final searches = await repository.getPopularSearches();
+ if (searches.isEmpty) return ['Headphones', 'Pizza', 'Cleaning', 'Shoes', 'Burger'];
+ return searches;
 });

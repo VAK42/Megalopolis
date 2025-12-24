@@ -23,19 +23,19 @@ class ServiceRepository {
  }
  Future<List<Map<String, dynamic>>> getCategories() async {
   final db = await dbHelper.database;
-  return await db.rawQuery('SELECT DISTINCT categoryId FROM items WHERE type = "service"');
+  return await db.rawQuery("SELECT DISTINCT categoryId as category FROM items WHERE type = 'service'");
  }
  Future<List<Map<String, dynamic>>> getProviders(String category) async {
   final db = await dbHelper.database;
   return await db.rawQuery(
-   '''
+  '''
   SELECT i.sellerId, u.name as sellerName, u.rating as sellerRating 
   FROM items i
   JOIN users u ON i.sellerId = u.id
-  WHERE i.type = "service" AND i.categoryId = ?
+  WHERE i.type = 'service' AND i.categoryId = ?
   GROUP BY i.sellerId
   ''',
-   [category],
+  [category],
   );
  }
  Future<int> bookService(Map<String, dynamic> booking) async {
@@ -44,7 +44,7 @@ class ServiceRepository {
  }
  Future<List<Map<String, dynamic>>> getBookings(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('orders', where: 'userId = ? AND type = ?', whereArgs: [userId, 'service'], orderBy: 'createdAt DESC');
+  return await db.query('orders', where: 'userId = ? AND orderType = ?', whereArgs: [userId, 'service'], orderBy: 'createdAt DESC');
  }
  Future<Map<String, dynamic>?> getBookingById(String id) async {
   final db = await dbHelper.database;

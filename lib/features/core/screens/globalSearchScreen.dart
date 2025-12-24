@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/routes/routeNames.dart';
 import '../../../providers/systemProvider.dart';
-import '../../../providers/martProvider.dart';
+import '../../../providers/authProvider.dart';
 import '../../core/constants/coreConstants.dart';
 class GlobalSearchScreen extends ConsumerStatefulWidget {
  const GlobalSearchScreen({super.key});
@@ -17,9 +17,19 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
   searchController.dispose();
   super.dispose();
  }
+ void _performSearch(String query) {
+  if (query.length > 1) {
+   final userId = ref.read(currentUserIdProvider) ?? '1';
+   ref.read(searchHistoryNotifierProvider(userId).notifier).addSearch(query);
+   ref.read(searchQueryProvider.notifier).state = query;
+   context.go(Routes.globalSearchResults);
+  }
+ }
  @override
  Widget build(BuildContext context) {
   final categoriesAsync = ref.watch(globalCategoriesProvider);
+  final userId = ref.watch(currentUserIdProvider) ?? '1';
+  final historyAsync = ref.watch(searchHistoryNotifierProvider(userId));
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.superDashboard)),
@@ -27,9 +37,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
      controller: searchController,
      autofocus: true,
      decoration: const InputDecoration(hintText: CoreConstants.searchForAnything, border: InputBorder.none),
-     onSubmitted: (value) {
-      if (value.length > 2) context.go(Routes.globalSearchResults);
-     },
+     onSubmitted: _performSearch,
     ),
    ),
    body: SafeArea(
@@ -38,31 +46,34 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-       Text(CoreConstants.recentSearches, style: Theme.of(context).textTheme.titleMedium),
-       const SizedBox(height: 16),
-       Consumer(
-        builder: (context, ref, child) {
-         final searchesAsync = ref.watch(popularSearchesProvider);
-         return searchesAsync.when(
-          data: (searches) => Column(
-           children: searches
-             .map(
-              (search) => ListTile(
-               leading: const Icon(Icons.history),
-               title: Text(search),
-               trailing: const Icon(Icons.north_west),
-               onTap: () {
-                searchController.text = search;
-                context.go(Routes.globalSearchResults);
-               },
-              ),
-             )
-             .toList(),
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
+       Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+         Text(CoreConstants.recentSearches, style: Theme.of(context).textTheme.titleMedium),
+         historyAsync.when(
+          data: (searches) => searches.isNotEmpty ? TextButton(onPressed: () => ref.read(searchHistoryNotifierProvider(userId).notifier).clearHistory(), child: const Text(CoreConstants.clear)) : const SizedBox(),
+          loading: () => const SizedBox(),
           error: (_, __) => const SizedBox(),
-         );
-        },
+         ),
+        ],
+       ),
+       const SizedBox(height: 16),
+       historyAsync.when(
+        data: (searches) => searches.isEmpty
+          ? const Text(CoreConstants.noRecentSearches, style: TextStyle(color: Colors.grey))
+          : Column(
+            children: searches.map((search) => ListTile(
+             leading: const Icon(Icons.history),
+             title: Text(search),
+             trailing: const Icon(Icons.north_west),
+             onTap: () {
+              searchController.text = search;
+              _performSearch(search);
+             },
+            )).toList(),
+           ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => const SizedBox(),
        ),
        const SizedBox(height: 32),
        Text(CoreConstants.popularCategories, style: Theme.of(context).textTheme.titleMedium),

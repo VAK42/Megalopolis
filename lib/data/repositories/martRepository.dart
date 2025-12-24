@@ -23,7 +23,7 @@ class MartRepository {
  }
  Future<List<Map<String, dynamic>>> getCategories() async {
   final db = await dbHelper.database;
-  return await db.rawQuery('SELECT DISTINCT categoryId FROM items WHERE type = "product"');
+  return await db.rawQuery("SELECT DISTINCT categoryId as category FROM items WHERE type = 'product'");
  }
  Future<int> addToCart(Map<String, dynamic> cartItem) async {
   final db = await dbHelper.database;
@@ -76,7 +76,7 @@ class MartRepository {
  }
  Future<List<String>> getBrands() async {
   final db = await dbHelper.database;
-  final result = await db.rawQuery('SELECT DISTINCT metadata FROM items WHERE type = "product" AND metadata IS NOT NULL');
+  final result = await db.rawQuery("SELECT DISTINCT metadata FROM items WHERE type = 'product' AND metadata IS NOT NULL");
   return result.map((e) => e['metadata'] as String).toList();
  }
  Future<List<ItemModel>> getProductsByBrand(String brand) async {
@@ -96,7 +96,8 @@ class MartRepository {
  }
  Future<List<Map<String, dynamic>>> getPromotions() async {
   final db = await dbHelper.database;
-  return await db.query('promotions', where: 'isActive = ?', whereArgs: [1], orderBy: 'createdAt DESC');
+  final results = await db.query('promotions', orderBy: 'startDate DESC', limit: 5);
+  return results.map((p) => {...p, 'subtitle': p['description'] ?? '${p['discount']}% Off'}).toList();
  }
  Future<List<String>> getSearchHistory(String userId) async {
   final db = await dbHelper.database;

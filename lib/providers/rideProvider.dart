@@ -50,7 +50,7 @@ class RideBookingNotifier extends Notifier<Map<String, dynamic>> {
  }
  Future<int?> bookRide(String userId) async {
   try {
-   final ride = {...state, 'userId': userId, 'type': 'ride', 'status': 'pending', 'createdAt': DateTime.now().toIso8601String()};
+   final ride = {...state, 'userId': userId, 'orderType': 'ride', 'status': 'pending', 'createdAt': DateTime.now().millisecondsSinceEpoch};
    final id = await _repository.bookRide(ride);
    state = {};
    return id;
@@ -90,7 +90,7 @@ class ScheduledRidesNotifier extends AsyncNotifier<List<Map<String, dynamic>>> {
  }
  Future<void> scheduleRide(Map<String, dynamic> ride) async {
   ride['userId'] = _userId;
-  ride['type'] = 'ride';
+  ride['orderType'] = 'ride';
   ride['status'] = 'scheduled';
   await ref.read(rideRepositoryProvider).scheduleRide(ride);
   ref.invalidateSelf();

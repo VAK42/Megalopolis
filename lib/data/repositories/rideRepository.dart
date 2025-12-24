@@ -7,11 +7,11 @@ class RideRepository {
  }
  Future<List<Map<String, dynamic>>> getRides(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('orders', where: 'userId = ? AND type = ?', whereArgs: [userId, 'ride'], orderBy: 'createdAt DESC');
+  return await db.query('orders', where: 'userId = ? AND orderType = ?', whereArgs: [userId, 'ride'], orderBy: 'createdAt DESC');
  }
  Future<Map<String, dynamic>?> getActiveRide(String userId) async {
   final db = await dbHelper.database;
-  final List<Map<String, dynamic>> maps = await db.query('orders', where: 'userId = ? AND type = ? AND status IN (?, ?)', whereArgs: [userId, 'ride', 'pending', 'active'], limit: 1);
+  final List<Map<String, dynamic>> maps = await db.query('orders', where: 'userId = ? AND orderType = ? AND status IN (?, ?)', whereArgs: [userId, 'ride', 'pending', 'active'], limit: 1);
   if (maps.isEmpty) return null;
   return maps.first;
  }
@@ -44,25 +44,25 @@ class RideRepository {
  }
  Future<List<Map<String, dynamic>>> getScheduledRides(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('orders', where: 'userId = ? AND type = ? AND status = ?', whereArgs: [userId, 'ride', 'scheduled']);
+  return await db.query('orders', where: 'userId = ? AND orderType = ? AND status = ?', whereArgs: [userId, 'ride', 'scheduled']);
  }
  Future<List<Map<String, dynamic>>> getRidePasses(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('orders', where: 'userId = ? AND type = ?', whereArgs: [userId, 'ride_pass'], orderBy: 'createdAt DESC');
+  return await db.query('orders', where: 'userId = ? AND orderType = ?', whereArgs: [userId, 'ride_pass'], orderBy: 'createdAt DESC');
  }
  Future<int> purchaseRidePass(Map<String, dynamic> pass) async {
   final db = await dbHelper.database;
-  pass['type'] = 'ride_pass';
+  pass['orderType'] = 'ride_pass';
   pass['createdAt'] = DateTime.now().millisecondsSinceEpoch;
   return await db.insert('orders', pass);
  }
  Future<List<Map<String, dynamic>>> getRentals(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('orders', where: 'userId = ? AND type = ?', whereArgs: [userId, 'rental'], orderBy: 'createdAt DESC');
+  return await db.query('orders', where: 'userId = ? AND orderType = ?', whereArgs: [userId, 'rental'], orderBy: 'createdAt DESC');
  }
  Future<int> bookRental(Map<String, dynamic> rental) async {
   final db = await dbHelper.database;
-  rental['type'] = 'rental';
+  rental['orderType'] = 'rental';
   rental['createdAt'] = DateTime.now().millisecondsSinceEpoch;
   return await db.insert('orders', rental);
  }

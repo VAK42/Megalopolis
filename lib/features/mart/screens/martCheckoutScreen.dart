@@ -32,7 +32,20 @@ class _MartCheckoutScreenState extends ConsumerState<MartCheckoutScreen> {
    ),
    body: cartAsync.when(
     data: (cartItems) {
-     if (cartItems.isEmpty) return const SizedBox();
+     if (cartItems.isEmpty) {
+      return Center(
+       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+         const Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey),
+         const SizedBox(height: 16),
+         const Text(MartConstants.cartEmpty, style: TextStyle(fontSize: 16, color: Colors.grey)),
+         const SizedBox(height: 24),
+         AppButton(text: MartConstants.continueShoppingButton, onPressed: () => context.go(Routes.martHome)),
+        ],
+       ),
+      );
+     }
      double subtotal = 0;
      for (var item in cartItems) {
       subtotal += ((item['price'] as num) * (item['quantity'] as int));

@@ -59,6 +59,8 @@ class DatabaseHelper {
   items TEXT,
   total REAL NOT NULL,
   address TEXT,
+  pickupAddress TEXT,
+  dropoffAddress TEXT,
   notes TEXT,
   createdAt INTEGER NOT NULL,
   completedAt INTEGER,
@@ -206,6 +208,8 @@ class DatabaseHelper {
   body TEXT NOT NULL,
   type TEXT DEFAULT 'system',
   isRead INTEGER DEFAULT 0,
+  isStarred INTEGER DEFAULT 0,
+  isMuted INTEGER DEFAULT 0,
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
@@ -380,6 +384,16 @@ class DatabaseHelper {
   createdAt INTEGER NOT NULL
   )
   ''');
+ }
+ Future<void> resetDatabase() async {
+  final dbPath = await getDatabasesPath();
+  final path = join(dbPath, 'megalopolis.db');
+  if (_database != null) {
+   await _database!.close();
+   _database = null;
+  }
+  await deleteDatabase(path);
+  _database = await _initDB('megalopolis.db');
  }
  Future<void> close() async {
   final db = await instance.database;

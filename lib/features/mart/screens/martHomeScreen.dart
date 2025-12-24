@@ -6,6 +6,7 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/martProvider.dart';
 import '../../../shared/models/itemModel.dart';
 import '../../mart/constants/martConstants.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 class MartHomeScreen extends ConsumerWidget {
  const MartHomeScreen({super.key});
  @override
@@ -60,7 +61,7 @@ class MartHomeScreen extends ConsumerWidget {
                  decoration: BoxDecoration(color: [AppColors.primary, AppColors.accent, AppColors.error][index % 3], borderRadius: BorderRadius.circular(16)),
                  child: Stack(
                   children: [
-                   Positioned(right: -20, bottom: -20, child: Icon(Icons.shopping_bag, size: 120, color: Colors.white.withValues(alpha: 0.2))),
+                   Positioned(right: -20, bottom: -20, child: Icon(Icons.shopping_bag, size: 120, color: Colors.white.withOpacity(0.2))),
                    Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -104,7 +105,7 @@ class MartHomeScreen extends ConsumerWidget {
                itemCount: categories.length,
                itemBuilder: (context, index) {
                 final cat = categories[index];
-                return _buildCategoryChip(context, Icons.category, cat['category'] as String, AppColors.primary);
+                return _buildCategoryChip(context, Icons.category, _toTitleCase(cat['category'] as String), AppColors.primary);
                },
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -226,5 +227,9 @@ class MartHomeScreen extends ConsumerWidget {
     ),
    ),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text.split(' ').map((word) => word.isEmpty ? word : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}').join(' ');
  }
 }

@@ -38,8 +38,13 @@ class AuthNotifier extends AsyncNotifier<UserModel?> {
  Future<void> register(UserModel user) async {
   state = const AsyncValue.loading();
   try {
-   final id = await _repository.createUser(user);
-   final createdUser = await _repository.getUserById(id.toString());
+   final existingUser = await _repository.getUserByEmail(user.email ?? '');
+   if (existingUser != null) {
+    state = AsyncValue.error('Email Already Registered!', StackTrace.current);
+    return;
+   }
+   await _repository.createUser(user);
+   final createdUser = await _repository.getUserById(user.id);
    state = AsyncValue.data(createdUser);
   } catch (e, stack) {
    state = AsyncValue.error(e, stack);

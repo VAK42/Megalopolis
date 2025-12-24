@@ -17,8 +17,8 @@ class ChatInboxScreen extends ConsumerWidget {
    appBar: AppBar(
     title: const Text(ChatConstants.inboxTitle),
     actions: [
-     IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-     IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+     IconButton(icon: const Icon(Icons.search), onPressed: () => context.go(Routes.contacts)),
+     IconButton(icon: const Icon(Icons.contacts), onPressed: () => context.go(Routes.contacts)),
     ],
    ),
    body: chatsAsync.when(
@@ -37,7 +37,7 @@ class ChatInboxScreen extends ConsumerWidget {
     loading: () => const Center(child: CircularProgressIndicator()),
     error: (_, __) => const Center(child: Text(ChatConstants.errorLoading)),
    ),
-   floatingActionButton: FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
+   floatingActionButton: FloatingActionButton(onPressed: () => context.go(Routes.contacts), child: const Icon(Icons.add)),
   );
  }
  Widget _buildChatItem(BuildContext context, Chat chat) {
@@ -52,7 +52,7 @@ class ChatInboxScreen extends ConsumerWidget {
    title: Text(chat.participants.length > 1 ? ChatConstants.defaultChatTitle : ChatConstants.defaultConversationTitle, style: const TextStyle(fontWeight: FontWeight.w600)),
    subtitle: Text(chat.lastMessage ?? ChatConstants.noLastMessage, maxLines: 1, overflow: TextOverflow.ellipsis),
    trailing: Text(time, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-   onTap: () => context.go(Routes.chatConversation),
+   onTap: () => context.go('${Routes.chatConversation}/${chat.id}'),
   );
  }
  String _formatTime(DateTime dateTime) {

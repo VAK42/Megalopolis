@@ -8,6 +8,7 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/authProvider.dart';
 import '../../../providers/rideProvider.dart';
 import '../../ride/constants/rideConstants.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 class RideHomeScreen extends ConsumerWidget {
  const RideHomeScreen({super.key});
  @override
@@ -91,6 +92,7 @@ class RideHomeScreen extends ConsumerWidget {
      ),
     ],
    ),
+   bottomNavigationBar: const SharedBottomNavBar(),
   );
  }
 }

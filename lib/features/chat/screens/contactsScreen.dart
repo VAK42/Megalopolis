@@ -20,7 +20,16 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
   final contactsAsync = ref.watch(contactsProvider(userId));
   return Scaffold(
    appBar: AppBar(
-    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+    leading: IconButton(
+     icon: const Icon(Icons.arrow_back), 
+     onPressed: () {
+      if (context.canPop()) {
+       context.pop();
+      } else {
+       context.go(Routes.chatInbox);
+      }
+     }
+    ),
     title: const Text(ChatConstants.contactsTitle),
     actions: [IconButton(icon: const Icon(Icons.person_add), onPressed: () {})],
    ),
@@ -60,8 +69,22 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
      Container(
       width: 50,
       height: 50,
-      decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-      child: const Icon(Icons.person, color: Colors.white, size: 25),
+      decoration: const BoxDecoration(shape: BoxShape.circle),
+      child: ClipOval(
+       child: contact['avatar'] != null && (contact['avatar'] as String).isNotEmpty
+         ? Image.network(
+           contact['avatar'],
+           fit: BoxFit.cover,
+           errorBuilder: (context, error, stackTrace) => Container(
+            color: AppColors.primary,
+            child: const Icon(Icons.person, color: Colors.white, size: 25),
+           ),
+          )
+         : Container(
+           color: AppColors.primary,
+           child: const Icon(Icons.person, color: Colors.white, size: 25),
+          ),
+      ),
      ),
     ],
    ),

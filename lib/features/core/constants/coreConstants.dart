@@ -42,4 +42,14 @@ class CoreConstants {
  static const String wallet = 'Wallet';
  static const String services = 'Services';
  static const String messages = 'Messages';
+ static const String clear = 'Clear';
+ static const String noRecentSearches = 'No Recent Searches';
+ static const String resultsFor = 'Results For ';
+ static const String markAllAsRead = 'Mark All As Read';
+ static const String deleteAll = 'Delete All';
+ static const String star = 'Star';
+ static const String unstar = 'Unstar';
+ static const String mute = 'Mute';
+ static const String unmute = 'Unmute';
+ static const String delete = 'Delete';
 }

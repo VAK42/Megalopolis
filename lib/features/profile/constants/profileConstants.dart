@@ -160,7 +160,7 @@ class ProfileConstants {
  static const String appName = 'Super App';
  static const String version = 'Version 1.0.0';
  static const String developer = 'Developed By';
- static const String companyName = 'Your Company';
+ static const String companyName = 'VAK';
  static const String allRightsReserved = 'All Rights Reserved';
  static const String licenses = 'Licenses';
  static const String rateApp = 'Rate This App';
@@ -232,8 +232,8 @@ class ProfileConstants {
  static const String permanentlyDeleteAccount = 'Permanently Delete Your Account And Data';
  static const String membershipBenefits = 'Membership Benefits';
  static const String aboutAppName = 'Super App';
- static const String copyrightYear = '2024';
- static const String developedBy = 'Developed By Your Company';
+ static const String copyrightYear = '2025';
+ static const String developedBy = 'Developed By VAK';
  static const String versionInfo = 'Version 1.0.0';
  static const String feedbackPlaceholder = 'Tell Us What You Think...';
  static const String qrCodeTitle = 'Your QR Code';
@@ -293,4 +293,15 @@ class ProfileConstants {
  static const String setAsDefaultAddress = 'Set As Default Address';
  static const List<String> activityTypes = [orderPlaced, rideCompleted, paymentMade, serviceBooked, addressAdded];
  static const List<String> feedbackCategories = [general, bugReport, featureRequest, improvement];
+ static const String nameCannotBeEmpty = 'Name Cannot Be Empty!';
+ static const String developerOptions = 'Developer Options';
+ static const String resetDatabase = 'Reset Database';
+ static const String clearAllDataAndReseed = 'Clear All Data And Re-Seed';
+ static const String resetDatabaseQuestion = 'Reset Database?';
+ static const String resetDatabaseWarning = 'This Will Delete ALL App Data Including Your Account And Re-Seed The Database With Sample Data. You Will Be Logged Out!';
+ static const String resettingDatabase = 'Resetting Database...';
+ static const String databaseResetComplete = 'Database Reset Complete!';
+ static const String reset = 'Reset';
+ static const String profileUpdatedSuccessfully = 'Profile Updated Successfully!';
+ static const String logoutQuestion = 'Are You Sure You Want To Logout?';
 }

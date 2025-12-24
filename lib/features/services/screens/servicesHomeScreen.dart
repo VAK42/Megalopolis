@@ -6,6 +6,7 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/serviceProvider.dart';
 import '../../../shared/models/itemModel.dart';
 import '../constants/servicesConstants.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 class ServicesHomeScreen extends ConsumerWidget {
  const ServicesHomeScreen({super.key});
  @override
@@ -40,7 +41,7 @@ class ServicesHomeScreen extends ConsumerWidget {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                final cat = categories[index];
-               return _buildCategory(context, Icons.work, cat['category'] as String, '${Routes.servicesProviders}?category=${cat['category']}');
+               return _buildCategory(context, Icons.work, _toTitleCase(cat['category'] as String), '${Routes.servicesProviders}?category=${cat['category']}');
               },
              ),
              loading: () => const Center(child: CircularProgressIndicator()),
@@ -153,5 +154,9 @@ class ServicesHomeScreen extends ConsumerWidget {
     ),
    ),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text.split(' ').map((word) => word.isEmpty ? word : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}').join(' ');
  }
 }

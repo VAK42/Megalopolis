@@ -6,6 +6,7 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/walletProvider.dart';
 import '../../../providers/authProvider.dart';
 import '../constants/walletConstants.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 class WalletHomeScreen extends ConsumerWidget {
  const WalletHomeScreen({super.key});
  @override
@@ -72,8 +73,32 @@ class WalletHomeScreen extends ConsumerWidget {
        ),
        title: const Text(WalletConstants.wallet),
        actions: [
-        IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () {}),
-        IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+        IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () => context.go(Routes.notifications)),
+        PopupMenuButton<String>(
+         icon: const Icon(Icons.more_vert),
+         onSelected: (value) {
+          switch (value) {
+           case 'cards':
+            context.go(Routes.walletCards);
+            break;
+           case 'transactions':
+            context.go(Routes.walletTransactions);
+            break;
+           case 'bank':
+            context.go(Routes.walletLinkedBanks);
+            break;
+           case 'bills':
+            context.go(Routes.walletBillPayment);
+            break;
+          }
+         },
+         itemBuilder: (context) => [
+          const PopupMenuItem(value: 'cards', child: Text(WalletConstants.myCards)),
+          const PopupMenuItem(value: 'transactions', child: Text(WalletConstants.allTransactions)),
+          const PopupMenuItem(value: 'bank', child: Text(WalletConstants.bankAccounts)),
+         const PopupMenuItem(value: 'bills', child: Text(WalletConstants.billPayments)),
+         ],
+        ),
        ],
       ),
       SliverToBoxAdapter(

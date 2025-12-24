@@ -17,12 +17,24 @@ class NotificationsScreen extends ConsumerWidget {
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.superDashboard)),
     title: const Text(CoreConstants.notificationsTitle),
     actions: [
-     IconButton(
-      icon: const Icon(Icons.done_all),
-      onPressed: () async {
-       await ref.read(notificationsRepositoryProvider).markAllAsRead(userId);
-       ref.invalidate(notificationsProvider(userId));
+     PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert),
+      onSelected: (value) async {
+       switch (value) {
+        case 'markAllRead':
+         await ref.read(notificationsRepositoryProvider).markAllAsRead(userId);
+         ref.invalidate(notificationsProvider(userId));
+         break;
+        case 'deleteAll':
+         await ref.read(notificationsRepositoryProvider).deleteAllByUser(userId);
+         ref.invalidate(notificationsProvider(userId));
+         break;
+       }
       },
+      itemBuilder: (context) => [
+       const PopupMenuItem(value: 'markAllRead', child: Text(CoreConstants.markAllAsRead)),
+       const PopupMenuItem(value: 'deleteAll', child: Text(CoreConstants.deleteAll)),
+      ],
      ),
     ],
    ),
@@ -64,38 +76,84 @@ class NotificationsScreen extends ConsumerWidget {
  }
  Widget _buildNotificationItem(BuildContext context, WidgetRef ref, Map<String, dynamic> notification, String userId) {
   final isRead = notification['isRead'] == 1;
+  final isStarred = notification['isStarred'] == 1;
+  final isMuted = notification['isMuted'] == 1;
   final iconData = _getIcon(notification['type']?.toString());
   final color = _getColor(notification['type']?.toString());
   final createdAt = DateTime.fromMillisecondsSinceEpoch(notification['createdAt'] as int);
   final timeAgo = _formatTimeAgo(createdAt);
-  return Card(
-   margin: const EdgeInsets.only(bottom: 12),
-   color: isRead ? null : AppColors.primary.withValues(alpha: 0.05),
-   child: ListTile(
-    leading: Container(
-     width: 48,
-     height: 48,
-     decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(24)),
-     child: Icon(iconData, color: color),
+  return Dismissible(
+   key: Key(notification['id'].toString()),
+   direction: DismissDirection.endToStart,
+   background: Container(
+    alignment: Alignment.centerRight,
+    padding: const EdgeInsets.only(right: 20),
+    color: AppColors.error,
+    child: const Icon(Icons.delete, color: Colors.white),
+   ),
+   onDismissed: (_) async {
+    await ref.read(notificationsRepositoryProvider).deleteNotification(notification['id'].toString());
+    ref.invalidate(notificationsProvider(userId));
+   },
+   child: Card(
+    margin: const EdgeInsets.only(bottom: 12),
+    color: isRead ? null : AppColors.primary.withValues(alpha: 0.05),
+    child: ListTile(
+     leading: Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(24)),
+      child: Icon(iconData, color: color),
+     ),
+     title: Row(
+      children: [
+       Expanded(child: Text(notification['title']?.toString() ?? CoreConstants.notificationDefaultTitle, style: TextStyle(fontWeight: isRead ? FontWeight.normal : FontWeight.bold))),
+       if (isStarred) const Icon(Icons.star, color: Colors.amber, size: 18),
+       if (isMuted) const Icon(Icons.notifications_off, color: Colors.grey, size: 18),
+      ],
+     ),
+     subtitle: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+       const SizedBox(height: 4),
+       Text(notification['body']?.toString() ?? ''),
+       const SizedBox(height: 4),
+       Text(timeAgo, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+      ],
+     ),
+     isThreeLine: true,
+     trailing: PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert, size: 20),
+      onSelected: (value) async {
+       switch (value) {
+        case 'star':
+         await ref.read(notificationsRepositoryProvider).toggleStar(notification['id'].toString(), !isStarred);
+         ref.invalidate(notificationsProvider(userId));
+         break;
+        case 'mute':
+         await ref.read(notificationsRepositoryProvider).toggleMute(notification['id'].toString(), !isMuted);
+         ref.invalidate(notificationsProvider(userId));
+         break;
+        case 'delete':
+         await ref.read(notificationsRepositoryProvider).deleteNotification(notification['id'].toString());
+         ref.invalidate(notificationsProvider(userId));
+         break;
+       }
+      },
+      itemBuilder: (context) => [
+       PopupMenuItem(value: 'star', child: Text(isStarred ? CoreConstants.unstar : CoreConstants.star)),
+       PopupMenuItem(value: 'mute', child: Text(isMuted ? CoreConstants.unmute : CoreConstants.mute)),
+       const PopupMenuItem(value: 'delete', child: Text(CoreConstants.delete)),
+      ],
+     ),
+     onTap: () async {
+      if (!isRead) {
+       await ref.read(notificationsRepositoryProvider).markAsRead(notification['id'].toString());
+       ref.invalidate(notificationsProvider(userId));
+      }
+      if (context.mounted) context.go('${Routes.notificationDetail}/${notification['id']}');
+     },
     ),
-    title: Text(notification['title']?.toString() ?? CoreConstants.notificationDefaultTitle, style: TextStyle(fontWeight: isRead ? FontWeight.normal : FontWeight.bold)),
-    subtitle: Column(
-     crossAxisAlignment: CrossAxisAlignment.start,
-     children: [
-      const SizedBox(height: 4),
-      Text(notification['message']?.toString() ?? ''),
-      const SizedBox(height: 4),
-      Text(timeAgo, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
-     ],
-    ),
-    isThreeLine: true,
-    onTap: () async {
-     if (!isRead) {
-      await ref.read(notificationsRepositoryProvider).markAsRead(notification['id'].toString());
-      ref.invalidate(notificationsProvider(userId));
-     }
-     if (context.mounted) context.go('${Routes.notificationDetail}/${notification['id']}');
-    },
    ),
   );
  }

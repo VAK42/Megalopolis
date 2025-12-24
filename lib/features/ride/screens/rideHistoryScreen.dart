@@ -56,7 +56,7 @@ class RideHistoryScreen extends ConsumerWidget {
                children: [
                 const Icon(Icons.circle, size: 8, color: AppColors.success),
                 const SizedBox(width: 8),
-                Expanded(child: Text(ride['pickupLocation']?.toString() ?? RideConstants.pickupLocationLabel, style: const TextStyle(fontSize: 12))),
+                Expanded(child: Text(ride['pickupAddress']?.toString() ?? RideConstants.pickupLocationLabel, style: const TextStyle(fontSize: 12))),
                ],
               ),
               const SizedBox(height: 4),
@@ -64,7 +64,7 @@ class RideHistoryScreen extends ConsumerWidget {
                children: [
                 const Icon(Icons.location_on, size: 12, color: AppColors.error),
                 const SizedBox(width: 8),
-                Expanded(child: Text(ride['dropoffLocation']?.toString() ?? RideConstants.dropoffLocationLabel, style: const TextStyle(fontSize: 12))),
+                Expanded(child: Text(ride['dropoffAddress']?.toString() ?? RideConstants.dropoffLocationLabel, style: const TextStyle(fontSize: 12))),
                ],
               ),
               const SizedBox(height: 8),

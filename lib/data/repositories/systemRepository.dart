@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../../core/database/databaseHelper.dart';
+import '../../shared/models/itemModel.dart';
 class SystemRepository {
  final DatabaseHelper dbHelper = DatabaseHelper.instance;
  Future<Map<String, dynamic>> getSettings() async {
@@ -37,5 +38,32 @@ class SystemRepository {
    return list.cast<Map<String, dynamic>>();
   }
   return [];
+ }
+ Future<List<ItemModel>> globalSearch(String query) async {
+  final db = await dbHelper.database;
+  final List<Map<String, dynamic>> maps = await db.query('items', where: 'name LIKE ? OR description LIKE ?', whereArgs: ['%$query%', '%$query%'], limit: 50);
+  return List.generate(maps.length, (i) => ItemModel.fromMap(maps[i]));
+ }
+ Future<List<String>> getSearchHistory(String userId) async {
+  final db = await dbHelper.database;
+  final results = await db.query('searchHistory', where: 'userId = ?', whereArgs: [userId], orderBy: 'createdAt DESC', limit: 10);
+  return results.map((e) => e['query'] as String).toList();
+ }
+ Future<void> addSearchHistory(String userId, String query) async {
+  final db = await dbHelper.database;
+  await db.delete('searchHistory', where: 'userId = ? AND query = ?', whereArgs: [userId, query]);
+  await db.insert('searchHistory', {'userId': userId, 'query': query, 'createdAt': DateTime.now().millisecondsSinceEpoch});
+ }
+ Future<void> clearSearchHistory(String userId) async {
+  final db = await dbHelper.database;
+  await db.delete('searchHistory', where: 'userId = ?', whereArgs: [userId]);
+ }
+ Future<List<String>> getPopularSearches() async {
+  final db = await dbHelper.database;
+  final results = await db.rawQuery('SELECT query, COUNT(*) as count FROM searchHistory GROUP BY query ORDER BY count DESC LIMIT 5');
+  if (results.isEmpty) {
+   return ['Headphones', 'Pizza', 'Cleaning', 'Shoes', 'Burger'];
+  }
+  return results.map((e) => e['query'] as String).toList();
  }
 }

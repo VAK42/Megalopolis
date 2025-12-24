@@ -32,7 +32,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
  Future<void> handleRegister() async {
   if (formKey.currentState!.validate()) {
    final now = DateTime.now();
-   final newUser = UserModel(id: 'user_${now.millisecondsSinceEpoch}', role: AuthConstants.defaultUserRole, name: nameController.text, email: emailController.text, phone: phoneController.text, createdAt: now, updatedAt: now);
+   final newUser = UserModel(id: '${now.millisecondsSinceEpoch}', role: AuthConstants.defaultUserRole, name: nameController.text, email: emailController.text, phone: phoneController.text, password: passwordController.text, createdAt: now, updatedAt: now);
    await ref.read(authProvider.notifier).register(newUser);
    final authState = ref.read(authProvider);
    authState.when(

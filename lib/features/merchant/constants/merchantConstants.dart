@@ -26,7 +26,7 @@ class MerchantConstants {
  static const String noProductsFound = 'No Products Found';
  static const String noReviewsFound = 'No Reviews Yet';
  static const String noPromotionsFound = 'No Active Promotions';
- static const String errorGeneric = 'Something went wrong';
+ static const String errorGeneric = 'Something Went Wrong';
  static const String loading = 'Loading...';
  static const String success = 'Success';
  static const String productAdded = 'Product Added Successfully';

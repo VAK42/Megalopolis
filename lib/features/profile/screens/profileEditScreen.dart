@@ -16,6 +16,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
  late TextEditingController emailController;
  late TextEditingController phoneController;
  late TextEditingController bioController;
+ bool _isLoading = false;
  @override
  void initState() {
   super.initState();
@@ -42,6 +43,44 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
    }
   });
  }
+ Future<void> _saveProfile() async {
+  final userAsync = ref.read(authProvider);
+  final user = userAsync.valueOrNull;
+  if (user == null) return;
+  if (nameController.text.trim().isEmpty) {
+   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.nameCannotBeEmpty), backgroundColor: AppColors.error));
+   return;
+  }
+  setState(() => _isLoading = true);
+  try {
+   final updatedUser = UserModel(
+    id: user.id,
+    role: user.role,
+    name: nameController.text.trim(),
+    email: emailController.text.trim().isEmpty ? user.email : emailController.text.trim(),
+    phone: phoneController.text.trim().isEmpty ? user.phone : phoneController.text.trim(),
+    password: user.password,
+    avatar: user.avatar,
+    rating: user.rating,
+    status: user.status,
+    createdAt: user.createdAt,
+    updatedAt: DateTime.now(),
+   );
+   await ref.read(userRepositoryProvider).updateUser(updatedUser);
+   ref.invalidate(authProvider);
+   ref.invalidate(currentUserProvider);
+   if (mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.profileUpdatedSuccessfully), backgroundColor: AppColors.success));
+    context.pop();
+   }
+  } catch (e) {
+   if (mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.error));
+   }
+  } finally {
+   if (mounted) setState(() => _isLoading = false);
+  }
+ }
  @override
  Widget build(BuildContext context) {
   final userAsync = ref.watch(authProvider);
@@ -61,11 +100,29 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
      children: [
       Stack(
        children: [
-        Container(
-         width: 100,
-         height: 100,
-         decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
-         child: const Icon(Icons.person, size: 50, color: Colors.white),
+        userAsync.when(
+         data: (user) => Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+           gradient: AppColors.primaryGradient,
+           shape: BoxShape.circle,
+           image: user?.avatar != null && user!.avatar!.isNotEmpty ? DecorationImage(image: NetworkImage(user.avatar!), fit: BoxFit.cover) : null,
+          ),
+          child: user?.avatar == null || user!.avatar!.isEmpty ? const Icon(Icons.person, size: 50, color: Colors.white) : null,
+         ),
+         loading: () => Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
+          child: const Icon(Icons.person, size: 50, color: Colors.white),
+         ),
+         error: (_, __) => Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
+          child: const Icon(Icons.person, size: 50, color: Colors.white),
+         ),
         ),
         Positioned(
          bottom: 0,
@@ -88,17 +145,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       _buildTextField(ProfileConstants.bio, bioController, Icons.edit, maxLines: 3),
       const SizedBox(height: 32),
       AppButton(
-       text: ProfileConstants.saveChanges,
-       onPressed: () {
-        final userAsync = ref.read(authProvider);
-        userAsync.whenData((user) {
-         if (user != null) {
-          final updatedUser = UserModel(id: user.id, role: user.role, name: nameController.text, email: emailController.text.isEmpty ? null : emailController.text, phone: phoneController.text.isEmpty ? null : phoneController.text, password: user.password, avatar: user.avatar, rating: user.rating, status: user.status, createdAt: user.createdAt, updatedAt: DateTime.now());
-          ref.read(userRepositoryProvider).updateUser(updatedUser);
-          context.pop();
-         }
-        });
-       },
+       text: _isLoading ? ProfileConstants.loading : ProfileConstants.saveChanges,
+       onPressed: _isLoading ? null : _saveProfile,
        icon: Icons.check,
       ),
      ],

@@ -28,14 +28,6 @@ class DatabaseSeeder {
   ('15', 'admin', 'System Administrator', 'admin@megalopolis.com', 'admin123', '+1000000000', 'https://i.pravatar.cc/150?u=15', 5.0, 'active', ?, ?)
   ''', [now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now]);
   await db.rawInsert('''
-  INSERT INTO sellers (userId, deliveryFee, estimatedTime, minOrder)
-  VALUES 
-  ('7', 5.99, '2-4 Days', 0.0),
-  ('9', 3.99, '15-20 Min', 10.0),
-  ('10', 4.99, '30-40 Min', 15.0),
-  ('11', 2.99, 'Today', 20.0)
-  ''');
-  await db.rawInsert('''
   INSERT INTO items (id, type, name, description, price, sellerId, categoryId, images, rating, stock, metadata, createdAt)
   VALUES 
   ('p1', 'product', 'Wireless Noise-Cancelling Headphones', 'Premium Wireless Headphones With Active Noise Cancellation And 30 Hour Battery Life', 249.99, '7', 'electronics', '["https://picsum.photos/400/400?random=101", "https://picsum.photos/400/400?random=102"]', 4.7, 50, '{}', ?),
@@ -77,7 +69,7 @@ class DatabaseSeeder {
   ('s7', 'service', 'Electrical Wiring Repair', 'Expert Electrical Wiring Repair And Troubleshooting', 130.00, '14', 'electrical', '["https://picsum.photos/400/400?random=307"]', 4.8, 1, '{"duration": "2 Hours"}', ?),
   ('s8', 'service', 'Ceiling Fan Installation', 'Professional Ceiling Fan Installation Service', 95.00, '14', 'electrical', '["https://picsum.photos/400/400?random=308"]', 4.7, 1, '{"duration": "1.5 Hours"}', ?),
   ('s9', 'service', 'Light Fixture Installation', 'Installation Of Light Fixtures Including Chandeliers And Recessed Lighting', 110.00, '14', 'electrical', '["https://picsum.photos/400/400?random=309"]', 4.6, 1, '{"duration": "1 Hour"}', ?)
-  ''', [now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now]);
+  ''', [now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now]);
   await db.rawInsert('''
   INSERT INTO addresses (id, userId, label, fullAddress, lat, lng, isDefault, isSavedPlace)
   VALUES 
@@ -97,9 +89,9 @@ class DatabaseSeeder {
   await db.rawInsert('''
   INSERT INTO walletCards (id, userId, type, number, holder, expiry, balance)
   VALUES 
-  ('card1', '1', 'visa', '**** **** **** 1234', 'John Anderson', '12/26', 0),
-  ('card2', '1', 'mastercard', '**** **** **** 5678', 'John Anderson', '03/27', 0),
-  ('card3', '2', 'visa', '**** **** **** 9012', 'Sarah Martinez', '08/25', 0)
+  ('card1', '1', 'visa', '4532 7512 3412 1234', 'John Anderson', '12/26', 0),
+  ('card2', '1', 'mastercard', '5412 1234 5678 9012', 'John Anderson', '03/27', 0),
+  ('card3', '2', 'visa', '4916 5678 9012 3456', 'Sarah Martinez', '08/25', 0)
   ''');
   await db.rawInsert('''
   INSERT INTO transactions (id, userId, type, amount, status, reference, createdAt)
@@ -109,12 +101,12 @@ class DatabaseSeeder {
   ('txn3', '2', 'topup', 50.00, 'completed', 'Wallet Reload', ?)
   ''', [now - 604800000, now - 86400000, now - 172800000]);
   await db.rawInsert('''
-  INSERT INTO orders (id, userId, providerId, orderType, items, total, status, deliveryAddress, completedAt, createdAt)
+  INSERT INTO orders (id, userId, providerId, orderType, items, total, status, address, pickupAddress, dropoffAddress, completedAt, createdAt)
   VALUES 
-  ('ord1', '1', '9', 'food', 'Food Order #1', 25.50, 'preparing', '123 Main St', NULL, ?),
-  ('ord2', '1', '4', 'ride', 'Ride To Downtown', 15.00, 'completed', '123 Main St', ?, ?),
-  ('ord3', '1', '12', 'service', 'House Cleaning', 75.00, 'completed', '123 Main St', ?, ?),
-  ('ord4', '1', '11', 'mart', 'Grocery Order', 45.20, 'outForDelivery', '123 Main St', NULL, ?)
+  ('ord1', '1', '9', 'food', 'Food Order #1', 25.50, 'preparing', '123 Main St', NULL, NULL, NULL, ?),
+  ('ord2', '1', '4', 'ride', 'Ride To Downtown', 15.00, 'completed', '123 Main St', 'Central Park', 'Downtown Market', ?, ?),
+  ('ord3', '1', '12', 'service', 'House Cleaning', 75.00, 'completed', '123 Main St', NULL, NULL, ?, ?),
+  ('ord4', '1', '11', 'mart', 'Grocery Order', 45.20, 'outForDelivery', '123 Main St', NULL, NULL, NULL, ?)
   ''', [now, now - 3600000, now - 7200000, now - 172800000, now - 259200000, now]);
   await db.rawInsert('''
   INSERT INTO notifications (id, userId, title, body, type, isRead, createdAt)
@@ -149,10 +141,10 @@ class DatabaseSeeder {
   await db.rawInsert('''
   INSERT INTO giftCards (id, userId, brand, cardNumber, balance, expiryDate, status, createdAt)
   VALUES 
-  ('gc1', '1', 'Amazon', '**** **** **** 1234', 100.00, ?, 'active', ?),
-  ('gc2', '1', 'Starbucks', '**** **** **** 5678', 75.00, ?, 'active', ?),
-  ('gc3', '1', 'iTunes', '**** **** **** 9012', 50.00, ?, 'active', ?),
-  ('gc4', '2', 'Amazon', '**** **** **** 3456', 25.00, ?, 'active', ?)
+  ('gc1', '1', 'Amazon', '6011 0000 0000 1234', 100.00, ?, 'active', ?),
+  ('gc2', '1', 'Starbucks', '6011 0000 0000 5678', 75.00, ?, 'active', ?),
+  ('gc3', '1', 'iTunes', '6011 0000 0000 9012', 50.00, ?, 'active', ?),
+  ('gc4', '2', 'Amazon', '6011 0000 0000 3456', 25.00, ?, 'active', ?)
   ''', [now + 31536000000, now, now + 15768000000, now, now + 31536000000, now, now + 31536000000, now]);
   await db.rawInsert('''
   INSERT INTO searchHistory (userId, query, createdAt)

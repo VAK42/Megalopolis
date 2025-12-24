@@ -6,6 +6,7 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/foodProvider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../constants/foodConstants.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 class FoodHomeScreen extends ConsumerWidget {
  const FoodHomeScreen({super.key});
  @override
@@ -97,7 +98,7 @@ class FoodHomeScreen extends ConsumerWidget {
            itemCount: categories.length,
            itemBuilder: (context, index) {
             final category = categories[index]['category'] as String;
-            return _buildCategoryChip(context, category, Icons.fastfood, () => context.go('${Routes.foodCategoryFilter}/$category'));
+            return _buildCategoryChip(context, _toTitleCase(category), Icons.fastfood, () => context.go('${Routes.foodCategoryFilter}/$category'));
            },
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -235,5 +236,9 @@ class FoodHomeScreen extends ConsumerWidget {
     ),
    ),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text.split(' ').map((word) => word.isEmpty ? word : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}').join(' ');
  }
 }

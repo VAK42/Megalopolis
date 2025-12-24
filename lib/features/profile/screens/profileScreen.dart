@@ -28,7 +28,7 @@ class ProfileScreen extends ConsumerWidget {
            children: [
             IconButton(
              icon: const Icon(Icons.arrow_back, color: Colors.white),
-             onPressed: () => context.pop(),
+             onPressed: () => context.go(Routes.superDashboard),
             ),
             IconButton(
              icon: const Icon(Icons.settings, color: Colors.white),
@@ -39,15 +39,30 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           Stack(
            children: [
-            Container(
-             width: 100,
-             height: 100,
-             decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
+            userAsync.when(
+             data: (user) => Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+               color: Colors.white,
+               shape: BoxShape.circle,
+               border: Border.all(color: Colors.white, width: 3),
+               image: user?.avatar != null && user!.avatar!.isNotEmpty ? DecorationImage(image: NetworkImage(user.avatar!), fit: BoxFit.cover) : null,
+              ),
+              child: user?.avatar == null || user!.avatar!.isEmpty ? const Icon(Icons.person, size: 50, color: AppColors.primary) : null,
              ),
-             child: const Icon(Icons.person, size: 50, color: AppColors.primary),
+             loading: () => Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 3)),
+              child: const Icon(Icons.person, size: 50, color: AppColors.primary),
+             ),
+             error: (_, __) => Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 3)),
+              child: const Icon(Icons.person, size: 50, color: AppColors.primary),
+             ),
             ),
             Positioned(
              bottom: 0,
@@ -132,13 +147,34 @@ class ProfileScreen extends ConsumerWidget {
           _buildMenuItem(Icons.privacy_tip, ProfileConstants.privacy, () => context.go(Routes.privacySettings)),
           _buildMenuItem(Icons.help, ProfileConstants.helpSupport, () => context.go(Routes.helpCenter)),
           _buildMenuItem(Icons.info, ProfileConstants.about, () => context.go(Routes.about)),
-          _buildMenuItem(Icons.logout, ProfileConstants.logout, () {}, isDestructive: true),
+          _buildMenuItem(Icons.logout, ProfileConstants.logout, () => _showLogoutDialog(context, ref), isDestructive: true),
          ],
         ),
        ),
       ],
      ),
     ),
+   ),
+  );
+ }
+ void _showLogoutDialog(BuildContext context, WidgetRef ref) {
+  showDialog(
+   context: context,
+   builder: (context) => AlertDialog(
+    title: const Text(ProfileConstants.logout),
+    content: const Text(ProfileConstants.logoutQuestion),
+    actions: [
+     TextButton(onPressed: () => Navigator.pop(context), child: const Text(ProfileConstants.cancel)),
+     TextButton(
+      onPressed: () {
+       ref.read(authProvider.notifier).logout();
+       ref.read(currentUserIdProvider.notifier).state = null;
+       Navigator.pop(context);
+       context.go(Routes.welcome);
+      },
+      child: const Text(ProfileConstants.logout, style: TextStyle(color: AppColors.error)),
+     ),
+    ],
    ),
   );
  }

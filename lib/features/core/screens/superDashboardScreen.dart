@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../../../providers/authProvider.dart';
 import '../../../providers/systemProvider.dart';
 import '../../core/constants/coreConstants.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 class SuperDashboardScreen extends ConsumerWidget {
  const SuperDashboardScreen({super.key});
  @override
@@ -72,25 +73,13 @@ class SuperDashboardScreen extends ConsumerWidget {
        ).animate().fadeIn(delay: 200.ms),
        const SizedBox(height: 32),
        Expanded(
-        child: GridView.count(crossAxisCount: 2, padding: const EdgeInsets.all(24), crossAxisSpacing: 16, mainAxisSpacing: 16, children: [_buildModuleCard(context, CoreConstants.foodDelivery, Icons.restaurant, Colors.orange, () => context.go(Routes.foodHome), 0), _buildModuleCard(context, CoreConstants.rideHailing, Icons.directions_car, AppColors.accent, () => context.go(Routes.rideHome), 100), _buildModuleCard(context, CoreConstants.shopping, Icons.shopping_bag, AppColors.success, () => context.go(Routes.martHome), 200), _buildModuleCard(context, CoreConstants.wallet, Icons.account_balance_wallet, AppColors.warning, () => context.go(Routes.walletHome), 300), _buildModuleCard(context, CoreConstants.services, Icons.home_repair_service, AppColors.secondary, () => context.go(Routes.servicesHome), 400), _buildModuleCard(context, CoreConstants.messages, Icons.chat_bubble, AppColors.cyan, () => context.go(Routes.socialInbox), 500)]),
+        child: GridView.count(crossAxisCount: 2, padding: const EdgeInsets.all(24), crossAxisSpacing: 16, mainAxisSpacing: 16, children: [_buildModuleCard(context, CoreConstants.foodDelivery, Icons.restaurant, Colors.orange, () => context.go(Routes.foodHome), 0), _buildModuleCard(context, CoreConstants.rideHailing, Icons.directions_car, AppColors.accent, () => context.go(Routes.rideHome), 100), _buildModuleCard(context, CoreConstants.shopping, Icons.shopping_bag, AppColors.success, () => context.go(Routes.martHome), 200), _buildModuleCard(context, CoreConstants.wallet, Icons.account_balance_wallet, AppColors.warning, () => context.go(Routes.walletHome), 300), _buildModuleCard(context, CoreConstants.services, Icons.home_repair_service, AppColors.secondary, () => context.go(Routes.servicesHome), 400), _buildModuleCard(context, CoreConstants.messages, Icons.chat_bubble, AppColors.cyan, () => context.go(Routes.chatInbox), 500)]),
        ),
       ],
      ),
     ),
    ),
-   bottomNavigationBar: BottomNavigationBar(
-    currentIndex: 0,
-    type: BottomNavigationBarType.fixed,
-    items: const [
-     BottomNavigationBarItem(icon: Icon(Icons.home), label: CoreConstants.homeLabel),
-     BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: CoreConstants.ordersLabel),
-     BottomNavigationBarItem(icon: Icon(Icons.favorite), label: CoreConstants.favoritesLabel),
-     BottomNavigationBarItem(icon: Icon(Icons.person), label: CoreConstants.profileLabel),
-    ],
-    onTap: (index) {
-     if (index == 3) context.go(Routes.profileHome);
-    },
-   ),
+   bottomNavigationBar: const SharedBottomNavBar(),
   );
  }
  Widget _buildModuleCard(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap, int delay) {

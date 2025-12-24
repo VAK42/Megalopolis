@@ -5,28 +5,27 @@ class FoodRepository {
  Future<List<Map<String, dynamic>>> getRestaurants({int limit = 20, int offset = 0}) async {
   final db = await dbHelper.database;
   return await db.rawQuery(
-   '''
+  '''
   SELECT i.sellerId, u.name as sellerName, u.rating as sellerRating 
   FROM items i
   JOIN users u ON i.sellerId = u.id
-  WHERE i.type = "food" 
+  WHERE i.type = 'food' 
   GROUP BY i.sellerId
   LIMIT ? OFFSET ?
   ''',
-   [limit, offset],
+  [limit, offset],
   );
  }
  Future<Map<String, dynamic>?> getRestaurantById(String id) async {
   final db = await dbHelper.database;
   final results = await db.rawQuery(
-   '''
-  SELECT u.id, u.name as sellerName, u.rating as sellerRating,
-   s.deliveryFee, s.estimatedTime, s.minOrder
+  '''
+  SELECT u.id, u.name as sellerName, u.rating as sellerRating, s.deliveryFee, s.estimatedTime, s.minOrder
   FROM users u
   LEFT JOIN sellers s ON u.id = s.userId
   WHERE u.id = ?
- ''',
-   [id],
+  ''',
+  [id],
   );
   if (results.isNotEmpty) return results.first;
   return null;
@@ -44,7 +43,7 @@ class FoodRepository {
  }
  Future<List<Map<String, dynamic>>> getCategories() async {
   final db = await dbHelper.database;
-  return await db.rawQuery('SELECT DISTINCT categoryId FROM items WHERE type = "food"');
+  return await db.rawQuery("SELECT DISTINCT categoryId as category FROM items WHERE type = 'food'");
  }
  Future<int> addToCart(Map<String, dynamic> cartItem) async {
   final db = await dbHelper.database;
@@ -98,7 +97,15 @@ class FoodRepository {
  }
  Future<List<Map<String, dynamic>>> getPromotions() async {
   final db = await dbHelper.database;
-  return await db.query('promotions', where: 'type = ?', whereArgs: ['food'], orderBy: 'startDate DESC');
+  final results = await db.query('promotions', orderBy: 'startDate DESC', limit: 5);
+  return results.map((p) {
+   String gradient = 'primary';
+   final type = p['type']?.toString() ?? '';
+   if (type.contains('food')) gradient = 'accent';
+   if (type.contains('electronics')) gradient = 'success';
+   if (type.contains('delivery')) gradient = 'error';
+   return {...p, 'gradient': gradient};
+  }).toList();
  }
  Future<List<Map<String, dynamic>>> getLoyaltyRewards() async {
   final db = await dbHelper.database;

@@ -3,7 +3,7 @@ class WalletRepository {
  final DatabaseHelper dbHelper = DatabaseHelper.instance;
  Future<double> getBalance(String userId) async {
   final db = await dbHelper.database;
-  final result = await db.rawQuery('SELECT SUM(CASE WHEN type IN ("credit", "topup", "refund") THEN amount WHEN type IN ("debit", "transfer", "payment") THEN -amount ELSE 0 END) as balance FROM transactions WHERE userId = ?', [userId]);
+  final result = await db.rawQuery("SELECT SUM(CASE WHEN type IN ('credit', 'topup', 'refund') THEN amount WHEN type IN ('debit', 'transfer', 'payment') THEN -amount ELSE 0 END) as balance FROM transactions WHERE userId = ?", [userId]);
   return (result.first['balance'] as num?)?.toDouble() ?? 0.0;
  }
  Future<int> addTransaction(Map<String, dynamic> transaction) async {
@@ -46,7 +46,7 @@ class WalletRepository {
  Future<Map<String, dynamic>> getAnalytics(String userId, {int days = 30}) async {
   final db = await dbHelper.database;
   final DateTime startDate = DateTime.now().subtract(Duration(days: days));
-  final result = await db.rawQuery('''SELECT SUM(CASE WHEN type IN ("debit", "payment", "transfer") THEN amount ELSE 0 END) as totalSpent, SUM(CASE WHEN type IN ("credit", "topup", "refund") THEN amount ELSE 0 END) as totalIncome FROM transactions WHERE userId = ? AND createdAt >= ?''', [userId, startDate.toIso8601String()]);
+  final result = await db.rawQuery("SELECT SUM(CASE WHEN type IN ('debit', 'payment', 'transfer') THEN amount ELSE 0 END) as totalSpent, SUM(CASE WHEN type IN ('credit', 'topup', 'refund') THEN amount ELSE 0 END) as totalIncome FROM transactions WHERE userId = ? AND createdAt >= ?", [userId, startDate.toIso8601String()]);
   return result.first;
  }
  Future<List<Map<String, dynamic>>> getBills(String userId, {String status = 'all'}) async {

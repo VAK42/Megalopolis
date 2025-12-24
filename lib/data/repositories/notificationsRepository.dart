@@ -22,4 +22,16 @@ class NotificationsRepository {
   final db = await dbHelper.database;
   return await db.delete('notifications', where: 'id = ?', whereArgs: [notificationId]);
  }
+ Future<int> deleteAllByUser(String userId) async {
+  final db = await dbHelper.database;
+  return await db.delete('notifications', where: 'userId = ?', whereArgs: [userId]);
+ }
+ Future<int> toggleStar(String notificationId, bool isStarred) async {
+  final db = await dbHelper.database;
+  return await db.update('notifications', {'isStarred': isStarred ? 1 : 0}, where: 'id = ?', whereArgs: [notificationId]);
+ }
+ Future<int> toggleMute(String notificationId, bool isMuted) async {
+  final db = await dbHelper.database;
+  return await db.update('notifications', {'isMuted': isMuted ? 1 : 0}, where: 'id = ?', whereArgs: [notificationId]);
+ }
 }
