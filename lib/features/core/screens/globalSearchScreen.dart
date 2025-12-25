@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/routes/routeNames.dart';
 import '../../../providers/systemProvider.dart';
 import '../../../providers/authProvider.dart';
+import '../../../core/theme/colors.dart';
 import '../../core/constants/coreConstants.dart';
 class GlobalSearchScreen extends ConsumerStatefulWidget {
  const GlobalSearchScreen({super.key});
@@ -36,7 +37,15 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
     title: TextField(
      controller: searchController,
      autofocus: true,
-     decoration: const InputDecoration(hintText: CoreConstants.searchForAnything, border: InputBorder.none),
+     textInputAction: TextInputAction.search,
+     decoration: InputDecoration(
+      hintText: CoreConstants.searchForAnything,
+      border: InputBorder.none,
+      suffixIcon: IconButton(
+       icon: const Icon(Icons.search, color: AppColors.primary),
+       onPressed: () => _performSearch(searchController.text),
+      ),
+     ),
      onSubmitted: _performSearch,
     ),
    ),

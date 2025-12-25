@@ -72,17 +72,17 @@ class FoodCartScreen extends ConsumerWidget {
                  icon: const Icon(Icons.remove_circle_outline),
                  onPressed: () {
                   if (((item['quantity'] ?? 1) as int) > 1) {
-                   ref.read(foodCartProvider(userId).notifier).updateQuantity((item['id'] as String?) ?? '0', ((item['quantity'] as int?) ?? 1) - 1);
+                   ref.read(foodCartProvider(userId).notifier).updateQuantity(item['id'].toString(), ((item['quantity'] as int?) ?? 1) - 1);
                   }
                  },
                 ),
                 Text('${item['quantity']}'),
-                IconButton(icon: const Icon(Icons.add_circle_outline), onPressed: () => ref.read(foodCartProvider(userId).notifier).updateQuantity((item['id'] as String?) ?? '0', ((item['quantity'] as int?) ?? 1) + 1)),
+                IconButton(icon: const Icon(Icons.add_circle_outline), onPressed: () => ref.read(foodCartProvider(userId).notifier).updateQuantity(item['id'].toString(), ((item['quantity'] as int?) ?? 1) + 1)),
                ],
               ),
               IconButton(
                icon: const Icon(Icons.delete, color: AppColors.error),
-               onPressed: () => ref.read(foodCartProvider(userId).notifier).removeItem((item['id'] as String?) ?? '0'),
+               onPressed: () => ref.read(foodCartProvider(userId).notifier).removeItem(item['id'].toString()),
               ),
              ],
             ),

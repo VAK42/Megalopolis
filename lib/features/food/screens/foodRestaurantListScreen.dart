@@ -27,7 +27,7 @@ class FoodRestaurantListScreen extends ConsumerWidget {
          return Card(
           margin: const EdgeInsets.only(bottom: 16),
           child: InkWell(
-           onTap: () => context.go('${Routes.foodRestaurantDetail}/${restaurant['sellerId']}'),
+           onTap: () => context.go('/food/restaurant/${restaurant['sellerId']}'),
            borderRadius: BorderRadius.circular(12),
            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

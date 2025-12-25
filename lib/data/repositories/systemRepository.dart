@@ -41,7 +41,7 @@ class SystemRepository {
  }
  Future<List<ItemModel>> globalSearch(String query) async {
   final db = await dbHelper.database;
-  final List<Map<String, dynamic>> maps = await db.query('items', where: 'name LIKE ? OR description LIKE ?', whereArgs: ['%$query%', '%$query%'], limit: 50);
+  final List<Map<String, dynamic>> maps = await db.query('items', where: 'name LIKE ? OR description LIKE ? OR type LIKE ?', whereArgs: ['%$query%', '%$query%', '%$query%'], limit: 50);
   return List.generate(maps.length, (i) => ItemModel.fromMap(maps[i]));
  }
  Future<List<String>> getSearchHistory(String userId) async {

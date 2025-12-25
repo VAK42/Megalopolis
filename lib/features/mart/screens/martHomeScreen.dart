@@ -6,7 +6,6 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/martProvider.dart';
 import '../../../shared/models/itemModel.dart';
 import '../../mart/constants/martConstants.dart';
-import '../../../shared/widgets/sharedBottomNav.dart';
 class MartHomeScreen extends ConsumerWidget {
  const MartHomeScreen({super.key});
  @override
@@ -17,7 +16,7 @@ class MartHomeScreen extends ConsumerWidget {
      slivers: [
       SliverAppBar(
        floating: true,
-       leading: IconButton(icon: const Icon(Icons.menu), onPressed: () => context.go(Routes.superDashboard)),
+       leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
        title: const Text(MartConstants.appTitle),
        actions: [
         IconButton(icon: const Icon(Icons.shopping_cart), onPressed: () => context.go(Routes.martCart)),
@@ -61,7 +60,7 @@ class MartHomeScreen extends ConsumerWidget {
                  decoration: BoxDecoration(color: [AppColors.primary, AppColors.accent, AppColors.error][index % 3], borderRadius: BorderRadius.circular(16)),
                  child: Stack(
                   children: [
-                   Positioned(right: -20, bottom: -20, child: Icon(Icons.shopping_bag, size: 120, color: Colors.white.withOpacity(0.2))),
+                   Positioned(right: -20, bottom: -20, child: Icon(Icons.shopping_bag, size: 120, color: Colors.white.withValues(alpha: 0.2))),
                    Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -105,7 +104,8 @@ class MartHomeScreen extends ConsumerWidget {
                itemCount: categories.length,
                itemBuilder: (context, index) {
                 final cat = categories[index];
-                return _buildCategoryChip(context, Icons.category, _toTitleCase(cat['category'] as String), AppColors.primary);
+                final categoryName = cat['category'] as String;
+                return _buildCategoryChip(context, Icons.category, _toTitleCase(categoryName), AppColors.primary, categoryName);
                },
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -142,9 +142,9 @@ class MartHomeScreen extends ConsumerWidget {
    ),
   );
  }
- Widget _buildCategoryChip(BuildContext context, IconData icon, String label, Color color) {
+ Widget _buildCategoryChip(BuildContext context, IconData icon, String label, Color color, String categoryId) {
   return GestureDetector(
-   onTap: () => context.go(Routes.martProducts),
+   onTap: () => context.go('${Routes.martProducts}?category=$categoryId'),
    child: Container(
     width: 80,
     margin: const EdgeInsets.only(right: 12),

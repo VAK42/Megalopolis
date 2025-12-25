@@ -42,7 +42,7 @@ class FoodCategoryFilterScreen extends ConsumerWidget {
            itemBuilder: (context, index) {
             final restaurant = restaurants[index];
             return GestureDetector(
-             onTap: () => context.go('${Routes.foodRestaurantDetail}/${restaurant['sellerId']}'),
+             onTap: () => context.go('/food/restaurant/${restaurant['sellerId']}'),
              child: Card(
               child: Column(
                crossAxisAlignment: CrossAxisAlignment.start,

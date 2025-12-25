@@ -61,6 +61,8 @@ class DatabaseHelper {
   address TEXT,
   pickupAddress TEXT,
   dropoffAddress TEXT,
+  paymentMethod TEXT,
+  promoCode TEXT,
   notes TEXT,
   createdAt INTEGER NOT NULL,
   completedAt INTEGER,
@@ -174,6 +176,16 @@ class DatabaseHelper {
   endDate INTEGER,
   type TEXT DEFAULT 'general',
   usageCount INTEGER DEFAULT 0
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE favorites (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userId TEXT NOT NULL,
+  itemId TEXT NOT NULL,
+  type TEXT NOT NULL,
+  createdAt INTEGER,
+  FOREIGN KEY (userId) REFERENCES users (id)
   )
   ''');
   await db.execute('''

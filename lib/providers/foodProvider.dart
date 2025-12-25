@@ -23,6 +23,11 @@ final foodCategoriesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) 
  final repository = ref.watch(foodRepositoryProvider);
  return await repository.getCategories();
 });
+final foodItemsListProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+ final repository = ref.watch(foodRepositoryProvider);
+ final items = await repository.getAllFoodItems();
+ return items.map((item) => item.toMap()).toList();
+});
 class CartNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, String> {
  late final FoodRepository _repository;
  late final String _argUserId;

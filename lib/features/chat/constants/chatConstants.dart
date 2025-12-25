@@ -39,4 +39,8 @@ class ChatConstants {
  static const String videosTab = 'Videos';
  static const String linksTab = 'Links';
  static const String timerDefault = '00:00';
+ static const String noSearchResults = 'No Results Found';
+ static const String deleteChatTitle = 'Delete Chat';
+ static const String deleteChatConfirm = 'Are You Sure You Want To Delete This Chat?';
+ static const String chatDeleted = 'Chat Deleted';
 }

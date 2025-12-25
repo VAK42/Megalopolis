@@ -2,6 +2,11 @@ class FoodConstants {
  static const String homeDeliverTo = 'Deliver To';
  static const String homeLocationHome = 'Home';
  static const String searchHint = 'Search For Restaurants Or Dishes...';
+ static const String searchHintExample = 'Search For Restaurants Or Dishes';
+ static const String restaurants = 'Restaurants';
+ static const String foodItems = 'Food Items';
+ static const String noRestaurantsFound = 'No Restaurants Found';
+ static const String noFoodItemsFound = 'No Food Items Found';
  static const String categories = 'Categories';
  static const String popularNearYou = 'Popular Near You';
  static const String seeAll = 'See All';
@@ -33,6 +38,9 @@ class FoodConstants {
  static const String addAddress = 'Add Address';
  static const String defaultAddress = 'Address';
  static const String addNew = 'Add New';
+ static const String enterAddress = 'Enter Full Address';
+ static const String homeLabel = 'Home';
+ static const String cancel = 'Cancel';
  static const String orderInProgress = 'Order In Progress';
  static const String restaurantPreparingOrder = 'Restaurant Is Preparing Your Order';
  static const String estimatedTimePrefix = 'Estimated Time: ';
@@ -55,6 +63,9 @@ class FoodConstants {
  static const String applyPromo = 'Apply';
  static const String noPromosAvailable = 'No Promos Available';
  static const String discountApplied = 'Discount Applied';
+ static const String check = 'Check';
+ static const String promoApplied = 'Promo Applied:';
+ static const String placeOrder = 'Place Order';
  static const String categoryFilterTitle = 'Category';
  static const String noItemsInCategory = 'No Items In This Category';
  static const String favoritesTitle = 'Favorites';
@@ -240,6 +251,5 @@ class FoodConstants {
  static const double dvCholesterol = 300.0;
  static const double dvStandard = 100.0;
  static const String errorParsingMetadata = 'Error Parsing Metadata: ';
- static const String cancel = 'Cancel';
  static const String delete = 'Delete';
 }

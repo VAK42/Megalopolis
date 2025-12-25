@@ -13,6 +13,12 @@ class ContactsScreen extends ConsumerStatefulWidget {
 }
 class _ContactsScreenState extends ConsumerState<ContactsScreen> {
  final TextEditingController searchController = TextEditingController();
+ String searchQuery = '';
+ @override
+ void dispose() {
+  searchController.dispose();
+  super.dispose();
+ }
  @override
  Widget build(BuildContext context) {
   final userAsync = ref.watch(authProvider);
@@ -22,13 +28,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
    appBar: AppBar(
     leading: IconButton(
      icon: const Icon(Icons.arrow_back), 
-     onPressed: () {
-      if (context.canPop()) {
-       context.pop();
-      } else {
-       context.go(Routes.chatInbox);
-      }
-     }
+     onPressed: () => context.go(Routes.chatInbox),
     ),
     title: const Text(ChatConstants.contactsTitle),
     actions: [IconButton(icon: const Icon(Icons.person_add), onPressed: () {})],
@@ -39,9 +39,19 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
       padding: const EdgeInsets.all(16),
       child: TextField(
        controller: searchController,
+       onChanged: (value) => setState(() => searchQuery = value.toLowerCase()),
        decoration: InputDecoration(
         hintText: ChatConstants.searchContacts,
         prefixIcon: const Icon(Icons.search),
+        suffixIcon: searchQuery.isNotEmpty
+          ? IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () {
+             searchController.clear();
+             setState(() => searchQuery = '');
+            },
+           )
+          : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
        ),
       ),
@@ -49,10 +59,17 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
      Expanded(
       child: contactsAsync.when(
        data: (contacts) {
-        if (contacts.isEmpty) {
-         return const Center(child: Text(ChatConstants.noContacts));
+        final filteredContacts = searchQuery.isEmpty
+          ? contacts
+          : contacts.where((c) {
+            final name = (c['name'] as String?)?.toLowerCase() ?? '';
+            final email = (c['email'] as String?)?.toLowerCase() ?? '';
+            return name.contains(searchQuery) || email.contains(searchQuery);
+           }).toList();
+        if (filteredContacts.isEmpty) {
+         return Center(child: Text(searchQuery.isEmpty ? ChatConstants.noContacts : ChatConstants.noSearchResults));
         }
-        return ListView.builder(itemCount: contacts.length, itemBuilder: (context, index) => _buildContactItem(contacts[index], userId));
+        return ListView.builder(itemCount: filteredContacts.length, itemBuilder: (context, index) => _buildContactItem(filteredContacts[index], userId));
        },
        loading: () => const Center(child: CircularProgressIndicator()),
        error: (err, stack) => Center(child: Text('${ChatConstants.errorPrefix}$err')),
@@ -100,7 +117,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
        final notifier = ref.read(chatProvider(currentUserId).notifier);
        try {
         final chatId = await notifier.getChatWithUser(contact['id'].toString());
-        router.push(Routes.chatConversation.replaceFirst(':chatId', chatId));
+        router.go('/chat/$chatId');
        } catch (e) {
         if (context.mounted) {
          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${ChatConstants.errorCreatingChat}$e')));

@@ -5,11 +5,11 @@ import '../../../core/theme/colors.dart';
 import '../../../providers/martProvider.dart';
 import '../../mart/constants/martConstants.dart';
 class MartProductReviewsScreen extends ConsumerWidget {
- final int productId;
+ final String productId;
  const MartProductReviewsScreen({super.key, required this.productId});
  @override
  Widget build(BuildContext context, WidgetRef ref) {
-  final reviewsAsync = ref.watch(productReviewsProvider(productId.toString()));
+  final reviewsAsync = ref.watch(productReviewsProvider(productId));
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),

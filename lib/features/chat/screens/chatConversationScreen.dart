@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/routes/routeNames.dart';
 import '../../../providers/authProvider.dart';
 import '../../../providers/chatProvider.dart';
 import '../../chat/constants/chatConstants.dart';
@@ -33,23 +34,15 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
   final chatDetailsAsync = ref.watch(chatDetailsProvider(widget.chatId));
   return Scaffold(
    appBar: AppBar(
-    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+    leading: IconButton(
+     icon: const Icon(Icons.arrow_back),
+     onPressed: () => context.go(Routes.chatInbox),
+    ),
     title: chatDetailsAsync.when(
      data: (chat) {
-      final participants = (chat?['participants'] as String?)?.split(',') ?? [ChatConstants.defaultChatTitle];
-      final title = participants.length > 1 ? participants.where((p) => p != userId).join(', ') : ChatConstants.defaultChatTitle;
-      return Row(
-       children: [
-        Container(
-         width: 40,
-         height: 40,
-         decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-         child: const Icon(Icons.person, color: Colors.white, size: 20),
-        ),
-        const SizedBox(width: 12),
-        Expanded(child: Text(title.isEmpty ? ChatConstants.defaultChatTitle : title, style: const TextStyle(fontSize: 16))),
-       ],
-      );
+      final participants = (chat?['participants'] as String?)?.split(',') ?? [];
+      final otherParticipantId = participants.firstWhere((p) => p != userId, orElse: () => participants.isNotEmpty ? participants.first : '');
+      return _ChatAppBarTitle(otherUserId: otherParticipantId);
      },
      loading: () => const Text(ChatConstants.loading),
      error: (_, __) => const Text(ChatConstants.defaultChatTitle),
@@ -176,6 +169,42 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
      ),
     ),
    ),
+  );
+ }
+}
+class _ChatAppBarTitle extends ConsumerWidget {
+ final String otherUserId;
+ const _ChatAppBarTitle({required this.otherUserId});
+ @override
+ Widget build(BuildContext context, WidgetRef ref) {
+  if (otherUserId.isEmpty) {
+   return const Text(ChatConstants.defaultChatTitle);
+  }
+  final userAsync = ref.watch(userByIdProvider(otherUserId));
+  return userAsync.when(
+   data: (user) {
+    final name = user?['name'] as String? ?? ChatConstants.defaultChatTitle;
+    final avatar = user?['avatar'] as String?;
+    final hasAvatar = avatar != null && avatar.isNotEmpty;
+    return Row(
+     children: [
+      Container(
+       width: 40,
+       height: 40,
+       decoration: BoxDecoration(
+        color: AppColors.primary,
+        shape: BoxShape.circle,
+        image: hasAvatar ? DecorationImage(image: NetworkImage(avatar), fit: BoxFit.cover) : null,
+       ),
+       child: !hasAvatar ? const Icon(Icons.person, color: Colors.white, size: 20) : null,
+      ),
+      const SizedBox(width: 12),
+      Expanded(child: Text(name, style: const TextStyle(fontSize: 16))),
+     ],
+    );
+   },
+   loading: () => const Text(ChatConstants.loading),
+   error: (_, __) => const Text(ChatConstants.defaultChatTitle),
   );
  }
 }

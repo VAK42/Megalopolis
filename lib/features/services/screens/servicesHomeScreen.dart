@@ -6,7 +6,6 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/serviceProvider.dart';
 import '../../../shared/models/itemModel.dart';
 import '../constants/servicesConstants.dart';
-import '../../../shared/widgets/sharedBottomNav.dart';
 class ServicesHomeScreen extends ConsumerWidget {
  const ServicesHomeScreen({super.key});
  @override

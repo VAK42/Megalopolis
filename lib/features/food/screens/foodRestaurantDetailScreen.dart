@@ -38,7 +38,7 @@ class FoodRestaurantDetailScreen extends ConsumerWidget {
         ),
         actions: [
          IconButton(icon: const Icon(Icons.favorite_border), onPressed: () => ref.read(foodFavoritesProvider(int.tryParse(userId) ?? 1).notifier).addFavorite(restaurantId)),
-         IconButton(icon: const Icon(Icons.info_outline), onPressed: () => context.go('${Routes.foodRestaurantInfo}/$restaurantId')),
+         IconButton(icon: const Icon(Icons.info_outline), onPressed: () => context.go('/food/restaurant/$restaurantId/info')),
         ],
        ),
        SliverToBoxAdapter(

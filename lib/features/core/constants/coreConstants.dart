@@ -52,4 +52,22 @@ class CoreConstants {
  static const String mute = 'Mute';
  static const String unmute = 'Unmute';
  static const String delete = 'Delete';
+ static const String ourServices = 'Our Services';
+ static const String specialOffers = 'Special Offers';
+ static const String exploreNow = 'Explore Now';
+ static const String orderDeliciousFood = 'Order Delicious Food';
+ static const String firstOrderDiscount = 'Get 30% Off On Your First Order';
+ static const String bookRideNow = 'Book A Ride Now';
+ static const String safeRides = 'Safe & Comfortable Rides Await';
+ static const String shopTopBrands = 'Shop Top Brands';
+ static const String flashSaleOff = 'Flash Sale - Up To 70% Off!';
+ static const String freeDelivery = 'Free Delivery';
+ static const String ordersAbove = 'On Orders Above \$20';
+ static const String flashSale = 'Flash Sale';
+ static const String upTo50Off = 'Up To 50% Off Today';
+ static const String referEarn = 'Refer & Earn';
+ static const String getPer = 'Get \$10 Per Friend';
+ static const String food = 'Food';
+ static const String ride = 'Ride';
+ static const String mart = 'Mart';
 }

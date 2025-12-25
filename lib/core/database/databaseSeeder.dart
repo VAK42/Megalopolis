@@ -116,6 +116,26 @@ class DatabaseSeeder {
   ('notif3', '2', 'Order Delivered', 'Your Order Has Been Successfully Delivered. Thank You For Your Purchase!', 'order', 1, ?)
   ''', [now - 86400000, now - 3600000, now - 43200000]);
   await db.rawInsert('''
+  INSERT INTO chats (id, participants, lastMessage, lastMessageAt, type)
+  VALUES 
+  ('chat1', '1,2', 'Hey! How Are You Doing Today?', ?, 'direct'),
+  ('chat2', '1,3', 'Thanks For The Help Yesterday!', ?, 'direct'),
+  ('chat3', '1,9', 'Your Order Is On The Way!', ?, 'direct'),
+  ('chat4', '2,3', 'See You Tomorrow!', ?, 'direct')
+  ''', [now - 1800000, now - 3600000, now - 7200000, now - 86400000]);
+  await db.rawInsert('''
+  INSERT INTO messages (id, chatId, senderId, content, type, createdAt)
+  VALUES 
+  ('msg1', 'chat1', '2', 'Hi There! Hope You Are Having A Great Day!', 'text', ?),
+  ('msg2', 'chat1', '1', 'Hey! I Am Doing Great, Thanks For Asking!', 'text', ?),
+  ('msg3', 'chat1', '2', 'Hey! How Are You Doing Today?', 'text', ?),
+  ('msg4', 'chat2', '3', 'Hi! Just Wanted To Say Thanks For Your Help!', 'text', ?),
+  ('msg5', 'chat2', '1', 'No Problem At All! Happy To Help!', 'text', ?),
+  ('msg6', 'chat2', '3', 'Thanks For The Help Yesterday!', 'text', ?),
+  ('msg7', 'chat3', '9', 'Your Order Has Been Confirmed!', 'text', ?),
+  ('msg8', 'chat3', '9', 'Your Order Is On The Way!', 'text', ?)
+  ''', [now - 7200000, now - 3600000, now - 1800000, now - 10800000, now - 7200000, now - 3600000, now - 10800000, now - 7200000]);
+  await db.rawInsert('''
   INSERT INTO reviews (id, targetType, targetId, userId, rating, comment, images, createdAt)
   VALUES 
   ('rev1', 'item', 'p1', '2', 4.5, 'Great Headphones! Amazing Sound Quality And Battery Life.', NULL, ?),

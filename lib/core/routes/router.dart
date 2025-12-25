@@ -751,16 +751,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'product/:id',
                     builder: (context, state) {
-                      final id =
-                          int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                      final id = state.pathParameters['id'] ?? '';
                       return MartProductDetailScreen(productId: id);
                     },
                   ),
                   GoRoute(
                     path: 'product/:id/reviews',
                     builder: (context, state) {
-                      final id =
-                          int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+                      final id = state.pathParameters['id'] ?? '';
                       return MartProductReviewsScreen(productId: id);
                     },
                   ),

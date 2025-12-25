@@ -41,4 +41,9 @@ class ChatRepository {
   final db = await _dbHelper.database;
   await db.delete('messages', where: 'id = ?', whereArgs: [messageId]);
  }
+ Future<void> deleteChat(String chatId) async {
+  final db = await _dbHelper.database;
+  await db.delete('messages', where: 'chatId = ?', whereArgs: [chatId]);
+  await db.delete('chats', where: 'id = ?', whereArgs: [chatId]);
+ }
 }

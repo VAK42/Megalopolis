@@ -15,6 +15,13 @@ final userAddressesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) a
  final repository = ref.watch(userRepositoryProvider);
  return await repository.getUserAddresses(userId);
 });
+final userByIdProvider = FutureProvider.family<Map<String, dynamic>?, String>((ref, userId) async {
+ final repository = ref.watch(userRepositoryProvider);
+ final db = await repository.dbHelper.database;
+ final results = await db.query('users', where: 'id = ?', whereArgs: [userId], limit: 1);
+ if (results.isEmpty) return null;
+ return results.first;
+});
 class AuthNotifier extends AsyncNotifier<UserModel?> {
  late final UserRepository _repository;
  @override

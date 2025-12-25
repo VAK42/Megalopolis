@@ -8,7 +8,7 @@ import '../../../providers/martProvider.dart';
 import '../../../providers/authProvider.dart';
 import '../../mart/constants/martConstants.dart';
 class MartProductDetailScreen extends ConsumerStatefulWidget {
- final int productId;
+ final String productId;
  const MartProductDetailScreen({super.key, required this.productId});
  @override
  ConsumerState<MartProductDetailScreen> createState() => _MartProductDetailScreenState();
@@ -20,8 +20,8 @@ class _MartProductDetailScreenState extends ConsumerState<MartProductDetailScree
  String selectedSize = MartConstants.sizes[1];
  @override
  Widget build(BuildContext context) {
-  final productAsync = ref.watch(martProductProvider(widget.productId.toString()));
-  final reviewsAsync = ref.watch(productReviewsProvider(widget.productId.toString()));
+  final productAsync = ref.watch(martProductProvider(widget.productId));
+  final reviewsAsync = ref.watch(productReviewsProvider(widget.productId));
   return Scaffold(
    body: productAsync.when(
     data: (product) {

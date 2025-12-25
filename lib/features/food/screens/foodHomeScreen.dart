@@ -6,14 +6,13 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/foodProvider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../constants/foodConstants.dart';
-import '../../../shared/widgets/sharedBottomNav.dart';
 class FoodHomeScreen extends ConsumerWidget {
  const FoodHomeScreen({super.key});
  @override
  Widget build(BuildContext context, WidgetRef ref) {
   return Scaffold(
    appBar: AppBar(
-    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.superDashboard)),
+    leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
     title: const Column(
      crossAxisAlignment: CrossAxisAlignment.start,
      children: [
@@ -98,7 +97,7 @@ class FoodHomeScreen extends ConsumerWidget {
            itemCount: categories.length,
            itemBuilder: (context, index) {
             final category = categories[index]['category'] as String;
-            return _buildCategoryChip(context, _toTitleCase(category), Icons.fastfood, () => context.go('${Routes.foodCategoryFilter}/$category'));
+            return _buildCategoryChip(context, _toTitleCase(category), Icons.fastfood, () => context.go('/food/category/$category'));
            },
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -112,7 +111,7 @@ class FoodHomeScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
          Text(FoodConstants.popularNearYou, style: Theme.of(context).textTheme.titleLarge),
-         TextButton(onPressed: () => context.go(Routes.foodRestaurantList), child: const Text(FoodConstants.seeAll)),
+         TextButton(onPressed: () => context.go('/food/restaurants'), child: const Text(FoodConstants.seeAll)),
         ],
        ),
       ),
@@ -192,7 +191,7 @@ class FoodHomeScreen extends ConsumerWidget {
  }
  Widget _buildRestaurantCard(BuildContext context, String name, String rating, String time, String delivery, String id) {
   return GestureDetector(
-   onTap: () => context.go('${Routes.foodRestaurantDetail}/$id'),
+   onTap: () => context.go('/food/restaurant/$id'),
    child: Card(
     margin: const EdgeInsets.only(bottom: 16),
     child: Column(

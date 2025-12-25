@@ -1,5 +1,5 @@
 class MartConstants {
- static const String appTitle = 'SuperMart';
+ static const String appTitle = 'Mart';
  static const String searchHint = 'Search Products...';
  static const String categoriesTitle = 'Categories';
  static const String trendingTitle = 'Trending Products';
@@ -207,4 +207,6 @@ class MartConstants {
  static const String battery = 'Battery';
  static const String camera = 'Camera';
  static const String warranty = 'Warranty';
+ static const String allProducts = 'All Products';
+ static const String lowStock = 'Low Stock';
 }

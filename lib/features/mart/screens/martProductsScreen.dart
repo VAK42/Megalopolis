@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
+import '../../../providers/martProvider.dart';
+import '../../../shared/models/itemModel.dart';
 import '../constants/martConstants.dart';
 class MartProductsScreen extends ConsumerStatefulWidget {
  const MartProductsScreen({super.key});
@@ -14,10 +16,12 @@ class _MartProductsScreenState extends ConsumerState<MartProductsScreen> {
  bool showFilters = false;
  @override
  Widget build(BuildContext context) {
+  final category = GoRouterState.of(context).uri.queryParameters['category'];
+  final productsAsync = ref.watch(martProductsProvider(category));
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.martHome)),
-    title: const Text(MartConstants.electronics),
+    title: Text(_toTitleCase(category ?? MartConstants.allProducts)),
     actions: [IconButton(icon: const Icon(Icons.shopping_cart), onPressed: () => context.go(Routes.martCart))],
    ),
    body: Column(
@@ -70,32 +74,36 @@ class _MartProductsScreenState extends ConsumerState<MartProductsScreen> {
          const SizedBox(height: 8),
          Wrap(
           spacing: 8,
-          children: ['\$0-\$50', '\$50-\$100', '\$100-\$200', '\$200+'].map((range) {
+          children: ['\$0-\$50', '\$50-\$100', '\$100-\$500', '\$500+'].map((range) {
            return FilterChip(label: Text(range), selected: false, onSelected: (selected) {});
-          }).toList(),
-         ),
-         const SizedBox(height: 16),
-         const Text(MartConstants.brand, style: TextStyle(fontWeight: FontWeight.bold)),
-         const SizedBox(height: 8),
-         Wrap(
-          spacing: 8,
-          children: [MartConstants.samsung, MartConstants.apple, MartConstants.sony, MartConstants.lg].map((brand) {
-           return FilterChip(label: Text(brand), selected: false, onSelected: (selected) {});
           }).toList(),
          ),
         ],
        ),
       ),
      Expanded(
-      child: GridView.builder(padding: const EdgeInsets.all(16), gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 16, crossAxisSpacing: 16, childAspectRatio: 0.7), itemCount: 20, itemBuilder: (context, index) => _buildProductCard(context, index)),
+      child: productsAsync.when(
+       data: (products) => products.isEmpty
+         ? const Center(child: Text(MartConstants.noProductsFound))
+         : GridView.builder(
+           padding: const EdgeInsets.all(16),
+           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 16, crossAxisSpacing: 16, childAspectRatio: 0.7),
+           itemCount: products.length,
+           itemBuilder: (context, index) => _buildProductCard(context, products[index]),
+          ),
+       loading: () => const Center(child: CircularProgressIndicator()),
+       error: (error, stack) => Center(child: Text('${MartConstants.errorGeneric}: $error')),
+      ),
      ),
     ],
    ),
   );
  }
- Widget _buildProductCard(BuildContext context, int index) {
+ Widget _buildProductCard(BuildContext context, ItemModel product) {
+  final images = product.images;
+  final hasImage = images.isNotEmpty && images.first.isNotEmpty;
   return GestureDetector(
-   onTap: () => context.go(Routes.martProductDetail),
+   onTap: () => context.push('/mart/product/${product.id}'),
    child: Card(
     child: Column(
      crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,20 +115,18 @@ class _MartProductsScreenState extends ConsumerState<MartProductsScreen> {
          decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          image: hasImage ? DecorationImage(image: NetworkImage(images.first), fit: BoxFit.cover) : null,
          ),
-         child: Center(child: Icon(Icons.image, size: 50, color: Colors.grey[400])),
+         child: !hasImage ? Center(child: Icon(Icons.image, size: 50, color: Colors.grey[400])) : null,
         ),
-        if (index % 3 == 0)
+        if (product.stock < 10)
          Positioned(
           top: 8,
           right: 8,
           child: Container(
            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
            decoration: BoxDecoration(color: AppColors.error, borderRadius: BorderRadius.circular(12)),
-           child: const Text(
-            '-20%',
-            style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-           ),
+           child: const Text(MartConstants.lowStock, style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
           ),
          ),
         Positioned(
@@ -139,25 +145,17 @@ class _MartProductsScreenState extends ConsumerState<MartProductsScreen> {
        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         Text(
-          '${MartConstants.electronics} ${index + 1}',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-         ),
+         Text(product.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
          const SizedBox(height: 4),
          Row(
           children: [
            const Icon(Icons.star, size: 14, color: Colors.amber),
            const SizedBox(width: 4),
-           Text('${4.0 + (index % 10) / 10}', style: const TextStyle(fontSize: 12)),
+           Text('${product.rating}', style: const TextStyle(fontSize: 12)),
           ],
          ),
          const SizedBox(height: 4),
-         Text(
-          '\$${50 + index * 10}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.primary),
-         ),
+         Text('\$${product.price.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.primary)),
         ],
        ),
       ),
@@ -186,5 +184,9 @@ class _MartProductsScreenState extends ConsumerState<MartProductsScreen> {
     ),
    ),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text.split(' ').map((word) => word.isEmpty ? word : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}').join(' ');
  }
 }

@@ -88,6 +88,15 @@ class ChatNotifier extends FamilyAsyncNotifier<List<Chat>, String> {
    rethrow;
   }
  }
+ Future<void> deleteChat(String chatId) async {
+  try {
+   await _repository.deleteChat(chatId);
+   state = const AsyncValue.loading();
+   state = await AsyncValue.guard(() => _loadChats());
+  } catch (e, stack) {
+   state = AsyncValue.error(e, stack);
+  }
+ }
 }
 final chatProvider = AsyncNotifierProvider.family<ChatNotifier, List<Chat>, String>(() {
  return ChatNotifier();

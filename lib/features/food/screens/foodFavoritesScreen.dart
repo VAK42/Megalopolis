@@ -65,7 +65,7 @@ class FoodFavoritesScreen extends ConsumerWidget {
            }
           },
          ),
-         onTap: () => context.go('${Routes.foodRestaurantDetail}/${fav['itemId']}'),
+         onTap: () => context.go('/food/restaurant/${fav['itemId']}'),
         ),
        );
       },

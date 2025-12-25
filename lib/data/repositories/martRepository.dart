@@ -67,7 +67,7 @@ class MartRepository {
  }
  Future<List<Map<String, dynamic>>> getReviews(String productId) async {
   final db = await dbHelper.database;
-  return await db.query('reviews', where: 'itemId = ?', whereArgs: [productId], orderBy: 'createdAt DESC');
+  return await db.query('reviews', where: 'targetId = ?', whereArgs: [productId], orderBy: 'createdAt DESC');
  }
  Future<List<ItemModel>> searchProducts(String query) async {
   final db = await dbHelper.database;

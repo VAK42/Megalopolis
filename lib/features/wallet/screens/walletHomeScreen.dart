@@ -6,7 +6,6 @@ import '../../../core/routes/routeNames.dart';
 import '../../../providers/walletProvider.dart';
 import '../../../providers/authProvider.dart';
 import '../constants/walletConstants.dart';
-import '../../../shared/widgets/sharedBottomNav.dart';
 class WalletHomeScreen extends ConsumerWidget {
  const WalletHomeScreen({super.key});
  @override

@@ -45,8 +45,20 @@ class FoodRepository {
   final db = await dbHelper.database;
   return await db.rawQuery("SELECT DISTINCT categoryId as category FROM items WHERE type = 'food'");
  }
+ Future<List<ItemModel>> getAllFoodItems() async {
+  final db = await dbHelper.database;
+  final List<Map<String, dynamic>> maps = await db.query('items', where: 'type = ?', whereArgs: ['food']);
+  return List.generate(maps.length, (i) => ItemModel.fromMap(maps[i]));
+ }
  Future<int> addToCart(Map<String, dynamic> cartItem) async {
   final db = await dbHelper.database;
+  final existing = await db.query('cartItems', where: 'userId = ? AND itemId = ?', whereArgs: [cartItem['userId'], cartItem['itemId']], limit: 1);
+  if (existing.isNotEmpty) {
+   final existingId = existing.first['id'];
+   final existingQty = (existing.first['quantity'] as int?) ?? 0;
+   final newQty = (cartItem['quantity'] as int?) ?? 1;
+   return await db.update('cartItems', {'quantity': existingQty + newQty}, where: 'id = ?', whereArgs: [existingId]);
+  }
   return await db.insert('cartItems', cartItem);
  }
  Future<List<Map<String, dynamic>>> getCart(String userId) async {
@@ -85,7 +97,9 @@ class FoodRepository {
  }
  Future<int> addToFavorites(String userId, String restaurantId) async {
   final db = await dbHelper.database;
-  return await db.insert('favorites', {'userId': userId, 'itemId': restaurantId, 'type': 'restaurant'});
+  final existing = await db.query('favorites', where: 'userId = ? AND itemId = ? AND type = ?', whereArgs: [userId, restaurantId, 'restaurant'], limit: 1);
+  if (existing.isNotEmpty) return 0;
+  return await db.insert('favorites', {'userId': userId, 'itemId': restaurantId, 'type': 'restaurant', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<List<Map<String, dynamic>>> getFavorites(String userId) async {
   final db = await dbHelper.database;
