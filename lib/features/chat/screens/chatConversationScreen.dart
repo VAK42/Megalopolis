@@ -36,7 +36,7 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
    appBar: AppBar(
     leading: IconButton(
      icon: const Icon(Icons.arrow_back),
-     onPressed: () => context.go(Routes.chatInbox),
+     onPressed: () => context.pop(),
     ),
     title: chatDetailsAsync.when(
      data: (chat) {

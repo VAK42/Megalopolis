@@ -7,6 +7,8 @@ import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appButton.dart';
 import '../../../providers/rideProvider.dart';
+import '../../../providers/addressProvider.dart';
+import '../../../providers/authProvider.dart';
 import '../../ride/constants/rideConstants.dart';
 class RidePickLocationScreen extends ConsumerStatefulWidget {
  const RidePickLocationScreen({super.key});
@@ -19,6 +21,8 @@ class _RidePickLocationScreenState extends ConsumerState<RidePickLocationScreen>
  bool isSelectingPickup = true;
  @override
  Widget build(BuildContext context) {
+  final userId = ref.watch(currentUserIdProvider) ?? '1';
+  final addressesAsync = ref.watch(addressProvider(userId));
   return Scaffold(
    body: Stack(
     children: [
@@ -42,15 +46,32 @@ class _RidePickLocationScreenState extends ConsumerState<RidePickLocationScreen>
            Row(
             children: [
              IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.rideHome)),
-             const Expanded(
-              child: Text(RideConstants.searchLocation, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-             ),
+             const Expanded(child: Text(RideConstants.searchLocation, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
             ],
            ),
            const SizedBox(height: 16),
            _buildLocationField(Icons.trip_origin, RideConstants.pickupTitle, pickupController, AppColors.success, true),
            const SizedBox(height: 12),
            _buildLocationField(Icons.location_on, RideConstants.destinationTitle, dropoffController, AppColors.error, false),
+           const SizedBox(height: 16),
+           addressesAsync.when(
+            data: (addresses) {
+             final homeAddr = addresses.where((a) => a.label?.toLowerCase() == 'home').toList();
+             final workAddr = addresses.where((a) => a.label?.toLowerCase() == 'work').toList();
+             final otherAddr = addresses.where((a) => a.label?.toLowerCase() != 'home' && a.label?.toLowerCase() != 'work').toList();
+             return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+               _buildSavedLocationChip(Icons.home, RideConstants.home, homeAddr.isNotEmpty ? homeAddr.first.fullAddress : RideConstants.defaultHomeAddress),
+               _buildSavedLocationChip(Icons.work, RideConstants.work, workAddr.isNotEmpty ? workAddr.first.fullAddress : RideConstants.defaultWorkAddress),
+               ...otherAddr.take(2).map((addr) => _buildSavedLocationChip(Icons.location_on, addr.label ?? RideConstants.saved, addr.fullAddress)),
+              ],
+             );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+           ),
           ],
          ),
         ),
@@ -77,6 +98,20 @@ class _RidePickLocationScreenState extends ConsumerState<RidePickLocationScreen>
      ),
     ],
    ),
+  );
+ }
+ Widget _buildSavedLocationChip(IconData icon, String label, String address) {
+  return ActionChip(
+   avatar: Icon(icon, size: 18, color: AppColors.primary),
+   label: Text(label),
+   onPressed: () {
+    if (isSelectingPickup) {
+     pickupController.text = address.isNotEmpty ? address : label;
+    } else {
+     dropoffController.text = address.isNotEmpty ? address : label;
+    }
+    setState(() {});
+   },
   );
  }
  Widget _buildLocationField(IconData icon, String label, TextEditingController controller, Color color, bool isPickup) {

@@ -11,7 +11,7 @@ final userSearchProvider = FutureProvider.family<List<Map<String, dynamic>>, Str
  if (query.isEmpty) return [];
  return await ref.watch(socialRepositoryProvider).searchUsers(query);
 });
-final challengesProvider = FutureProvider.family<List<Map<String, dynamic>>, String>((ref, userId) async {
+final socialChallengesProvider = FutureProvider.family<List<Map<String, dynamic>>, String>((ref, userId) async {
  return await ref.watch(socialRepositoryProvider).getChallenges(userId);
 });
 final expenseSplitsProvider = FutureProvider.family<List<Map<String, dynamic>>, String>((ref, userId) async {

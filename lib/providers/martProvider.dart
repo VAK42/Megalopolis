@@ -64,8 +64,8 @@ final martCartProvider = AsyncNotifierProvider.family<MartCartNotifier, List<Map
  return MartCartNotifier();
 });
 class MartOrdersNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, String> {
- late final MartRepository _repository;
- late final String _argUserId;
+ late MartRepository _repository;
+ late String _argUserId;
  @override
  Future<List<Map<String, dynamic>>> build(String arg) async {
   _repository = ref.watch(martRepositoryProvider);

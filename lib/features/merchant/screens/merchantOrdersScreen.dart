@@ -24,9 +24,10 @@ class MerchantOrdersScreen extends ConsumerWidget {
       itemBuilder: (context, index) {
        final order = orders[index];
        final status = order['status'].toString();
+       final displayStatus = status.isNotEmpty ? status[0].toUpperCase() + status.substring(1) : status;
        return Dismissible(
         key: Key(order['id'].toString()),
-        direction: status == MerchantConstants.pending ? DismissDirection.endToStart : DismissDirection.none,
+        direction: status == 'pending' ? DismissDirection.endToStart : DismissDirection.none,
         background: Container(
          alignment: Alignment.centerRight,
          padding: const EdgeInsets.only(right: 20),
@@ -40,7 +41,7 @@ class MerchantOrdersScreen extends ConsumerWidget {
            title: const Text(MerchantConstants.cancelled),
            content: Text('${MerchantConstants.orderPrefix}${order['id']}?'),
            actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(MerchantConstants.noPromotionsFound)),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(MerchantConstants.cancel)),
             TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text(MerchantConstants.success)),
            ],
           ),
@@ -59,7 +60,7 @@ class MerchantOrdersScreen extends ConsumerWidget {
            children: [
             Text(DateFormat('MMM dd, yyyy').format(DateTime.fromMillisecondsSinceEpoch(order['createdAt'] as int))),
             Text(
-             '${MerchantConstants.statusLabel}$status',
+             '${MerchantConstants.statusLabel}$displayStatus',
              style: TextStyle(color: _getStatusColor(status), fontWeight: FontWeight.bold),
             ),
            ],
@@ -67,7 +68,7 @@ class MerchantOrdersScreen extends ConsumerWidget {
           trailing: Row(
            mainAxisSize: MainAxisSize.min,
            children: [
-            if (status == MerchantConstants.pending)
+            if (status == 'pending')
              PopupMenuButton<String>(
               onSelected: (newStatus) {
                ref.read(merchantRepositoryProvider).updateOrderStatus(order['id'].toString(), newStatus);
@@ -94,11 +95,13 @@ class MerchantOrdersScreen extends ConsumerWidget {
  }
  Color _getStatusColor(String status) {
   switch (status) {
-   case MerchantConstants.delivered:
+   case 'delivered':
+   case 'completed':
     return Colors.green;
-   case MerchantConstants.cancelled:
+   case 'cancelled':
     return AppColors.error;
-   case MerchantConstants.pending:
+   case 'pending':
+   case 'preparing':
     return Colors.orange;
    default:
     return AppColors.primary;

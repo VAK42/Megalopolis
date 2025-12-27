@@ -32,7 +32,7 @@ class MerchantReviewsScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
              Text(review['userName'] ?? MerchantConstants.user, style: const TextStyle(fontWeight: FontWeight.bold)),
-             Row(children: List.generate(5, (starIndex) => Icon(starIndex < (review['rating'] as int? ?? 0) ? Icons.star : Icons.star_border, size: 16, color: Colors.amber))),
+             Row(children: List.generate(5, (starIndex) => Icon(starIndex < ((review['rating'] as num?)?.toInt() ?? 0) ? Icons.star : Icons.star_border, size: 16, color: Colors.amber))),
             ],
            ),
            const SizedBox(height: 8),

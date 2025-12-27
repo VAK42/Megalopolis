@@ -69,9 +69,11 @@ class MartWishlistScreen extends ConsumerWidget {
                decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                image: item['images'] != null ? DecorationImage(image: NetworkImage((item['images'] as String).split(',').first), fit: BoxFit.cover) : null,
+                image: _getValidImageUrl(item['images']) != null
+                  ? DecorationImage(image: NetworkImage(_getValidImageUrl(item['images'])!), fit: BoxFit.cover)
+                  : null,
                ),
-               child: item['images'] == null ? Center(child: Icon(Icons.image, size: 50, color: Colors.grey[400])) : null,
+               child: _getValidImageUrl(item['images']) == null ? Center(child: Icon(Icons.image, size: 50, color: Colors.grey[400])) : null,
               ),
               Positioned(
                top: 8,
@@ -131,5 +133,13 @@ class MartWishlistScreen extends ConsumerWidget {
     error: (err, stack) => const Center(child: Text(MartConstants.errorLoadingWishlist)),
    ),
   );
+ }
+ String? _getValidImageUrl(dynamic images) {
+  if (images == null || images.toString().isEmpty) return null;
+  final url = images.toString().split(',').first.trim();
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+   return url;
+  }
+  return null;
  }
 }

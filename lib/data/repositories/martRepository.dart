@@ -55,6 +55,8 @@ class MartRepository {
  }
  Future<int> addToWishlist(String userId, String productId) async {
   final db = await dbHelper.database;
+  final existing = await db.query('favorites', where: 'userId = ? AND itemId = ? AND type = ?', whereArgs: [userId, productId, 'product']);
+  if (existing.isNotEmpty) return existing.first['id'] as int;
   return await db.insert('favorites', {'userId': userId, 'itemId': productId, 'type': 'product'});
  }
  Future<List<Map<String, dynamic>>> getWishlist(String userId) async {

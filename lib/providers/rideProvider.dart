@@ -32,10 +32,10 @@ class RideBookingNotifier extends Notifier<Map<String, dynamic>> {
   _calculateEstimates();
  }
  void _calculateEstimates() {
-  final double pickupLat = state['pickupLat'] as double? ?? 0.0;
-  final double pickupLng = state['pickupLng'] as double? ?? 0.0;
-  final double dropoffLat = state['dropoffLat'] as double? ?? 0.0;
-  final double dropoffLng = state['dropoffLng'] as double? ?? 0.0;
+  final double pickupLat = (state['pickupLat'] as num?)?.toDouble() ?? 0.0;
+  final double pickupLng = (state['pickupLng'] as num?)?.toDouble() ?? 0.0;
+  final double dropoffLat = (state['dropoffLat'] as num?)?.toDouble() ?? 0.0;
+  final double dropoffLng = (state['dropoffLng'] as num?)?.toDouble() ?? 0.0;
   double dist = 0.0;
   if (pickupLat != 0 && pickupLng != 0 && dropoffLat != 0 && dropoffLng != 0) {
    dist = ((pickupLat - dropoffLat).abs() + (pickupLng - dropoffLng).abs()) * 111.0;

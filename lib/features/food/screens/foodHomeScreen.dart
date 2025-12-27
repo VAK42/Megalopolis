@@ -25,7 +25,10 @@ class FoodHomeScreen extends ConsumerWidget {
       ),
      ],
     ),
-    actions: [IconButton(icon: const Icon(Icons.favorite_outline), onPressed: () => context.go(Routes.foodFavorites))],
+    actions: [
+     IconButton(icon: const Icon(Icons.shopping_cart_outlined), onPressed: () => context.go(Routes.foodCart)),
+     IconButton(icon: const Icon(Icons.favorite_outline), onPressed: () => context.go(Routes.foodFavorites)),
+    ],
    ),
    body: SingleChildScrollView(
     child: Column(
@@ -125,7 +128,7 @@ class FoodHomeScreen extends ConsumerWidget {
           itemCount: restaurants.length > 5 ? 5 : restaurants.length,
           itemBuilder: (context, index) {
            final restaurant = restaurants[index];
-           return _buildRestaurantCard(context, restaurant['sellerName'] as String? ?? FoodConstants.defaultRestaurant, restaurant['sellerRating']?.toString() ?? '4.5', FoodConstants.defaultDeliveryTime, FoodConstants.freeDelivery, (restaurant['sellerId'] as String?) ?? '0');
+           return _buildRestaurantCard(context, restaurant['sellerName'] as String? ?? FoodConstants.defaultRestaurant, restaurant['sellerRating']?.toString() ?? '4.5', FoodConstants.defaultDeliveryTime, (restaurant['sellerId'] as String?) ?? '0');
           },
          ),
          loading: () => const Center(child: CircularProgressIndicator()),
@@ -189,7 +192,7 @@ class FoodHomeScreen extends ConsumerWidget {
    ),
   );
  }
- Widget _buildRestaurantCard(BuildContext context, String name, String rating, String time, String delivery, String id) {
+ Widget _buildRestaurantCard(BuildContext context, String name, String rating, String time, String id) {
   return GestureDetector(
    onTap: () => context.go('/food/restaurant/$id'),
    child: Card(
@@ -221,11 +224,6 @@ class FoodHomeScreen extends ConsumerWidget {
            const Icon(Icons.access_time, size: 16),
            const SizedBox(width: 4),
            Text(time),
-           const Spacer(),
-           Text(
-            delivery,
-            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-           ),
           ],
          ),
         ],

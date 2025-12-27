@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/routes/routeNames.dart';
 import '../../ride/constants/rideConstants.dart';
 class RideEmergencyScreen extends ConsumerWidget {
  const RideEmergencyScreen({super.key});
@@ -9,7 +10,7 @@ class RideEmergencyScreen extends ConsumerWidget {
  Widget build(BuildContext context, WidgetRef ref) {
   return Scaffold(
    appBar: AppBar(
-    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.rideInProgress)),
     title: const Text(RideConstants.emergencyTitle),
     backgroundColor: AppColors.error,
     foregroundColor: Colors.white,

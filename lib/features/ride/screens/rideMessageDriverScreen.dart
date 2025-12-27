@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appTextField.dart';
 import '../../../providers/rideProvider.dart';
 import '../../ride/constants/rideConstants.dart';
@@ -13,8 +14,8 @@ class RideMessageDriverScreen extends ConsumerStatefulWidget {
 class _RideMessageDriverScreenState extends ConsumerState<RideMessageDriverScreen> {
  final TextEditingController messageController = TextEditingController();
  final List<Map<String, dynamic>> messages = [
-  {'text': 'Hi, I am on my way!', 'isDriver': true, 'time': '10:30 AM'},
-  {'text': 'Great, I am waiting outside.', 'isDriver': false, 'time': '10:31 AM'},
+  {'text': 'Hi, I Am On My Way!', 'isDriver': true, 'time': '10:30 AM'},
+  {'text': 'Great, I Am Waiting Outside.', 'isDriver': false, 'time': '10:31 AM'},
  ];
  @override
  Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class _RideMessageDriverScreenState extends ConsumerState<RideMessageDriverScree
   final driverName = activeRide?['driverName'] ?? RideConstants.driverName;
   return Scaffold(
    appBar: AppBar(
-    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+    leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.rideInProgress)),
     title: Column(
      crossAxisAlignment: CrossAxisAlignment.start,
      children: [

@@ -30,13 +30,13 @@ class DatabaseSeeder {
   await db.rawInsert('''
   INSERT INTO items (id, type, name, description, price, sellerId, categoryId, images, rating, stock, metadata, createdAt)
   VALUES 
-  ('p1', 'product', 'Wireless Noise-Cancelling Headphones', 'Premium Wireless Headphones With Active Noise Cancellation And 30 Hour Battery Life', 249.99, '7', 'electronics', '["https://picsum.photos/400/400?random=101", "https://picsum.photos/400/400?random=102"]', 4.7, 50, '{}', ?),
-  ('p2', 'product', 'Smart Fitness Watch Pro', 'Advanced Fitness Tracker With Heart Rate Monitor, GPS And Sleep Tracking', 349.99, '7', 'electronics', '["https://picsum.photos/400/400?random=103", "https://picsum.photos/400/400?random=104"]', 4.8, 35, '{}', ?),
-  ('p3', 'product', 'Gaming Laptop RTX 4060', 'High Performance Gaming Laptop With RTX 4060 Graphics And 16GB RAM', 1499.99, '7', 'electronics', '["https://picsum.photos/400/400?random=105"]', 4.9, 15, '{}', ?),
-  ('p4', 'product', '4K Ultra HD Smart TV 55"', '55 Inch 4K Smart TV With HDR And Built-In Streaming Apps', 699.99, '7', 'electronics', '["https://picsum.photos/400/400?random=106"]', 4.6, 25, '{}', ?),
-  ('p5', 'product', 'Bluetooth Speaker Portable', 'Waterproof Portable Bluetooth Speaker With 24 Hour Battery', 79.99, '7', 'electronics', '["https://picsum.photos/400/400?random=107"]', 4.5, 100, '{}', ?),
-  ('p6', 'product', 'Wireless Gaming Mouse', 'RGB Gaming Mouse With Programmable Buttons And 16000 DPI', 59.99, '7', 'electronics', '["https://picsum.photos/400/400?random=108"]', 4.4, 80, '{}', ?),
-  ('p7', 'product', 'Mechanical Keyboard RGB', 'Mechanical Gaming Keyboard With RGB Backlight And Brown Switches', 129.99, '7', 'electronics', '["https://picsum.photos/400/400?random=109"]', 4.6, 60, '{}', ?),
+  ('p1', 'product', 'Wireless Noise-Cancelling Headphones', 'Premium Wireless Headphones With Active Noise Cancellation And 30 Hour Battery Life', 249.99, '1', 'electronics', '["https://picsum.photos/400/400?random=101", "https://picsum.photos/400/400?random=102"]', 4.7, 50, '{}', ?),
+  ('p2', 'product', 'Smart Fitness Watch Pro', 'Advanced Fitness Tracker With Heart Rate Monitor, GPS And Sleep Tracking', 349.99, '1', 'electronics', '["https://picsum.photos/400/400?random=103", "https://picsum.photos/400/400?random=104"]', 4.8, 35, '{}', ?),
+  ('p3', 'product', 'Gaming Laptop RTX 4060', 'High Performance Gaming Laptop With RTX 4060 Graphics And 16GB RAM', 1499.99, '1', 'electronics', '["https://picsum.photos/400/400?random=105"]', 4.9, 15, '{}', ?),
+  ('p4', 'product', '4K Ultra HD Smart TV 55"', '55 Inch 4K Smart TV With HDR And Built-In Streaming Apps', 699.99, '1', 'electronics', '["https://picsum.photos/400/400?random=106"]', 4.6, 25, '{}', ?),
+  ('p5', 'product', 'Bluetooth Speaker Portable', 'Waterproof Portable Bluetooth Speaker With 24 Hour Battery', 79.99, '1', 'electronics', '["https://picsum.photos/400/400?random=107"]', 4.5, 100, '{}', ?),
+  ('p6', 'product', 'Wireless Gaming Mouse', 'RGB Gaming Mouse With Programmable Buttons And 16000 DPI', 59.99, '1', 'electronics', '["https://picsum.photos/400/400?random=108"]', 4.4, 80, '{}', ?),
+  ('p7', 'product', 'Mechanical Keyboard RGB', 'Mechanical Gaming Keyboard With RGB Backlight And Brown Switches', 129.99, '1', 'electronics', '["https://picsum.photos/400/400?random=109"]', 4.6, 60, '{}', ?),
   ('p8', 'product', 'Running Shoes Air Max', 'Premium Running Shoes With Air Cushioning For Maximum Comfort', 139.99, '8', 'fashion', '["https://picsum.photos/400/400?random=110", "https://picsum.photos/400/400?random=111"]', 4.7, 120, '{}', ?),
   ('p9', 'product', 'Premium Cotton T-Shirt', 'Soft Cotton T-Shirt In Multiple Colors, Perfect For Casual Wear', 29.99, '8', 'fashion', '["https://picsum.photos/400/400?random=112"]', 4.3, 200, '{}', ?),
   ('p10', 'product', 'Designer Jeans Slim Fit', 'Classic Slim Fit Jeans Made From Premium Denim', 89.99, '8', 'fashion', '["https://picsum.photos/400/400?random=113"]', 4.5, 150, '{}', ?),
@@ -79,13 +79,23 @@ class DatabaseSeeder {
   ('addr4', '3', 'Home', '321 Pine Road, Garden District, Megalopolis City, 12348', 40.7614, -73.9776, 1, 1)
   ''');
   await db.rawInsert('''
-  INSERT INTO promotions (id, title, description, code, discount, startDate, endDate, type, usageCount)
+  INSERT INTO promotions (id, title, description, code, discount, startDate, endDate, type, usageCount, merchantId, createdAt)
   VALUES 
-  ('promo1', 'Welcome Bonus', 'Get 20% Off Your First Order On Any Category', 'WELCOME20', 20.0, ?, ?, 'newUser', 0),
-  ('promo2', 'Food Friday', 'Enjoy 15% Off All Food Orders Every Friday', 'FOOD15', 15.0, ?, ?, 'food', 0),
-  ('promo3', 'Free Delivery', 'Free Delivery On Orders Over Dollar 50', 'FREEDEL50', 5.0, ?, ?, 'delivery', 0),
-  ('promo4', 'Flash Sale', '30% Off Electronics For Limited Time Only', 'FLASH30', 30.0, ?, ?, 'electronics', 0)
-  ''', [now - 86400000, now + 2592000000, now - 86400000, now + 604800000, now - 86400000, now + 31536000000, now, now + 86400000]);
+  ('promo1', 'Welcome Bonus', 'Get 20% Off Your First Order On Any Category', 'WELCOME20', 20.0, ?, ?, 'newUser', 0, NULL, ?),
+  ('promo2', 'Food Friday', 'Enjoy 15% Off All Food Orders Every Friday', 'FOOD15', 15.0, ?, ?, 'food', 0, NULL, ?),
+  ('promo3', 'Free Delivery', 'Free Delivery On Orders Over Dollar 50', 'FREEDEL50', 5.0, ?, ?, 'delivery', 0, NULL, ?),
+  ('promo4', 'Flash Sale', '30% Off Electronics For Limited Time Only', 'FLASH30', 30.0, ?, ?, 'electronics', 0, NULL, ?),
+  ('mpromo1', 'Store Opening Sale', '25% Off All Electronics At Anderson Electronics', 'ANDERSON25', 25.0, ?, ?, 'store', 15, '1', ?),
+  ('mpromo2', 'Bundle Deal', 'Buy Any 2 Products Get 10% Off', 'BUNDLE10', 10.0, ?, ?, 'bundle', 8, '1', ?),
+  ('mpromo3', 'Weekend Special', 'Free Shipping On All Orders This Weekend', 'FREESHIP', 0.0, ?, ?, 'shipping', 22, '1', ?)
+  ''', [now - 86400000, now + 2592000000, now, now - 86400000, now + 604800000, now, now - 86400000, now + 31536000000, now, now, now + 86400000, now, now - 604800000, now + 604800000, now, now - 259200000, now + 1209600000, now, now - 172800000, now + 172800000, now]);
+  await db.rawInsert('''
+  INSERT INTO payouts (merchantId, amount, status, createdAt, processedAt)
+  VALUES 
+  ('1', 500.00, 'Completed', ?, ?),
+  ('1', 750.00, 'Completed', ?, ?),
+  ('1', 1200.00, 'Pending', ?, NULL)
+  ''', [now - 604800000, now - 518400000, now - 259200000, now - 172800000, now - 86400000]);
   await db.rawInsert('''
   INSERT INTO walletCards (id, userId, type, number, holder, expiry, balance)
   VALUES 
@@ -101,13 +111,26 @@ class DatabaseSeeder {
   ('txn3', '2', 'topup', 50.00, 'completed', 'Wallet Reload', ?)
   ''', [now - 604800000, now - 86400000, now - 172800000]);
   await db.rawInsert('''
-  INSERT INTO orders (id, userId, providerId, orderType, items, total, status, address, pickupAddress, dropoffAddress, completedAt, createdAt)
+  INSERT INTO orders (id, userId, driverId, providerId, orderType, rideType, items, total, status, address, pickupAddress, dropoffAddress, completedAt, createdAt)
   VALUES 
-  ('ord1', '1', '9', 'food', 'Food Order #1', 25.50, 'preparing', '123 Main St', NULL, NULL, NULL, ?),
-  ('ord2', '1', '4', 'ride', 'Ride To Downtown', 15.00, 'completed', '123 Main St', 'Central Park', 'Downtown Market', ?, ?),
-  ('ord3', '1', '12', 'service', 'House Cleaning', 75.00, 'completed', '123 Main St', NULL, NULL, ?, ?),
-  ('ord4', '1', '11', 'mart', 'Grocery Order', 45.20, 'outForDelivery', '123 Main St', NULL, NULL, NULL, ?)
-  ''', [now, now - 3600000, now - 7200000, now - 172800000, now - 259200000, now]);
+  ('ord1', '1', NULL, '9', 'food', NULL, 'Food Order #1', 25.50, 'preparing', '123 Main St', NULL, NULL, NULL, ?),
+  ('ord2', '1', '1', NULL, 'ride', 'standard', 'Ride To Downtown', 18.50, 'completed', NULL, '123 Main St, Central Park', 'Downtown Market, 456 Commerce Ave', ?, ?),
+  ('ord3', '1', NULL, '12', 'service', NULL, 'House Cleaning', 75.00, 'completed', '123 Main St', NULL, NULL, ?, ?),
+  ('ord4', '1', NULL, '11', 'mart', NULL, 'Grocery Order', 45.20, 'completed', '123 Main St', NULL, NULL, ?, ?),
+  ('mord1', '2', NULL, '1', 'mart', NULL, 'Wireless Headphones Purchase', 249.99, 'completed', '456 Oak St', NULL, NULL, ?, ?),
+  ('mord2', '3', NULL, '1', 'mart', NULL, 'Gaming Laptop Order', 1499.99, 'completed', '789 Pine Ave', NULL, NULL, ?, ?),
+  ('mord3', '2', NULL, '1', 'mart', NULL, 'Smart Watch Bundle', 349.99, 'completed', '456 Oak St', NULL, NULL, ?, ?),
+  ('mord4', '3', NULL, '1', 'mart', NULL, '4K TV Delivery', 699.99, 'pending', '789 Pine Ave', NULL, NULL, NULL, ?),
+  ('mord5', '2', NULL, '1', 'mart', NULL, 'Electronics Bundle', 189.98, 'completed', '456 Oak St', NULL, NULL, ?, ?),
+  ('ride1', '2', '1', NULL, 'ride', 'standard', 'Morning Commute', 12.50, 'completed', NULL, '789 Oak Ave', '101 Business Park', ?, ?),
+  ('ride2', '3', '1', NULL, 'ride', 'premium', 'Airport Transfer', 45.00, 'completed', NULL, '123 Main St', 'International Airport Terminal 2', ?, ?),
+  ('ride3', '1', '1', NULL, 'ride', 'standard', 'Shopping Trip', 15.75, 'completed', NULL, '123 Main St', 'Mega Mall Center', ?, ?),
+  ('ride4', '2', '1', NULL, 'ride', 'economy', 'Office Ride', 9.50, 'completed', NULL, '456 Elm St', 'Tech Hub Building', ?, ?),
+  ('ride5', '3', '1', NULL, 'ride', 'standard', 'Restaurant Trip', 11.25, 'completed', NULL, '321 Pine St', 'Downtown Restaurant Row', ?, ?),
+  ('ride6', '1', '1', NULL, 'ride', 'premium', 'Concert Pickup', 28.00, 'completed', NULL, 'City Concert Hall', '123 Main St', ?, ?),
+  ('ride7', '2', '1', NULL, 'ride', 'standard', 'Grocery Run', 8.75, 'completed', NULL, '789 Oak Ave', 'Fresh Market Plaza', ?, ?),
+  ('ride8', '3', '1', NULL, 'ride', 'economy', 'Park Visit', 7.50, 'completed', NULL, '555 Maple Dr', 'Central City Park', ?, ?)
+  ''', [now, now - 3600000, now - 7200000, now - 172800000, now - 259200000, now - 86400000, now, now - 86400000, now - 86400000, now - 172800000, now - 172800000, now - 259200000, now - 259200000, now - 345600000, now - 432000000, now - 432000000, now - 1800000, now - 3600000, now - 5400000, now - 7200000, now - 10800000, now - 14400000, now - 21600000, now - 28800000, now - 36000000, now - 43200000, now - 86400000, now - 129600000, now - 172800000, now - 216000000, now - 259200000, now - 302400000]);
   await db.rawInsert('''
   INSERT INTO notifications (id, userId, title, body, type, isRead, createdAt)
   VALUES 
@@ -140,15 +163,28 @@ class DatabaseSeeder {
   VALUES 
   ('rev1', 'item', 'p1', '2', 4.5, 'Great Headphones! Amazing Sound Quality And Battery Life.', NULL, ?),
   ('rev2', 'item', 'f1', '3', 4.0, 'Delicious Burger, But A Bit Pricey For The Size.', NULL, ?),
-  ('rev3', 'driver', '4', '1', 5.0, 'Excellent Driver! Very Professional And Arrived On Time.', NULL, ?),
-  ('rev4', 'item', 's1', '1', 5.0, 'Outstanding Cleaning Service! My House Looks Brand New.', NULL, ?)
-  ''', [now - 172800000, now - 259200000, now - 345600000, now - 432000000]);
+  ('rev3', 'driver', '1', '1', 5.0, 'Excellent Driver! Very Professional And Arrived On Time.', NULL, ?),
+  ('rev4', 'item', 's1', '1', 5.0, 'Outstanding Cleaning Service! My House Looks Brand New.', NULL, ?),
+  ('rev5', 'order', 'ord2', '1', 5.0, 'Perfect Ride! Very Smooth And Professional Driver.', NULL, ?),
+  ('rev6', 'order', 'ride1', '2', 4.5, 'Great Morning Commute. On Time As Always!', NULL, ?),
+  ('rev7', 'order', 'ride2', '3', 5.0, 'Excellent Airport Transfer. Driver Helped With Luggage!', NULL, ?),
+  ('rev8', 'order', 'ride3', '1', 4.5, 'Good Shopping Trip Ride. Clean Car.', NULL, ?),
+  ('rev9', 'order', 'ride4', '2', 5.0, 'Fast And Efficient Office Ride.', NULL, ?),
+  ('rev10', 'order', 'ride5', '3', 4.0, 'Nice Ride To The Restaurant.', NULL, ?),
+  ('rev11', 'order', 'ride6', '1', 5.0, 'Amazing Concert Pickup! Great Music Taste!', NULL, ?),
+  ('rev12', 'order', 'ride7', '2', 4.5, 'Quick Grocery Run. Very Helpful Driver.', NULL, ?),
+  ('mrev1', 'seller', '1', '2', 5.0, 'Amazing Electronics Store! Fast Shipping And Great Products.', NULL, ?),
+  ('mrev2', 'seller', '1', '3', 4.5, 'Excellent Customer Service. Will Buy Again!', NULL, ?),
+  ('mrev3', 'seller', '1', '2', 5.0, 'The Headphones I Bought Are Fantastic. Best Seller!', NULL, ?),
+  ('mrev4', 'seller', '1', '3', 4.0, 'Good Prices But Shipping Took A Bit Long.', NULL, ?),
+  ('mrev5', 'seller', '1', '2', 5.0, 'Top Quality Electronics. Highly Recommended!', NULL, ?)
+  ''', [now - 172800000, now - 259200000, now - 345600000, now - 432000000, now - 3600000, now - 7200000, now - 14400000, now - 28800000, now - 43200000, now - 86400000, now - 129600000, now - 172800000, now - 86400000, now - 172800000, now - 259200000, now - 345600000, now - 432000000]);
   await db.rawInsert('''
   INSERT INTO friends (id, userId, friendId, status, createdAt)
   VALUES 
-  ('friend1', '1', '2', 'accepted', ?),
-  ('friend2', '1', '3', 'accepted', ?),
-  ('friend3', '2', '3', 'accepted', ?)
+  ('friend1', '1', '2', 'Accepted', ?),
+  ('friend2', '1', '3', 'Accepted', ?),
+  ('friend3', '2', '3', 'Accepted', ?)
   ''', [now - 2592000000, now - 1296000000, now - 604800000]);
   await db.rawInsert('''
   INSERT INTO bills (id, userId, provider, accountNumber, billType, amount, dueDate, status, lastPaymentDate, createdAt)
@@ -175,22 +211,23 @@ class DatabaseSeeder {
   ('1', 'Laptop', ?)
   ''', [now - 86400000, now - 172800000, now - 259200000, now - 345600000]);
   await db.rawInsert('''
-  INSERT INTO sellers (id, name, description, avatar, rating, reviewCount, productCount, followerCount, isVerified, createdAt)
+  INSERT INTO sellers (id, name, email, phone, address, description, avatar, rating, reviewCount, productCount, followerCount, isVerified, createdAt)
   VALUES 
-  ('seller1', 'Tech Store', 'Official Electronics Store. Authorized Dealer For Samsung, Apple, Sony, And More. Fast Shipping And Authentic Products Guaranteed.', NULL, 4.8, 1234, 234, 12300, 1, ?),
-  ('seller2', 'Fashion Hub', 'Premium Fashion And Accessories. Latest Trends And Designer Collections.', NULL, 4.6, 856, 189, 8500, 1, ?),
-  ('seller3', 'Home Essentials', 'Quality Home And Kitchen Products. Everything You Need For Your Home.', NULL, 4.5, 432, 156, 5600, 0, ?)
-  ''', [now - 31536000000, now - 15768000000, now - 7884000000]);
+  ('1', 'Anderson Electronics', 'john.anderson@example.com', '+1234567890', '123 Main Street, Downtown, Megalopolis City', 'Premium Electronics And Gadgets. Fast Shipping And Best Prices Guaranteed.', NULL, 4.9, 48, 24, 1200, 1, ?),
+  ('seller1', 'Tech Store', 'tech@store.com', '555-0001', '456 Tech Ave, Megalopolis', 'Official Electronics Store. Authorized Dealer For Samsung, Apple, Sony, And More.', NULL, 4.8, 1234, 234, 12300, 1, ?),
+  ('seller2', 'Fashion Hub', 'fashion@hub.com', '555-0002', '789 Fashion Blvd, Megalopolis', 'Premium Fashion And Accessories. Latest Trends And Designer Collections.', NULL, 4.6, 856, 189, 8500, 1, ?),
+  ('seller3', 'Home Essentials', 'home@essentials.com', '555-0003', '321 Home St, Megalopolis', 'Quality Home And Kitchen Products. Everything You Need For Your Home.', NULL, 4.5, 432, 156, 5600, 0, ?)
+  ''', [now, now - 31536000000, now - 15768000000, now - 7884000000]);
   await db.rawInsert('''
-  INSERT INTO appSettings (key, value, type, updatedAt)
+  INSERT INTO appSettings (userId, key, value, type, updatedAt)
   VALUES 
-  ('maintenanceMode', 'false', 'boolean', ?),
-  ('latestVersion', '2.0.0', 'string', ?),
-  ('minVersion', '1.0.0', 'string', ?),
-  ('maintenanceMessage', 'We Are Performing Scheduled Maintenance!', 'string', ?),
-  ('maintenanceEta', '2 Hours', 'string', ?),
-  ('searchHint', 'Search For Food, Rides, Services...', 'string', ?),
-  ('globalCategories', '[{"label":"Food","icon":"restaurant","route":"/food"},{"label":"Rides","icon":"directions_car","route":"/ride"},{"label":"Shopping","icon":"shopping_bag","route":"/mart"},{"label":"Services","icon":"handyman","route":"/services"},{"label":"Bills","icon":"receipt","route":"/wallet/billPayment"}]', 'json', ?)
+  ('1', 'maintenanceMode', 'false', 'boolean', ?),
+  ('1', 'latestVersion', '2.0.0', 'string', ?),
+  ('1', 'minVersion', '1.0.0', 'string', ?),
+  ('1', 'maintenanceMessage', 'We Are Performing Scheduled Maintenance!', 'string', ?),
+  ('1', 'maintenanceEta', '2 Hours', 'string', ?),
+  ('1', 'searchHint', 'Search For Food, Rides, Services...', 'string', ?),
+  ('1', 'globalCategories', '[{"label":"Food","icon":"restaurant","route":"/food"},{"label":"Rides","icon":"directions_car","route":"/ride"},{"label":"Shopping","icon":"shopping_bag","route":"/mart"},{"label":"Services","icon":"handyman","route":"/services"},{"label":"Bills","icon":"receipt","route":"/wallet/billPayment"}]', 'json', ?)
   ''', [now, now, now, now, now, now, now]);
   await db.rawInsert('''
   INSERT INTO challenges (id, title, description, reward, target, type, createdAt)
@@ -251,26 +288,34 @@ class DatabaseSeeder {
   ('sw8', 100, 0.07, 1, 8, ?)
   ''', [now, now, now, now, now, now, now, now]);
   await db.rawInsert('''
-  INSERT INTO appSettings (key, value, type, updatedAt)
+  INSERT INTO appSettings (userId, key, value, type, updatedAt)
   VALUES 
-  ('appName', 'Megalopolis', 'string', ?),
-  ('appVersion', '1.0.0', 'string', ?),
-  ('currencySymbol', '\$', 'string', ?),
-  ('borderRadius', '12.0', 'double', ?),
-  ('cardBorderRadius', '16.0', 'double', ?),
-  ('paddingSmall', '8.0', 'double', ?),
-  ('paddingMedium', '16.0', 'double', ?),
-  ('paddingLarge', '24.0', 'double', ?),
-  ('iconSizeSmall', '16.0', 'double', ?),
-  ('iconSizeMedium', '24.0', 'double', ?),
-  ('iconSizeLarge', '32.0', 'double', ?),
-  ('elevationLow', '2.0', 'double', ?),
-  ('elevationMedium', '4.0', 'double', ?),
-  ('elevationHigh', '8.0', 'double', ?),
-  ('animationDurationMs', '300', 'integer', ?),
-  ('shimmerDurationMs', '1500', 'integer', ?),
-  ('searchDebounceMs', '500', 'integer', ?)
+  ('1', 'appName', 'Megalopolis', 'string', ?),
+  ('1', 'appVersion', '1.0.0', 'string', ?),
+  ('1', 'currencySymbol', '\$', 'string', ?),
+  ('1', 'borderRadius', '12.0', 'double', ?),
+  ('1', 'cardBorderRadius', '16.0', 'double', ?),
+  ('1', 'paddingSmall', '8.0', 'double', ?),
+  ('1', 'paddingMedium', '16.0', 'double', ?),
+  ('1', 'paddingLarge', '24.0', 'double', ?),
+  ('1', 'iconSizeSmall', '16.0', 'double', ?),
+  ('1', 'iconSizeMedium', '24.0', 'double', ?),
+  ('1', 'iconSizeLarge', '32.0', 'double', ?),
+  ('1', 'elevationLow', '2.0', 'double', ?),
+  ('1', 'elevationMedium', '4.0', 'double', ?),
+  ('1', 'elevationHigh', '8.0', 'double', ?),
+  ('1', 'animationDurationMs', '300', 'integer', ?),
+  ('1', 'shimmerDurationMs', '1500', 'integer', ?),
+  ('1', 'searchDebounceMs', '500', 'integer', ?)
   ''', [now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now]);
+  await db.rawInsert('''
+  INSERT INTO challenges (id, userId, title, description, reward, target, currentProgress, createdAt)
+  VALUES 
+  ('ch1', NULL, 'Complete 10 Rides', 'Take 10 Rides This Month', '\$5 Credit', 10, 3, ?),
+  ('ch2', NULL, 'Order 5 Meals', 'Order Food 5 Times', 'Free Delivery', 5, 2, ?),
+  ('ch3', NULL, 'Share Location 3 Times', 'Share Your Location With Friends', '50 Points', 3, 1, ?),
+  ('ch4', '1', 'Refer A Friend', 'Invite A Friend To Join', '\$10 Bonus', 1, 0, ?)
+  ''', [now, now, now, now]);
   debugPrint('Database Seeded Successfully With Comprehensive Data!');
  }
 }

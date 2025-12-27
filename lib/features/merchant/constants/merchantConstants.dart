@@ -56,4 +56,5 @@ class MerchantConstants {
  static const String statusLabel = 'Status: ';
  static const String validUntil = 'Valid Until ';
  static const String notAvailable = 'N/A';
+ static const String cancel = 'Cancel';
 }

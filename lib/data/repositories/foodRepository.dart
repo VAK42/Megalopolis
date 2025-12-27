@@ -101,13 +101,27 @@ class FoodRepository {
   if (existing.isNotEmpty) return 0;
   return await db.insert('favorites', {'userId': userId, 'itemId': restaurantId, 'type': 'restaurant', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
+ Future<int> addFoodToFavorites(String userId, String itemId) async {
+  final db = await dbHelper.database;
+  final existing = await db.query('favorites', where: 'userId = ? AND itemId = ? AND type = ?', whereArgs: [userId, itemId, 'food'], limit: 1);
+  if (existing.isNotEmpty) return 0;
+  return await db.insert('favorites', {'userId': userId, 'itemId': itemId, 'type': 'food', 'createdAt': DateTime.now().millisecondsSinceEpoch});
+ }
  Future<List<Map<String, dynamic>>> getFavorites(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('favorites', where: 'userId = ? AND type = ?', whereArgs: [userId, 'restaurant']);
+  return await db.rawQuery('SELECT f.*, u.name FROM favorites f LEFT JOIN users u ON f.itemId = u.id WHERE f.userId = ? AND f.type = ?', [userId, 'restaurant']);
+ }
+ Future<List<Map<String, dynamic>>> getFoodFavorites(String userId) async {
+  final db = await dbHelper.database;
+  return await db.rawQuery('SELECT f.*, i.name, i.price, i.description FROM favorites f LEFT JOIN items i ON f.itemId = i.id WHERE f.userId = ? AND f.type = ?', [userId, 'food']);
  }
  Future<int> removeFromFavorites(String userId, String restaurantId) async {
   final db = await dbHelper.database;
   return await db.delete('favorites', where: 'userId = ? AND itemId = ? AND type = ?', whereArgs: [userId, restaurantId, 'restaurant']);
+ }
+ Future<int> removeFoodFromFavorites(String userId, String itemId) async {
+  final db = await dbHelper.database;
+  return await db.delete('favorites', where: 'userId = ? AND itemId = ? AND type = ?', whereArgs: [userId, itemId, 'food']);
  }
  Future<List<Map<String, dynamic>>> getPromotions() async {
   final db = await dbHelper.database;

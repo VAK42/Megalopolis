@@ -19,6 +19,8 @@ class MartHomeScreen extends ConsumerWidget {
        leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
        title: const Text(MartConstants.appTitle),
        actions: [
+        IconButton(icon: const Icon(Icons.favorite_outline), onPressed: () => context.go(Routes.martWishlist)),
+        IconButton(icon: const Icon(Icons.receipt_long), onPressed: () => context.go(Routes.martOrders)),
         IconButton(icon: const Icon(Icons.shopping_cart), onPressed: () => context.go(Routes.martCart)),
         IconButton(icon: const Icon(Icons.notifications), onPressed: () => context.go(Routes.notifications)),
        ],

@@ -43,6 +43,7 @@ class Routes {
   static const adminSupport = '/admin/support';
   static const adminModeration = '/admin/moderation';
   static const adminSettings = '/admin/settings';
+  static const driverHome = '/driver/dashboard';
   static const driverDashboard = '/driver/dashboard';
   static const driverTrips = '/driver/trips';
   static const driverEarnings = '/driver/earnings';
@@ -62,12 +63,14 @@ class Routes {
   static const analyticsCategory = '/analytics/category';
   static const analyticsTrends = '/analytics/trends';
   static const analyticsReports = '/analytics/reports';
+  static const marketingHome = '/marketing/spin';
   static const marketingSpin = '/marketing/spin';
   static const marketingScratch = '/marketing/scratch';
   static const marketingCheckin = '/marketing/checkin';
   static const marketingLeaderboard = '/marketing/leaderboard';
   static const marketingBadges = '/marketing/badges';
   static const marketingBanners = '/marketing/banners';
+  static const merchantHome = '/merchant/dashboard';
   static const merchantDashboard = '/merchant/dashboard';
   static const merchantOrders = '/merchant/orders';
   static const merchantProducts = '/merchant/products';
@@ -85,6 +88,7 @@ class Routes {
   static const settingsNetwork = '/settings/network';
   static const settingsStorage = '/settings/storage';
   static const settingsOffline = '/settings/offline';
+  static const socialHome = '/social/friends';
   static const socialFriends = '/social/friends';
   static const socialAddFriend = '/social/addFriend';
   static const socialProfile = '/social/profile/:userId';

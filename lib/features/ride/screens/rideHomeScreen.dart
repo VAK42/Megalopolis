@@ -28,7 +28,7 @@ class RideHomeScreen extends ConsumerWidget {
          child: Row(
           children: [
            IconButton(
-            icon: const Icon(Icons.menu),
+            icon: const Icon(Icons.home),
             onPressed: () => context.go(Routes.superDashboard),
             style: IconButton.styleFrom(backgroundColor: Colors.white),
            ),

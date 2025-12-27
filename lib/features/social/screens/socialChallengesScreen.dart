@@ -19,7 +19,7 @@ class SocialChallengesScreen extends ConsumerWidget {
     body: const Center(child: Text(SocialConstants.pleaseLoginToViewChallenges)),
    );
   }
-  final challengesAsync = ref.watch(challengesProvider(userId));
+  final challengesAsync = ref.watch(socialChallengesProvider(userId));
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),

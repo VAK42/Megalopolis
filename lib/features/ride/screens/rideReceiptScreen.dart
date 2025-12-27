@@ -11,10 +11,10 @@ class RideReceiptScreen extends ConsumerWidget {
  @override
  Widget build(BuildContext context, WidgetRef ref) {
   final activeRide = ref.watch(activeRideNotifierProvider);
-  final distance = activeRide?['distance'] ?? 5.2;
-  final duration = activeRide?['duration'] ?? 18;
-  final fare = activeRide?['estimatedPrice'] ?? 12.50;
-  final baseFare = activeRide?['baseFare'] ?? 3.50;
+  final double distance = (activeRide?['distance'] as num?)?.toDouble() ?? 5.2;
+  final double duration = (activeRide?['duration'] as num?)?.toDouble() ?? 18.0;
+  final double fare = (activeRide?['estimatedPrice'] as num?)?.toDouble() ?? 12.50;
+  final double baseFare = (activeRide?['baseFare'] as num?)?.toDouble() ?? 3.50;
   final pickup = activeRide?['pickupLocation'] ?? RideConstants.currentLocation;
   final dropoff = activeRide?['dropoffLocation'] ?? RideConstants.selectedDestination;
   return Scaffold(
@@ -65,10 +65,14 @@ class RideReceiptScreen extends ConsumerWidget {
    child: Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-     Text(
-      label,
-      style: TextStyle(fontSize: isTotal ? 16 : 14, fontWeight: isTotal ? FontWeight.bold : FontWeight.normal),
+     Expanded(
+      child: Text(
+       label,
+       style: TextStyle(fontSize: isTotal ? 16 : 14, fontWeight: isTotal ? FontWeight.bold : FontWeight.normal),
+       overflow: TextOverflow.ellipsis,
+      ),
      ),
+     const SizedBox(width: 8),
      Text(
       value,
       style: TextStyle(fontSize: isTotal ? 18 : 14, fontWeight: FontWeight.bold, color: isTotal ? AppColors.primary : null),

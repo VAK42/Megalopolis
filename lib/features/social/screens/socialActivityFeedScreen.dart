@@ -50,7 +50,7 @@ class SocialActivityFeedScreen extends ConsumerWidget {
             child: Column(
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
-              Text(activity['targetType']?.toString().toUpperCase() ?? SocialConstants.activity, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(_toTitleCase(activity['targetType']?.toString() ?? SocialConstants.activity), style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(activity['comment'] ?? SocialConstants.performedAnAction),
              ],
             ),
@@ -66,5 +66,9 @@ class SocialActivityFeedScreen extends ConsumerWidget {
     error: (_, __) => const Center(child: Text(SocialConstants.errorLoadingActivity)),
    ),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text[0].toUpperCase() + text.substring(1);
  }
 }

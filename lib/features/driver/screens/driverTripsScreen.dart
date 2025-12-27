@@ -42,7 +42,7 @@ class DriverTripsScreen extends ConsumerWidget {
             decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(24)),
             child: const Icon(Icons.directions_car, color: AppColors.primary),
            ),
-           title: Text('${DriverConstants.tripPrefix}${trip['id'].toString().substring(0, 8)}'),
+           title: Text('${trip['pickupAddress']?.toString().split(',').first ?? 'Pickup'} → ${trip['dropoffAddress']?.toString().split(',').first ?? 'Dropoff'}'),
            subtitle: Text(DateTime.fromMillisecondsSinceEpoch(trip['createdAt'] as int).toString().substring(0, 16)),
            trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +53,7 @@ class DriverTripsScreen extends ConsumerWidget {
               style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.success),
              ),
              const SizedBox(height: 4),
-             Text(trip['status'] as String, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+             Text(_toTitleCase(trip['status'] as String), style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
             ],
            ),
           ),
@@ -64,5 +64,9 @@ class DriverTripsScreen extends ConsumerWidget {
     error: (e, _) => Center(child: Text('${DriverConstants.errorPrefix}$e')),
    ),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text.split(' ').map((word) => word.isEmpty ? '' : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}').join(' ');
  }
 }

@@ -58,6 +58,7 @@ class FoodConstants {
  static const String paymentTitle = 'Payment Method';
  static const String noPaymentMethods = 'No Payment Methods';
  static const String addPaymentMethod = 'Add Payment';
+ static const String defaultDeliveryAddress = 'Delivery Address';
  static const String promoTitle = 'Apply Promo Code';
  static const String promoHint = 'Enter Promo Code';
  static const String applyPromo = 'Apply';
@@ -71,6 +72,11 @@ class FoodConstants {
  static const String favoritesTitle = 'Favorites';
  static const String noFavorites = 'No Favorites Yet';
  static const String removedFromFavorites = 'Removed From Favorites';
+ static const String favoriteRestaurants = 'Favorite Restaurants';
+ static const String favoriteFoods = 'Favorite Foods';
+ static const String noFavoriteRestaurants = 'No Favorite Restaurants';
+ static const String noFavoriteFoods = 'No Favorite Foods';
+ static const String addedToFavorites = 'Added To Favorites';
  static const String groupOrderTitle = 'Group Order';
  static const String inviteFriends = 'Invite Friends To Order';
  static const String shareLink = 'Share Link';

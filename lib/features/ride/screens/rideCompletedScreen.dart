@@ -11,9 +11,9 @@ class RideCompletedScreen extends ConsumerWidget {
  @override
  Widget build(BuildContext context, WidgetRef ref) {
   final bookingState = ref.watch(rideBookingProvider);
-  final distance = bookingState['distance'] ?? 5.2;
-  final duration = bookingState['duration'] ?? 18;
-  final fare = bookingState['estimatedPrice'] ?? 12.50;
+  final double distance = (bookingState['distance'] as num?)?.toDouble() ?? 5.2;
+  final double duration = (bookingState['duration'] as num?)?.toDouble() ?? 18.0;
+  final double fare = (bookingState['estimatedPrice'] as num?)?.toDouble() ?? 12.50;
   return Scaffold(
    body: SafeArea(
     child: Padding(

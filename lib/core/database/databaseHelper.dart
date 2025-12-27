@@ -26,6 +26,7 @@ class DatabaseHelper {
   phone TEXT,
   avatar TEXT,
   rating REAL DEFAULT 0.0,
+  balance REAL DEFAULT 0.0,
   status TEXT DEFAULT 'active',
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL
@@ -52,9 +53,13 @@ class DatabaseHelper {
   CREATE TABLE orders (
   id TEXT PRIMARY KEY,
   orderType TEXT NOT NULL,
+  rideType TEXT,
   userId TEXT NOT NULL,
   driverId TEXT,
   providerId TEXT,
+  serviceId TEXT,
+  serviceName TEXT,
+  scheduledAt INTEGER,
   status TEXT NOT NULL,
   items TEXT,
   total REAL NOT NULL,
@@ -175,7 +180,22 @@ class DatabaseHelper {
   startDate INTEGER,
   endDate INTEGER,
   type TEXT DEFAULT 'general',
-  usageCount INTEGER DEFAULT 0
+  merchantId TEXT,
+  usageCount INTEGER DEFAULT 0,
+  isActive INTEGER DEFAULT 1,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (merchantId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE payouts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  merchantId TEXT NOT NULL,
+  amount REAL NOT NULL,
+  status TEXT DEFAULT 'pending',
+  createdAt INTEGER NOT NULL,
+  processedAt INTEGER,
+  FOREIGN KEY (merchantId) REFERENCES users (id)
   )
   ''');
   await db.execute('''
@@ -238,17 +258,6 @@ class DatabaseHelper {
   )
   ''');
   await db.execute('''
-  CREATE TABLE favorites (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  userId TEXT NOT NULL,
-  itemId TEXT NOT NULL,
-  type TEXT NOT NULL,
-  createdAt INTEGER NOT NULL,
-  FOREIGN KEY (userId) REFERENCES users (id),
-  FOREIGN KEY (itemId) REFERENCES items (id)
-  )
-  ''');
-  await db.execute('''
   CREATE TABLE bills (
   id TEXT PRIMARY KEY,
   userId TEXT NOT NULL,
@@ -300,6 +309,9 @@ class DatabaseHelper {
   CREATE TABLE sellers (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
   description TEXT,
   avatar TEXT,
   rating REAL DEFAULT 0.0,
@@ -312,21 +324,27 @@ class DatabaseHelper {
   ''');
   await db.execute('''
   CREATE TABLE appSettings (
-  key TEXT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userId TEXT NOT NULL,
+  key TEXT NOT NULL,
   value TEXT NOT NULL,
   type TEXT NOT NULL,
-  updatedAt INTEGER NOT NULL
+  updatedAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
   )
   ''');
   await db.execute('''
   CREATE TABLE challenges (
   id TEXT PRIMARY KEY,
+  userId TEXT,
   title TEXT NOT NULL,
   description TEXT,
   reward TEXT,
-  target INTEGER NOT NULL,
-  type TEXT NOT NULL,
-  createdAt INTEGER NOT NULL
+  target INTEGER NOT NULL DEFAULT 100,
+  currentProgress INTEGER DEFAULT 0,
+  type TEXT,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
   )
   ''');
   await db.execute('''
@@ -394,6 +412,77 @@ class DatabaseHelper {
   isActive INTEGER DEFAULT 1,
   sortOrder INTEGER DEFAULT 0,
   createdAt INTEGER NOT NULL
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE scratchCards (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  reward REAL DEFAULT 0.0,
+  isScratched INTEGER DEFAULT 0,
+  claimedAt INTEGER,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE checkIns (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  checkInDate INTEGER NOT NULL,
+  reward REAL DEFAULT 0.0,
+  streak INTEGER DEFAULT 1,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE badges (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  icon TEXT,
+  earnedAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE gifts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  fromUserId TEXT NOT NULL,
+  toUserId TEXT NOT NULL,
+  giftType TEXT NOT NULL,
+  amount REAL NOT NULL,
+  message TEXT,
+  sentAt TEXT NOT NULL,
+  status TEXT DEFAULT 'sent',
+  FOREIGN KEY (fromUserId) REFERENCES users (id),
+  FOREIGN KEY (toUserId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE expenseSplits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userId TEXT NOT NULL,
+  friendIds TEXT NOT NULL,
+  amount REAL NOT NULL,
+  description TEXT,
+  createdAt TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE locationShares (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userId TEXT NOT NULL,
+  friendIds TEXT NOT NULL,
+  lat REAL NOT NULL,
+  lng REAL NOT NULL,
+  sharedAt TEXT NOT NULL,
+  isActive INTEGER DEFAULT 1,
+  FOREIGN KEY (userId) REFERENCES users (id)
   )
   ''');
  }

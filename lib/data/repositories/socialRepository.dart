@@ -4,12 +4,11 @@ class SocialRepository {
  Future<List<Map<String, dynamic>>> getFriends(String userId) async {
   final db = await dbHelper.database;
   return await db.rawQuery(
-   '''
+  '''
   SELECT u.* FROM users u
   JOIN friends f ON (f.friendId = u.id OR f.userId = u.id)
   WHERE (f.userId = ? OR f.friendId = ?) AND u.id != ?
- ''',
-   [userId, userId, userId],
+  ''', [userId, userId, userId],
   );
  }
  Future<List<Map<String, dynamic>>> getActivityFeed(String userId) async {
@@ -18,6 +17,8 @@ class SocialRepository {
  }
  Future<int> addFriend(String userId, String friendId) async {
   final db = await dbHelper.database;
+  final existing = await db.query('friends', where: '(userId = ? AND friendId = ?) OR (userId = ? AND friendId = ?)', whereArgs: [userId, friendId, friendId, userId], limit: 1);
+  if (existing.isNotEmpty) return -1;
   return await db.insert('friends', {'id': DateTime.now().millisecondsSinceEpoch.toString(), 'userId': userId, 'friendId': friendId, 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<int> removeFriend(String userId, String friendId) async {

@@ -43,7 +43,23 @@ class ServiceBookingNotifier extends Notifier<Map<String, dynamic>> {
  }
  Future<int?> bookService(String userId) async {
   try {
-   final booking = {...state, 'userId': userId, 'orderType': 'service', 'status': 'pending', 'createdAt': DateTime.now().millisecondsSinceEpoch};
+   final now = DateTime.now().millisecondsSinceEpoch;
+   final scheduledAt = state['scheduledAt'] != null 
+     ? (state['scheduledAt'] is String ? DateTime.parse(state['scheduledAt']).millisecondsSinceEpoch : state['scheduledAt'])
+     : now;
+   final booking = {
+    'id': 'svc${now}$userId',
+    'userId': userId,
+    'orderType': 'service',
+    'providerId': state['providerId'],
+    'serviceId': state['serviceId'] ?? '',
+    'serviceName': state['serviceName'] ?? 'Service Booking',
+    'total': (state['price'] as num?)?.toDouble() ?? 50.0,
+    'scheduledAt': scheduledAt,
+    'address': state['address'] ?? '',
+    'status': 'pending',
+    'createdAt': now,
+   };
    final id = await _repository.bookService(booking);
    state = {};
    return id;

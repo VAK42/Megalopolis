@@ -60,7 +60,7 @@ class FoodOrderPlacedScreen extends ConsumerWidget {
           ),
          ).animate().fadeIn(delay: 900.ms),
          const Spacer(),
-         AppButton(text: FoodConstants.trackOrder, onPressed: () => context.go('${Routes.foodTrackingFindingDriver}/$orderId'), icon: Icons.location_on).animate().fadeIn(delay: 1200.ms),
+         AppButton(text: FoodConstants.trackOrder, onPressed: () => context.go('/food/tracking/$orderId/findingDriver'), icon: Icons.location_on).animate().fadeIn(delay: 1200.ms),
          const SizedBox(height: 12),
          AppButton(text: FoodConstants.backToHome, onPressed: () => context.go(Routes.foodHome), isOutline: true).animate().fadeIn(delay: 1400.ms),
         ],

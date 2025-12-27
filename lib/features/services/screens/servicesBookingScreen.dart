@@ -38,47 +38,34 @@ class _ServicesBookingScreenState extends ConsumerState<ServicesBookingScreen> {
     child: Column(
      crossAxisAlignment: CrossAxisAlignment.start,
      children: [
+      const Text(ServicesConstants.selectService, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
       Container(
        padding: const EdgeInsets.all(16),
-       decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
+       decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+       ),
        child: Row(
         children: [
          Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(12)),
-          child: const Icon(Icons.person, size: 30, color: Colors.white),
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(8)),
+          child: const Icon(Icons.cleaning_services, color: Colors.white),
          ),
          const SizedBox(width: 12),
          Expanded(
           child: Column(
            crossAxisAlignment: CrossAxisAlignment.start,
            children: [
-            Text(providerName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            Row(
-             children: [
-              const Icon(Icons.star, size: 14, color: Colors.amber),
-              const SizedBox(width: 4),
-              Text('${bookingState['providerRating'] ?? 4.9}', style: const TextStyle(fontSize: 12)),
-             ],
-            ),
+            Text(serviceName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text('\$${(servicePrice is num ? servicePrice : 50.0).toStringAsFixed(2)}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
            ],
           ),
          ),
         ],
        ),
-      ),
-      const SizedBox(height: 24),
-      const Text(ServicesConstants.selectService, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-      const SizedBox(height: 12),
-      DropdownButtonFormField<String>(
-       initialValue: serviceName,
-       decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        prefixIcon: const Icon(Icons.cleaning_services),
-       ),
-       items: services.map((service) => DropdownMenuItem(value: service, child: Text(service))).toList(),
-       onChanged: (initialValue) => setState(() => selectedService = initialValue!),
       ),
       const SizedBox(height: 24),
       const Text(ServicesConstants.selectDate, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -187,10 +174,15 @@ class _ServicesBookingScreenState extends ConsumerState<ServicesBookingScreen> {
       AppButton(
        text: ServicesConstants.confirmBooking,
        onPressed: () async {
-        final userId = ref.read(currentUserIdProvider) ?? 'user1';
+        final userId = ref.read(currentUserIdProvider) ?? '1';
+        final bookingState = ref.read(serviceBookingProvider);
+        if (bookingState['serviceName'] == null) {
+         ref.read(serviceBookingProvider.notifier).setService('', selectedService, servicePrice is num ? servicePrice.toDouble() : 50.0);
+        }
         ref.read(serviceBookingProvider.notifier).setDateTime(selectedDate);
         ref.read(serviceBookingProvider.notifier).setAddress(addressController.text);
         await ref.read(serviceBookingProvider.notifier).bookService(userId);
+        ref.invalidate(serviceBookingsProvider(userId));
         if (mounted) context.go(Routes.servicesBookingConfirmed);
        },
        icon: Icons.check,

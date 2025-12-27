@@ -16,8 +16,10 @@ class ServicesHomeScreen extends ConsumerWidget {
      slivers: [
       SliverAppBar(
        floating: true,
+       leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
        title: const Text(ServicesConstants.servicesTitle),
        actions: [
+        IconButton(icon: const Icon(Icons.history), onPressed: () => context.go(Routes.servicesHistory)),
         IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () => context.go(Routes.notifications)),
         IconButton(icon: const Icon(Icons.search), onPressed: () => context.go(Routes.servicesSearch)),
        ],

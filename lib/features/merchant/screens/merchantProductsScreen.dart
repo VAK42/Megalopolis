@@ -38,7 +38,7 @@ class MerchantProductsScreen extends ConsumerWidget {
            title: const Text(MerchantConstants.deleteProductButton),
            content: Text('${product['name']}?'),
            actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(MerchantConstants.noProductsFound)),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(MerchantConstants.cancel)),
             TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text(MerchantConstants.deleteProductButton)),
            ],
           ),
@@ -75,7 +75,7 @@ class MerchantProductsScreen extends ConsumerWidget {
                 title: const Text(MerchantConstants.deleteProductButton),
                 content: Text('${product['name']}?'),
                 actions: [
-                 TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(MerchantConstants.noProductsFound)),
+                 TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(MerchantConstants.cancel)),
                  TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text(MerchantConstants.deleteProductButton)),
                 ],
                ),

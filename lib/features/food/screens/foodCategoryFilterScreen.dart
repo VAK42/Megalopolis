@@ -14,7 +14,7 @@ class FoodCategoryFilterScreen extends ConsumerWidget {
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.foodHome)),
-    title: Text(category.toUpperCase()),
+    title: Text(_toTitleCase(category)),
     actions: [IconButton(icon: const Icon(Icons.tune), onPressed: () {})],
    ),
    body: Column(
@@ -93,5 +93,12 @@ class FoodCategoryFilterScreen extends ConsumerWidget {
    label: Text(label, style: const TextStyle(fontSize: 12)),
    style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
   );
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text.split(' ').map((word) {
+   if (word.isEmpty) return word;
+   return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  }).join(' ');
  }
 }

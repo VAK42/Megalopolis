@@ -119,9 +119,11 @@ class _MartCheckoutScreenState extends ConsumerState<MartCheckoutScreen> {
          text: MartConstants.placeOrder,
          onPressed: () async {
           if (_formKey.currentState?.validate() == true) {
-           final order = {'userId': userId, 'total': total, 'status': MartConstants.processing, 'orderType': 'mart', 'address': _addressController.text, 'paymentMethod': _selectedPayment, 'createdAt': DateTime.now().millisecondsSinceEpoch};
+           final orderId = 'Mart${DateTime.now().millisecondsSinceEpoch}';
+           final order = {'id': orderId, 'userId': userId, 'total': total, 'status': MartConstants.processing, 'orderType': 'mart', 'address': _addressController.text, 'paymentMethod': _selectedPayment, 'createdAt': DateTime.now().millisecondsSinceEpoch};
            await ref.read(martRepositoryProvider).placeOrder(order);
            await ref.read(martCartProvider(userId).notifier).clearCart();
+           ref.invalidate(martOrdersProvider(userId));
            if (context.mounted) context.go(Routes.martOrderPlaced);
           }
          },

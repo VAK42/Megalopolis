@@ -23,9 +23,15 @@ class MerchantPayoutsScreen extends ConsumerWidget {
        children: [
         const Text(MerchantConstants.availableBalance, style: TextStyle(color: Colors.white70)),
         const SizedBox(height: 8),
-        const Text(
-         '\$2,345.00',
-         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+        Consumer(
+         builder: (context, ref, child) {
+          final statsAsync = ref.watch(merchantStatsProvider(merchantId));
+          return statsAsync.when(
+           data: (stats) => Text('\$${(stats['totalRevenue'] as num?)?.toStringAsFixed(2) ?? '0.00'}', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+           loading: () => const Text('\$0.00', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+           error: (e, s) => const Text('\$0.00', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+          );
+         },
         ),
         const SizedBox(height: 16),
         ElevatedButton(
@@ -42,7 +48,7 @@ class MerchantPayoutsScreen extends ConsumerWidget {
               decoration: const InputDecoration(prefixText: '\$'),
              ),
              actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(MerchantConstants.noPayoutHistory)),
+              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(MerchantConstants.cancel)),
               TextButton(
                onPressed: () {
                 final val = double.tryParse(controller.text);
@@ -76,7 +82,9 @@ class MerchantPayoutsScreen extends ConsumerWidget {
          itemCount: payouts.length,
          itemBuilder: (context, index) {
           final payout = payouts[index];
-          final isPending = payout['status'] == MerchantConstants.pending;
+          final status = payout['status'].toString();
+          final displayStatus = status.isNotEmpty ? status[0].toUpperCase() + status.substring(1) : status;
+          final isPending = status == 'pending';
           return Dismissible(
            key: Key(payout['id'].toString()),
            direction: isPending ? DismissDirection.endToStart : DismissDirection.none,
@@ -103,7 +111,7 @@ class MerchantPayoutsScreen extends ConsumerWidget {
                 '-\$${(payout['amount'] as num).toStringAsFixed(2)}',
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.error),
                ),
-               Text(payout['status'] as String, style: TextStyle(fontSize: 12, color: (payout['status'] == MerchantConstants.completed) ? Colors.green : Colors.orange)),
+               Text(displayStatus, style: TextStyle(fontSize: 12, color: (status == 'completed') ? Colors.green : Colors.orange)),
               ],
              ),
             ),

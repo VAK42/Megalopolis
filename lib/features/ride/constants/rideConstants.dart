@@ -16,6 +16,11 @@ class RideConstants {
  static const String rentalTitle = 'Rentals';
  static const String savedPlacesTitle = 'Saved Places';
  static const String shareRideTitle = 'Share Ride';
+ static const String home = 'Home';
+ static const String work = 'Work';
+ static const String defaultHomeAddress = '123 Home Street';
+ static const String defaultWorkAddress = '456 Office Blvd';
+ static const String saved = 'Saved';
  static const String noRidesFound = 'No Rides Found';
  static const String noDriversFound = 'No Drivers Available Nearby';
  static const String searchingForDriver = 'Searching For Nearby Drivers...';

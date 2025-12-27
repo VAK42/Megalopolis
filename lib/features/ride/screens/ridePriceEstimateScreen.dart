@@ -13,16 +13,16 @@ class RidePriceEstimateScreen extends ConsumerWidget {
  @override
  Widget build(BuildContext context, WidgetRef ref) {
   final bookingState = ref.watch(rideBookingProvider);
-  final distance = bookingState['distance'] ?? 0.0;
-  final duration = bookingState['duration'] ?? 0;
+  final double distance = (bookingState['distance'] as num?)?.toDouble() ?? 0.0;
+  final double duration = (bookingState['duration'] as num?)?.toDouble() ?? 0.0;
   final rideType = bookingState['rideType'] ?? 'RideEco';
   double multiplier = 1.0;
   if (rideType == 'RidePremium') multiplier = 1.5;
   if (rideType == 'RideXL') multiplier = 1.3;
-  final baseFare = (bookingState['baseFare'] ?? 3.50) * multiplier;
-  final distanceFare = (distance * 1.5) * multiplier;
-  final timeFare = (duration * 0.2) * multiplier;
-  final totalFare = baseFare + distanceFare + timeFare;
+  final double baseFare = ((bookingState['baseFare'] as num?)?.toDouble() ?? 3.50) * multiplier;
+  final double distanceFare = (distance * 1.5) * multiplier;
+  final double timeFare = (duration * 0.2) * multiplier;
+  final double totalFare = baseFare + distanceFare + timeFare;
   return Scaffold(
    body: Stack(
     children: [

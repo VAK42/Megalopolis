@@ -37,7 +37,15 @@ class MerchantRepository {
   for (var o in orders) {
    revenue += (o['total'] as num).toDouble();
   }
-  return {'totalOrders': orders.length, 'totalRevenue': revenue};
+  final products = await db.query('items', where: 'sellerId = ?', whereArgs: [merchantId]);
+  final sellerResult = await db.query('sellers', where: 'id = ?', whereArgs: [merchantId]);
+  final seller = sellerResult.isNotEmpty ? sellerResult.first : {};
+  return {
+   'totalOrders': orders.length,
+   'totalRevenue': revenue,
+   'totalProducts': products.length,
+   'averageRating': (seller['rating'] as num?)?.toDouble() ?? 0.0
+  };
  }
  Future<List<Map<String, dynamic>>> getMerchantPayouts(String merchantId) async {
   final db = await dbHelper.database;

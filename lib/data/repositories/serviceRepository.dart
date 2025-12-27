@@ -27,6 +27,17 @@ class ServiceRepository {
  }
  Future<List<Map<String, dynamic>>> getProviders(String category) async {
   final db = await dbHelper.database;
+  if (category.isEmpty) {
+   return await db.rawQuery(
+   '''
+   SELECT i.sellerId, u.name as sellerName, u.rating as sellerRating 
+   FROM items i
+   JOIN users u ON i.sellerId = u.id
+   WHERE i.type = 'service'
+   GROUP BY i.sellerId
+   ''',
+   );
+  }
   return await db.rawQuery(
   '''
   SELECT i.sellerId, u.name as sellerName, u.rating as sellerRating 

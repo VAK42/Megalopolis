@@ -12,8 +12,8 @@ class RideSelectVehicleScreen extends ConsumerWidget {
   final bookingState = ref.watch(rideBookingProvider);
   final pickup = bookingState['pickupLocation'] ?? RideConstants.currentLocation;
   final dropoff = bookingState['dropoffLocation'] ?? RideConstants.selectedDestination;
-  final double distance = bookingState['distance'] ?? 0.0;
-  final double duration = bookingState['duration'] ?? 0.0;
+  final double distance = (bookingState['distance'] as num?)?.toDouble() ?? 0.0;
+  final double duration = (bookingState['duration'] as num?)?.toDouble() ?? 0.0;
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go(Routes.ridePickLocation)),

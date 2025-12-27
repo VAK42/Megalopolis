@@ -45,24 +45,34 @@ class _SocialAddFriendScreenState extends ConsumerState<SocialAddFriendScreen> {
         return ListView.builder(
          padding: const EdgeInsets.symmetric(horizontal: 16),
          itemCount: users.length,
-         itemBuilder: (c, i) => Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: ListTile(
-           leading: CircleAvatar(
-            backgroundColor: AppColors.primary,
-            child: Text(users[i]['name']?.toString().substring(0, 1).toUpperCase() ?? 'U', style: const TextStyle(color: Colors.white)),
+         itemBuilder: (c, i) {
+          final avatar = users[i]['avatar']?.toString();
+          return Card(
+           margin: const EdgeInsets.only(bottom: 12),
+           child: ListTile(
+            leading: CircleAvatar(
+             backgroundColor: AppColors.primary,
+             backgroundImage: avatar != null && avatar.isNotEmpty ? NetworkImage(avatar) : null,
+             child: avatar == null || avatar.isEmpty ? Text(users[i]['name']?.toString().substring(0, 1).toUpperCase() ?? 'U', style: const TextStyle(color: Colors.white)) : null,
+            ),
+            title: Text(users[i]['name']?.toString() ?? SocialConstants.user),
+            trailing: ElevatedButton(
+             onPressed: () async {
+              final result = await ref.read(socialRepositoryProvider).addFriend(userId, users[i]['id']?.toString() ?? '');
+              ref.invalidate(friendsProvider);
+              if (mounted) {
+               if (result == -1) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(SocialConstants.alreadyFriends)));
+               } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(SocialConstants.friendAdded)));
+               }
+              }
+             },
+             child: const Text(SocialConstants.add),
+            ),
            ),
-           title: Text(users[i]['name']?.toString() ?? SocialConstants.user),
-           trailing: ElevatedButton(
-            onPressed: () async {
-             await ref.read(socialRepositoryProvider).addFriend(userId, users[i]['id']?.toString() ?? '');
-             ref.invalidate(friendsProvider);
-             if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(SocialConstants.friendAdded)));
-            },
-            child: const Text(SocialConstants.add),
-           ),
-          ),
-         ),
+          );
+         },
         );
        },
        loading: () => const Center(child: CircularProgressIndicator()),

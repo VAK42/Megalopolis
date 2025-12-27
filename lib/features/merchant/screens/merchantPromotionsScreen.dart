@@ -43,7 +43,7 @@ class MerchantPromotionsScreen extends ConsumerWidget {
          margin: const EdgeInsets.only(bottom: 12),
          child: ListTile(
           title: Text(promo['title'] as String),
-          subtitle: Text('${MerchantConstants.validUntil}${DateFormat('MMM dd, yyyy').format(DateTime.fromMillisecondsSinceEpoch(promo['expiresAt'] as int))}'),
+          subtitle: Text('${MerchantConstants.validUntil}${DateFormat('MMM dd, yyyy').format(DateTime.fromMillisecondsSinceEpoch(promo['endDate'] as int))}'),
           trailing: Switch(
            value: promo['isActive'] == 1,
            activeThumbColor: AppColors.primary,

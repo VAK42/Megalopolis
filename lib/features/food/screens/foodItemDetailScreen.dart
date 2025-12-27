@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../providers/foodProvider.dart';
+import '../../../providers/authProvider.dart';
 import '../constants/foodConstants.dart';
 class FoodItemDetailScreen extends ConsumerWidget {
  final String itemId;
@@ -9,6 +10,8 @@ class FoodItemDetailScreen extends ConsumerWidget {
  @override
  Widget build(BuildContext context, WidgetRef ref) {
   final itemAsync = ref.watch(foodItemProvider(itemId));
+  final userIdStr = ref.watch(currentUserIdProvider) ?? '1';
+  final userId = int.tryParse(userIdStr) ?? 1;
   return Scaffold(
    body: itemAsync.when(
     data: (item) {
@@ -20,6 +23,17 @@ class FoodItemDetailScreen extends ConsumerWidget {
        SliverAppBar(
         expandedHeight: 250,
         pinned: true,
+        actions: [
+         IconButton(
+          icon: const Icon(Icons.favorite_border),
+          onPressed: () async {
+           await ref.read(foodItemFavoritesProvider(userId).notifier).addFavorite(itemId);
+           if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(FoodConstants.addedToFavorites)));
+           }
+          },
+         ),
+        ],
         flexibleSpace: FlexibleSpaceBar(
          background: Container(
           decoration: BoxDecoration(gradient: AppColors.primaryGradient),
@@ -39,10 +53,7 @@ class FoodItemDetailScreen extends ConsumerWidget {
            const SizedBox(height: 16),
            Row(
             children: [
-             Text(
-              '\$${item['price'] ?? 0}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
-             ),
+             Text('\$${item['price'] ?? 0}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary)),
              const Spacer(),
              Row(
               children: [
@@ -58,7 +69,7 @@ class FoodItemDetailScreen extends ConsumerWidget {
             width: double.infinity,
             child: ElevatedButton(
              onPressed: () async {
-              await ref.read(foodCartProvider('1').notifier).addItem(itemId, 1);
+              await ref.read(foodCartProvider(userIdStr).notifier).addItem(itemId, 1);
               if (context.mounted) {
                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(FoodConstants.addToCart)));
               }

@@ -105,11 +105,11 @@ class FoodLoyaltyScreen extends ConsumerWidget {
  }
  String _nextTierName(String current) {
   switch (current) {
-   case 'Bronze':
+   case FoodConstants.bronze:
     return FoodConstants.silver;
-   case 'Silver':
+   case FoodConstants.silver:
     return FoodConstants.gold;
-   case 'Gold':
+   case FoodConstants.gold:
     return FoodConstants.platinum;
    default:
     return FoodConstants.next;

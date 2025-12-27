@@ -49,6 +49,7 @@ class SocialConstants {
  static const String sendGiftButton = 'Send Gift';
  static const String giftSent = 'Gift Sent';
  static const String friendAdded = 'Friend Added';
+ static const String alreadyFriends = 'Already Friends';
  static const String friendRemoved = 'Friend Removed';
  static const String viewProfile = 'View Profile';
  static const String editProfile = 'Edit Profile';

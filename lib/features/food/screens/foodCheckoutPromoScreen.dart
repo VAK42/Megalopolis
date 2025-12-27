@@ -40,13 +40,13 @@ class _FoodCheckoutPromoScreenState extends ConsumerState<FoodCheckoutPromoScree
   }
   final total = cartItems.fold<double>(0, (sum, item) => sum + (((item['price'] ?? 0) as num) * ((item['quantity'] ?? 1) as int)));
   final order = {
-   'id': 'food_${DateTime.now().millisecondsSinceEpoch}',
+   'id': 'Food${DateTime.now().millisecondsSinceEpoch}',
    'userId': userId,
    'total': total,
    'status': FoodConstants.statusPending,
    'orderType': 'food',
-   'address': 'Delivery Address',
-   'paymentMethod': 'Cash On Delivery',
+   'address': FoodConstants.defaultDeliveryAddress,
+   'paymentMethod': FoodConstants.cashOnDelivery,
    'promoCode': appliedPromo,
    'createdAt': DateTime.now().millisecondsSinceEpoch,
   };
@@ -78,10 +78,9 @@ class _FoodCheckoutPromoScreenState extends ConsumerState<FoodCheckoutPromoScree
            suffixIcon: promoValid ? const Icon(Icons.check_circle, color: AppColors.success) : null,
           ),
           textCapitalization: TextCapitalization.characters,
+          onSubmitted: (_) => _checkPromo(),
          ),
         ),
-        const SizedBox(width: 8),
-        ElevatedButton(onPressed: _checkPromo, child: const Text(FoodConstants.check)),
        ],
       ),
      ),

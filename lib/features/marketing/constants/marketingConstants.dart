@@ -1,5 +1,6 @@
 class MarketingConstants {
  static const String badgesTitle = 'Achievement Badges';
+ static const String bannersTitle = 'Banners';
  static const String badgeDefaultName = 'Badge';
  static const String errorLoadingBadges = 'Error Loading Badges';
  static const String promotionsTitle = 'Promotions';

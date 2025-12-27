@@ -59,14 +59,14 @@ class ServicesHistoryScreen extends ConsumerWidget {
           Container(
            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
            decoration: BoxDecoration(color: _getStatusColor(booking['status']).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-           child: Text(booking['status'] ?? 'pending', style: TextStyle(color: _getStatusColor(booking['status']), fontSize: 12)),
+           child: Text(_toTitleCase(booking['status'] ?? 'pending'), style: TextStyle(color: _getStatusColor(booking['status']), fontSize: 12)),
           ),
          ],
         ),
         const SizedBox(height: 8),
         Text(booking['providerName'] ?? ServicesConstants.serviceProvider, style: TextStyle(color: Colors.grey[600])),
         const SizedBox(height: 4),
-        Text(booking['scheduledAt'] ?? '', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+        Text(_formatDateTime(booking['scheduledAt']), style: TextStyle(color: Colors.grey[600], fontSize: 12)),
         const SizedBox(height: 12),
         Row(
          children: [
@@ -104,5 +104,17 @@ class ServicesHistoryScreen extends ConsumerWidget {
    default:
     return AppColors.primary;
   }
+ }
+ String _toTitleCase(String text) {
+  if (text.isEmpty) return text;
+  return text[0].toUpperCase() + text.substring(1);
+ }
+ String _formatDateTime(dynamic timestamp) {
+  if (timestamp == null) return '';
+  if (timestamp is int) {
+   final dt = DateTime.fromMillisecondsSinceEpoch(timestamp);
+   return '${dt.day}/${dt.month}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+  return timestamp.toString();
  }
 }

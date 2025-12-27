@@ -5,6 +5,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
 import '../../../providers/authProvider.dart';
 import '../../../providers/driverProvider.dart';
+import '../../../shared/widgets/sharedBottomNav.dart';
 import '../constants/driverConstants.dart';
 class DriverDashboardScreen extends ConsumerWidget {
  const DriverDashboardScreen({super.key});
@@ -17,6 +18,7 @@ class DriverDashboardScreen extends ConsumerWidget {
   final isOnline = driverStatus == DriverConstants.statusOnline;
   return Scaffold(
    appBar: AppBar(
+    leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
     title: const Text(DriverConstants.dashboardTitle),
     actions: [IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () => context.go(Routes.notifications))],
    ),
@@ -33,7 +35,7 @@ class DriverDashboardScreen extends ConsumerWidget {
          children: [
           _buildStat(DriverConstants.today, '\$${(stats['todayEarnings'] as num).toStringAsFixed(0)}'),
           _buildStat(DriverConstants.trips, '${stats['todayTrips']}'),
-          perfAsync.when(data: (perf) => _buildStat(DriverConstants.rating, '${perf['rating']}'), loading: () => _buildStat(DriverConstants.rating, DriverConstants.ratingLoading), error: (_, __) => _buildStat(DriverConstants.rating, DriverConstants.ratingError)),
+          perfAsync.when(data: (perf) => _buildStat(DriverConstants.rating, '${(perf['rating'] as num).toStringAsFixed(2)}'), loading: () => _buildStat(DriverConstants.rating, DriverConstants.ratingLoading), error: (_, __) => _buildStat(DriverConstants.rating, DriverConstants.ratingError)),
          ],
         ),
        ),
@@ -78,6 +80,7 @@ class DriverDashboardScreen extends ConsumerWidget {
      ],
     ),
    ),
+   bottomNavigationBar: const SharedBottomNavBar(),
   );
  }
  Widget _buildStat(String label, String value) {

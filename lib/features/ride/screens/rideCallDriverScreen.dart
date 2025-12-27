@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/routes/routeNames.dart';
 import '../../../providers/rideProvider.dart';
 import '../../ride/constants/rideConstants.dart';
 class RideCallDriverScreen extends ConsumerWidget {
@@ -30,7 +31,7 @@ class RideCallDriverScreen extends ConsumerWidget {
       const SizedBox(height: 8),
       const Text(RideConstants.callingLabel, style: TextStyle(color: Colors.white70, fontSize: 16)),
       const Spacer(),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [_buildCallAction(Icons.volume_up, 'Speaker', Colors.white24, () {}), _buildCallAction(Icons.call_end, 'End', AppColors.error, () => context.pop()), _buildCallAction(Icons.mic_off, 'Mute', Colors.white24, () {})]),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [_buildCallAction(Icons.volume_up, 'Speaker', Colors.white24, () {}), _buildCallAction(Icons.call_end, 'End', AppColors.error, () => context.go(Routes.rideInProgress)), _buildCallAction(Icons.mic_off, 'Mute', Colors.white24, () {})]),
       const SizedBox(height: 48),
      ],
     ),

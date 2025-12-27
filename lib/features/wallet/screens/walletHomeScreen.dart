@@ -18,6 +18,7 @@ class WalletHomeScreen extends ConsumerWidget {
        expandedHeight: 200,
        floating: false,
        pinned: true,
+       leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
        flexibleSpace: FlexibleSpaceBar(
         background: Container(
          decoration: BoxDecoration(gradient: AppColors.primaryGradient),

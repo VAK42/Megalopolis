@@ -139,6 +139,37 @@ class FavoritesNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, 
 final foodFavoritesProvider = AsyncNotifierProvider.family<FavoritesNotifier, List<Map<String, dynamic>>, int>(() {
  return FavoritesNotifier();
 });
+class FoodItemFavoritesNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, int> {
+ late final FoodRepository _repository;
+ late final int _argUserId;
+ @override
+ Future<List<Map<String, dynamic>>> build(int arg) async {
+  _repository = ref.watch(foodRepositoryProvider);
+  _argUserId = arg;
+  return _repository.getFoodFavorites(_argUserId.toString());
+ }
+ Future<void> addFavorite(String itemId) async {
+  try {
+   await _repository.addFoodToFavorites(_argUserId.toString(), itemId);
+   state = const AsyncValue.loading();
+   state = await AsyncValue.guard(() => _repository.getFoodFavorites(_argUserId.toString()));
+  } catch (e, stack) {
+   state = AsyncValue.error(e, stack);
+  }
+ }
+ Future<void> removeFavorite(String itemId) async {
+  try {
+   await _repository.removeFoodFromFavorites(_argUserId.toString(), itemId);
+   state = const AsyncValue.loading();
+   state = await AsyncValue.guard(() => _repository.getFoodFavorites(_argUserId.toString()));
+  } catch (e, stack) {
+   state = AsyncValue.error(e, stack);
+  }
+ }
+}
+final foodItemFavoritesProvider = AsyncNotifierProvider.family<FoodItemFavoritesNotifier, List<Map<String, dynamic>>, int>(() {
+ return FoodItemFavoritesNotifier();
+});
 class ReservationsNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, String> {
  late final FoodRepository _repository;
  late final String _argUserId;

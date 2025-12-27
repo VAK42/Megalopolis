@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../providers/foodProvider.dart';
 import '../../../providers/authProvider.dart';
-import '../../../core/routes/routeNames.dart';
-import '../../../shared/widgets/appButton.dart';
 import '../constants/foodConstants.dart';
 class FoodRestaurantDetailScreen extends ConsumerWidget {
  final String restaurantId;
@@ -16,7 +14,6 @@ class FoodRestaurantDetailScreen extends ConsumerWidget {
   final menuAsync = ref.watch(restaurantMenuProvider(restaurantId));
   final userIdStr = ref.watch(currentUserIdProvider);
   final userId = userIdStr ?? '1';
-  final cartAsync = ref.watch(foodCartProvider(userId));
   return Scaffold(
    body: restaurantsAsync.when(
     data: (restaurants) {
@@ -90,22 +87,8 @@ class FoodRestaurantDetailScreen extends ConsumerWidget {
             ),
             title: Text(item['name'] as String? ?? FoodConstants.defaultDish, style: const TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text(item['description'] as String? ?? FoodConstants.deliciousAndFresh),
-            trailing: Column(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-              Text(
-               '\$${item['price'] ?? 0}',
-               style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
-              ),
-              const Icon(Icons.add_circle, color: AppColors.primary),
-             ],
-            ),
-            onTap: () async {
-             await ref.read(foodCartProvider(userId).notifier).addItem(item['id'].toString(), 1);
-             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${item['name']}${FoodConstants.addedToCartSuffix}')));
-             }
-            },
+            trailing: Text('\$${item['price'] ?? 0}', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+            onTap: () => context.go('/food/item/${item['id']}'),
            ),
           );
          }, childCount: menu.length),
@@ -118,20 +101,6 @@ class FoodRestaurantDetailScreen extends ConsumerWidget {
     },
     loading: () => const Center(child: CircularProgressIndicator()),
     error: (e, _) => Center(child: Text('${FoodConstants.errorPrefix}$e')),
-   ),
-   bottomNavigationBar: cartAsync.when(
-    data: (cart) => cart.isEmpty
-      ? null
-      : Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-         color: Colors.white,
-         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10)],
-        ),
-        child: AppButton(text: '${FoodConstants.viewCart} (${cart.length})', onPressed: () => context.go(Routes.foodCart), icon: Icons.shopping_cart),
-       ),
-    loading: () => null,
-    error: (_, __) => null,
    ),
   );
  }
