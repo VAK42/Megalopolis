@@ -20,18 +20,18 @@ class ProfileScreen extends ConsumerWidget {
       children: [
        Container(
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+        decoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)], begin: Alignment.topLeft, end: Alignment.bottomRight)),
         child: Column(
          children: [
           Row(
            mainAxisAlignment: MainAxisAlignment.spaceBetween,
            children: [
             IconButton(
-             icon: const Icon(Icons.arrow_back, color: Colors.white),
+             icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
              onPressed: () => context.go(Routes.superDashboard),
             ),
             IconButton(
-             icon: const Icon(Icons.settings, color: Colors.white),
+             icon: const Icon(Icons.settings, color: AppColors.textPrimary),
              onPressed: () => context.go(Routes.settings),
             ),
            ],
@@ -46,22 +46,22 @@ class ProfileScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                color: Colors.white,
                shape: BoxShape.circle,
-               border: Border.all(color: Colors.white, width: 3),
+               border: Border.all(color: AppColors.success, width: 3),
                image: user?.avatar != null && user!.avatar!.isNotEmpty ? DecorationImage(image: NetworkImage(user.avatar!), fit: BoxFit.cover) : null,
               ),
-              child: user?.avatar == null || user!.avatar!.isEmpty ? const Icon(Icons.person, size: 50, color: AppColors.primary) : null,
+              child: user?.avatar == null || user!.avatar!.isEmpty ? const Icon(Icons.person, size: 50, color: AppColors.success) : null,
              ),
              loading: () => Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 3)),
-              child: const Icon(Icons.person, size: 50, color: AppColors.primary),
+              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: AppColors.success, width: 3)),
+              child: const Icon(Icons.person, size: 50, color: AppColors.success),
              ),
              error: (_, __) => Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 3)),
-              child: const Icon(Icons.person, size: 50, color: AppColors.primary),
+              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: AppColors.success, width: 3)),
+              child: const Icon(Icons.person, size: 50, color: AppColors.success),
              ),
             ),
             Positioned(
@@ -69,8 +69,8 @@ class ProfileScreen extends ConsumerWidget {
              right: 0,
              child: Container(
               padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-              child: const Icon(Icons.camera_alt, size: 20, color: AppColors.primary),
+              decoration: const BoxDecoration(color: AppColors.success, shape: BoxShape.circle),
+              child: const Icon(Icons.camera_alt, size: 20, color: Colors.white),
              ),
             ),
            ],
@@ -81,26 +81,26 @@ class ProfileScreen extends ConsumerWidget {
             children: [
              Text(
               user?.name ?? ProfileConstants.guestUser,
-              style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold),
              ),
-             Text(user?.phone ?? user?.email ?? '', style: const TextStyle(color: Colors.white70)),
+             Text(user?.phone ?? user?.email ?? '', style: const TextStyle(color: AppColors.textSecondary)),
             ],
            ),
            loading: () => const Column(
             children: [
-             CircularProgressIndicator(color: Colors.white),
+             CircularProgressIndicator(color: AppColors.success),
              SizedBox(height: 8),
-             Text(ProfileConstants.loading, style: TextStyle(color: Colors.white70)),
+             Text(ProfileConstants.loading, style: TextStyle(color: AppColors.textSecondary)),
             ],
            ),
-           error: (_, __) => const Text(ProfileConstants.errorLoadingProfile, style: TextStyle(color: Colors.white70)),
+           error: (_, __) => const Text(ProfileConstants.errorLoadingProfile, style: TextStyle(color: AppColors.textSecondary)),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
            onPressed: () => context.go(Routes.profileEdit),
            icon: const Icon(Icons.edit),
            label: const Text(ProfileConstants.editProfile),
-           style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: AppColors.primary),
+           style: ElevatedButton.styleFrom(backgroundColor: AppColors.success, foregroundColor: Colors.white),
           ),
          ],
         ),
@@ -184,16 +184,9 @@ class ProfileScreen extends ConsumerWidget {
    decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(12)),
    child: Column(
     children: [
-     Text(
-      value,
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
-     ),
+     Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary)),
      const SizedBox(height: 4),
-     Text(
-      label,
-      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-      textAlign: TextAlign.center,
-     ),
+     Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600]), textAlign: TextAlign.center),
     ],
    ),
   );

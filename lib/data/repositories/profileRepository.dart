@@ -8,6 +8,7 @@ class ProfileRepository {
  }
  Future<int> updateUserSettings(String userId, Map<String, dynamic> settings) async {
   final db = await dbHelper.database;
+  settings['updatedAt'] = DateTime.now().millisecondsSinceEpoch;
   final existing = await getUserSettings(userId);
   if (existing != null) {
    return await db.update('appSettings', settings, where: 'userId = ?', whereArgs: [userId]);

@@ -10,7 +10,7 @@ class Address {
  final bool isDefault;
  Address({required this.id, required this.userId, this.label, required this.fullAddress, this.lat, this.lng, this.isDefault = false});
  factory Address.fromMap(Map<String, dynamic> map) {
-  return Address(id: map['id'] as String, userId: map['userId'] as String, label: map['label'] as String?, fullAddress: map['fullAddress'] as String, lat: map['lat'] as double?, lng: map['lng'] as double?, isDefault: (map['isDefault'] as int) == 1);
+  return Address(id: map['id'] as String, userId: map['userId'] as String, label: map['label'] as String?, fullAddress: (map['fullAddress'] as String?) ?? '', lat: map['lat'] as double?, lng: map['lng'] as double?, isDefault: (map['isDefault'] as int?) == 1);
  }
 }
 class AddressNotifier extends FamilyAsyncNotifier<List<Address>, String> {

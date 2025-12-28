@@ -71,12 +71,12 @@ class DatabaseSeeder {
   ('s9', 'service', 'Light Fixture Installation', 'Installation Of Light Fixtures Including Chandeliers And Recessed Lighting', 110.00, '14', 'electrical', '["https://picsum.photos/400/400?random=309"]', 4.6, 1, '{"duration": "1 Hour"}', ?)
   ''', [now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now]);
   await db.rawInsert('''
-  INSERT INTO addresses (id, userId, label, fullAddress, lat, lng, isDefault, isSavedPlace)
+  INSERT INTO addresses (id, userId, label, street, city, zipCode, fullAddress, lat, lng, isDefault, isSavedPlace)
   VALUES 
-  ('addr1', '1', 'Home', '123 Main Street, Downtown, Megalopolis City, 12345', 40.7128, -74.0060, 1, 1),
-  ('addr2', '1', 'Work', '456 Business Avenue, Corporate District, Megalopolis City, 12346', 40.7580, -73.9855, 0, 1),
-  ('addr3', '2', 'Home', '789 Oak Lane, Suburban Area, Megalopolis City, 12347', 40.7489, -73.9680, 1, 1),
-  ('addr4', '3', 'Home', '321 Pine Road, Garden District, Megalopolis City, 12348', 40.7614, -73.9776, 1, 1)
+  ('addr1', '1', 'Home', '123 Main Street', 'Megalopolis City', '12345', '123 Main Street, Downtown, Megalopolis City, 12345', 40.7128, -74.0060, 1, 1),
+  ('addr2', '1', 'Work', '456 Business Avenue', 'Megalopolis City', '12346', '456 Business Avenue, Corporate District, Megalopolis City, 12346', 40.7580, -73.9855, 0, 1),
+  ('addr3', '2', 'Home', '789 Oak Lane', 'Megalopolis City', '12347', '789 Oak Lane, Suburban Area, Megalopolis City, 12347', 40.7489, -73.9680, 1, 1),
+  ('addr4', '3', 'Home', '321 Pine Road', 'Megalopolis City', '12348', '321 Pine Road, Garden District, Megalopolis City, 12348', 40.7614, -73.9776, 1, 1)
   ''');
   await db.rawInsert('''
   INSERT INTO promotions (id, title, description, code, discount, startDate, endDate, type, usageCount, merchantId, createdAt)
@@ -97,19 +97,30 @@ class DatabaseSeeder {
   ('1', 1200.00, 'Pending', ?, NULL)
   ''', [now - 604800000, now - 518400000, now - 259200000, now - 172800000, now - 86400000]);
   await db.rawInsert('''
-  INSERT INTO walletCards (id, userId, type, number, holder, expiry, balance)
+  INSERT INTO walletCards (id, userId, type, number, holder, expiry, cvv, balance)
   VALUES 
-  ('card1', '1', 'visa', '4532 7512 3412 1234', 'John Anderson', '12/26', 0),
-  ('card2', '1', 'mastercard', '5412 1234 5678 9012', 'John Anderson', '03/27', 0),
-  ('card3', '2', 'visa', '4916 5678 9012 3456', 'Sarah Martinez', '08/25', 0)
+  ('card1', '1', 'Visa', '4532 7512 3412 1234', 'John Anderson', '12/26', '123', 2500.00),
+  ('card2', '1', 'Mastercard', '5412 1234 5678 9012', 'John Anderson', '03/27', '456', 1250.50),
+  ('card3', '2', 'Visa', '4916 5678 9012 3456', 'Sarah Martinez', '08/25', '789', 5000.00),
+  ('card4', '2', 'Mastercard', '5214 8765 4321 0987', 'Sarah Martinez', '11/26', '012', 3200.00),
+  ('card5', '3', 'Visa', '4024 0071 2345 6789', 'Michael Chen', '06/27', '345', 1800.75)
   ''');
   await db.rawInsert('''
   INSERT INTO transactions (id, userId, type, amount, status, reference, createdAt)
   VALUES 
-  ('txn1', '1', 'topup', 100.00, 'completed', 'Initial Wallet Top Up', ?),
-  ('txn2', '1', 'payment', 12.99, 'completed', 'Food Order Payment', ?),
-  ('txn3', '2', 'topup', 50.00, 'completed', 'Wallet Reload', ?)
-  ''', [now - 604800000, now - 86400000, now - 172800000]);
+  ('txn1', '1', 'topup', 500.00, 'completed', 'Initial Wallet Top Up', ?),
+  ('txn2', '1', 'topup', 250.00, 'completed', 'Bank Transfer Top Up', ?),
+  ('txn3', '1', 'payment', 45.99, 'completed', 'Pizza Palace Order', ?),
+  ('txn4', '1', 'payment', 18.50, 'completed', 'Ride To Downtown', ?),
+  ('txn5', '1', 'payment', 75.00, 'completed', 'House Cleaning Service', ?),
+  ('txn6', '1', 'transfer', 50.00, 'completed', 'Transfer To Sarah Martinez', ?),
+  ('txn7', '1', 'refund', 12.99, 'completed', 'Order Refund', ?),
+  ('txn8', '2', 'topup', 300.00, 'completed', 'Wallet Top Up', ?),
+  ('txn9', '2', 'payment', 89.99, 'completed', 'Electronics Purchase', ?),
+  ('txn10', '2', 'topup', 150.00, 'completed', 'Bank Transfer', ?),
+  ('txn11', '3', 'topup', 200.00, 'completed', 'Initial Top Up', ?),
+  ('txn12', '3', 'payment', 35.50, 'completed', 'Grocery Shopping', ?)
+  ''', [now - 604800000, now - 518400000, now - 432000000, now - 345600000, now - 259200000, now - 172800000, now - 86400000, now - 432000000, now - 259200000, now - 86400000, now - 345600000, now - 172800000]);
   await db.rawInsert('''
   INSERT INTO orders (id, userId, driverId, providerId, orderType, rideType, items, total, status, address, pickupAddress, dropoffAddress, completedAt, createdAt)
   VALUES 
@@ -219,16 +230,12 @@ class DatabaseSeeder {
   ('seller3', 'Home Essentials', 'home@essentials.com', '555-0003', '321 Home St, Megalopolis', 'Quality Home And Kitchen Products. Everything You Need For Your Home.', NULL, 4.5, 432, 156, 5600, 0, ?)
   ''', [now, now - 31536000000, now - 15768000000, now - 7884000000]);
   await db.rawInsert('''
-  INSERT INTO appSettings (userId, key, value, type, updatedAt)
+  INSERT INTO appSettings (userId, theme, language, pushNotifications, emailNotifications, smsNotifications, orderUpdates, promotions, rideUpdates, chatMessages, sound, vibration, twoFactorAuth, biometricLogin, loginAlerts, shareLocation, shareActivity, showOnlineStatus, allowMessages, allowCalls, dataCollection, personalizedAds, updatedAt)
   VALUES 
-  ('1', 'maintenanceMode', 'false', 'boolean', ?),
-  ('1', 'latestVersion', '2.0.0', 'string', ?),
-  ('1', 'minVersion', '1.0.0', 'string', ?),
-  ('1', 'maintenanceMessage', 'We Are Performing Scheduled Maintenance!', 'string', ?),
-  ('1', 'maintenanceEta', '2 Hours', 'string', ?),
-  ('1', 'searchHint', 'Search For Food, Rides, Services...', 'string', ?),
-  ('1', 'globalCategories', '[{"label":"Food","icon":"restaurant","route":"/food"},{"label":"Rides","icon":"directions_car","route":"/ride"},{"label":"Shopping","icon":"shopping_bag","route":"/mart"},{"label":"Services","icon":"handyman","route":"/services"},{"label":"Bills","icon":"receipt","route":"/wallet/billPayment"}]', 'json', ?)
-  ''', [now, now, now, now, now, now, now]);
+  ('1', 'System Default', 'en', 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, ?),
+  ('2', 'System Default', 'en', 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, ?),
+  ('3', 'System Default', 'en', 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, ?)
+  ''', [now, now, now]);
   await db.rawInsert('''
   INSERT INTO challenges (id, title, description, reward, target, type, createdAt)
   VALUES 
@@ -288,27 +295,6 @@ class DatabaseSeeder {
   ('sw8', 100, 0.07, 1, 8, ?)
   ''', [now, now, now, now, now, now, now, now]);
   await db.rawInsert('''
-  INSERT INTO appSettings (userId, key, value, type, updatedAt)
-  VALUES 
-  ('1', 'appName', 'Megalopolis', 'string', ?),
-  ('1', 'appVersion', '1.0.0', 'string', ?),
-  ('1', 'currencySymbol', '\$', 'string', ?),
-  ('1', 'borderRadius', '12.0', 'double', ?),
-  ('1', 'cardBorderRadius', '16.0', 'double', ?),
-  ('1', 'paddingSmall', '8.0', 'double', ?),
-  ('1', 'paddingMedium', '16.0', 'double', ?),
-  ('1', 'paddingLarge', '24.0', 'double', ?),
-  ('1', 'iconSizeSmall', '16.0', 'double', ?),
-  ('1', 'iconSizeMedium', '24.0', 'double', ?),
-  ('1', 'iconSizeLarge', '32.0', 'double', ?),
-  ('1', 'elevationLow', '2.0', 'double', ?),
-  ('1', 'elevationMedium', '4.0', 'double', ?),
-  ('1', 'elevationHigh', '8.0', 'double', ?),
-  ('1', 'animationDurationMs', '300', 'integer', ?),
-  ('1', 'shimmerDurationMs', '1500', 'integer', ?),
-  ('1', 'searchDebounceMs', '500', 'integer', ?)
-  ''', [now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now, now]);
-  await db.rawInsert('''
   INSERT INTO challenges (id, userId, title, description, reward, target, currentProgress, createdAt)
   VALUES 
   ('ch1', NULL, 'Complete 10 Rides', 'Take 10 Rides This Month', '\$5 Credit', 10, 3, ?),
@@ -316,6 +302,80 @@ class DatabaseSeeder {
   ('ch3', NULL, 'Share Location 3 Times', 'Share Your Location With Friends', '50 Points', 3, 1, ?),
   ('ch4', '1', 'Refer A Friend', 'Invite A Friend To Join', '\$10 Bonus', 1, 0, ?)
   ''', [now, now, now, now]);
+  await db.rawInsert('''
+  INSERT INTO scratchCards (id, userId, reward, isScratched, claimedAt, createdAt)
+  VALUES 
+  ('sc1', '1', 5.0, 0, NULL, ?),
+  ('sc2', '2', 10.0, 0, NULL, ?)
+  ''', [now, now]);
+  await db.rawInsert('''
+  INSERT INTO checkIns (id, userId, checkInDate, reward, streak, createdAt)
+  VALUES 
+  ('ci1', '1', ?, 1.0, 1, ?),
+  ('ci2', '1', ?, 2.0, 2, ?),
+  ('ci3', '1', ?, 3.0, 3, ?),
+  ('ci4', '1', ?, 4.0, 4, ?),
+  ('ci5', '1', ?, 5.0, 5, ?)
+  ''', [now - 432000000, now - 432000000, now - 345600000, now - 345600000, now - 259200000, now - 259200000, now - 172800000, now - 172800000, now - 86400000, now - 86400000]);
+  await db.rawInsert('''
+  INSERT INTO badges (id, userId, name, description, icon, earnedAt)
+  VALUES 
+  ('b1', '1', 'First Ride', 'Completed Your First Ride', 'directions_car', ?),
+  ('b2', '1', 'Food Lover', 'Ordered 10 Meals', 'restaurant', ?),
+  ('b3', '1', 'Social Butterfly', 'Added 5 Friends', 'people', ?),
+  ('b4', '1', 'Early Bird', 'Checked In 7 Days In A Row', 'wb_sunny', ?)
+  ''', [now - 604800000, now - 432000000, now - 259200000, now - 86400000]);
+  await db.rawInsert('''
+  INSERT INTO recurringPayments (id, userId, title, amount, frequency, nextPayDate, isActive, createdAt)
+  VALUES 
+  ('rp1', '1', 'Netflix Subscription', 15.99, 'Monthly', ?, 1, ?),
+  ('rp2', '1', 'Spotify Premium', 9.99, 'Monthly', ?, 1, ?),
+  ('rp3', '1', 'Amazon Prime', 12.99, 'Monthly', ?, 1, ?),
+  ('rp4', '2', 'Gym Membership', 49.99, 'Monthly', ?, 1, ?)
+  ''', [now + 604800000, now, now + 432000000, now, now + 259200000, now, now + 864000000, now]);
+  await db.rawInsert('''
+  INSERT INTO budgets (id, userId, monthlyBudget, spent, remaining, createdAt)
+  VALUES 
+  ('budget1', '1', 2000.00, 1250.50, 749.50, ?),
+  ('budget2', '2', 3000.00, 1800.00, 1200.00, ?)
+  ''', [now, now]);
+  await db.rawInsert('''
+  INSERT INTO budgetCategories (id, userId, name, budget, spent, color, createdAt)
+  VALUES 
+  ('bc1', '1', 'Food', 500.00, 320.00, '#FF6B6B', ?),
+  ('bc2', '1', 'Transport', 300.00, 180.00, '#4ECDC4', ?),
+  ('bc3', '1', 'Entertainment', 200.00, 150.50, '#95E1D3', ?),
+  ('bc4', '1', 'Shopping', 500.00, 400.00, '#F9CA24', ?),
+  ('bc5', '1', 'Bills', 500.00, 200.00, '#A29BFE', ?)
+  ''', [now, now, now, now, now]);
+  await db.rawInsert('''
+  INSERT INTO investments (id, userId, name, type, currentValue, returns, createdAt)
+  VALUES 
+  ('inv1', '1', 'Tech Stocks', 'Stocks', 5000.00, 750.00, ?),
+  ('inv2', '1', 'Mutual Funds', 'Mutual Fund', 10000.00, 1200.00, ?),
+  ('inv3', '2', 'Gold ETF', 'ETF', 3000.00, 300.00, ?)
+  ''', [now - 15552000000, now - 7776000000, now - 3888000000]);
+  await db.rawInsert('''
+  INSERT INTO loanOffers (id, userId, amount, interestRate, tenure, emi, totalRepayment, createdAt)
+  VALUES 
+  ('loan1', '1', 50000.00, 12.5, 36, 1683.33, 60600.00, ?),
+  ('loan2', '2', 100000.00, 10.0, 60, 2124.70, 127482.00, ?)
+  ''', [now, now]);
+  await db.rawInsert('''
+  INSERT INTO cashbackOffers (id, userId, title, description, percentage, expiresAt, createdAt)
+  VALUES 
+  ('cb1', NULL, 'Food Cashback', '10% Cashback On Food Orders', 10.0, ?, ?),
+  ('cb2', NULL, 'Shopping Bonus', '5% Cashback On Shopping', 5.0, ?, ?),
+  ('cb3', '1', 'Special Offer', '15% Cashback For You', 15.0, ?, ?)
+  ''', [now + 2592000000, now, now + 1296000000, now, now + 604800000, now]);
+  await db.rawInsert('''
+  INSERT INTO cashbackHistory (id, userId, amount, source, earnedAt)
+  VALUES 
+  ('cbh1', '1', 5.50, 'Food Order', ?),
+  ('cbh2', '1', 12.00, 'Shopping', ?),
+  ('cbh3', '1', 3.25, 'Ride', ?),
+  ('cbh4', '2', 8.00, 'Food Order', ?)
+  ''', [now - 604800000, now - 432000000, now - 259200000, now - 86400000]);
   debugPrint('Database Seeded Successfully With Comprehensive Data!');
  }
 }

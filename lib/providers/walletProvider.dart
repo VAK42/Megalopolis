@@ -9,10 +9,34 @@ final transactionsProvider = FutureProvider.family<List<Map<String, dynamic>>, S
  final repository = ref.watch(walletRepositoryProvider);
  return await repository.getTransactions(userId);
 });
-final walletCardsProvider = FutureProvider.family<List<Map<String, dynamic>>, String>((ref, userId) async {
- final repository = ref.watch(walletRepositoryProvider);
- return await repository.getCards(userId);
+final walletCardsProvider = AsyncNotifierProvider.family<WalletCardsNotifier, List<Map<String, dynamic>>, String>(() {
+ return WalletCardsNotifier();
 });
+class WalletCardsNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, String> {
+ late final WalletRepository _repository;
+ late final String _userId;
+ @override
+ Future<List<Map<String, dynamic>>> build(String arg) async {
+  _repository = ref.watch(walletRepositoryProvider);
+  _userId = arg;
+  return await _repository.getCards(_userId);
+ }
+ Future<void> addCard(Map<String, dynamic> card) async {
+  await _repository.addCard(card);
+  state = const AsyncValue.loading();
+  state = await AsyncValue.guard(() => _repository.getCards(_userId));
+ }
+ Future<void> updateCard(String id, Map<String, dynamic> card) async {
+  await _repository.updateCard(id, card);
+  state = const AsyncValue.loading();
+  state = await AsyncValue.guard(() => _repository.getCards(_userId));
+ }
+ Future<void> removeCard(String id) async {
+  await _repository.removeCard(id);
+  state = const AsyncValue.loading();
+  state = await AsyncValue.guard(() => _repository.getCards(_userId));
+ }
+}
 final walletAnalyticsProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, userId) async {
  final repository = ref.watch(walletRepositoryProvider);
  return await repository.getAnalytics(userId);

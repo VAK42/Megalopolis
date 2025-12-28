@@ -13,7 +13,7 @@ class BadgesNotifier extends FamilyAsyncNotifier<List<Map<String, dynamic>>, Str
   _argUserId = arg;
   return _repository.getBadges(_argUserId);
  }
- Future<void> deleteBadge(int badgeId) async {
+ Future<void> deleteBadge(String badgeId) async {
   try {
    await _repository.deleteBadge(badgeId);
    state = const AsyncValue.loading();
@@ -107,15 +107,15 @@ final userRankProvider = FutureProvider.family<int, String>((ref, userId) async 
  return await ref.watch(marketingRepositoryProvider).getUserRank(userId);
 });
 class ScratchCardNotifier extends FamilyAsyncNotifier<Map<String, dynamic>, String> {
- late final MarketingRepository _repository;
- late final String _argUserId;
+ late MarketingRepository _repository;
+ late String _argUserId;
  @override
  Future<Map<String, dynamic>> build(String arg) async {
   _repository = ref.watch(marketingRepositoryProvider);
   _argUserId = arg;
   return _repository.getScratchCard(_argUserId);
  }
- Future<void> scratchCard(int cardId) async {
+ Future<void> scratchCard(String cardId) async {
   try {
    await _repository.scratchCard(cardId);
    state = const AsyncValue.loading();
@@ -124,7 +124,7 @@ class ScratchCardNotifier extends FamilyAsyncNotifier<Map<String, dynamic>, Stri
    state = AsyncValue.error(e, stack);
   }
  }
- Future<void> claimReward(int cardId) async {
+ Future<void> claimReward(String cardId) async {
   try {
    await _repository.claimReward(cardId, _argUserId);
    state = const AsyncValue.loading();
@@ -133,7 +133,7 @@ class ScratchCardNotifier extends FamilyAsyncNotifier<Map<String, dynamic>, Stri
    state = AsyncValue.error(e, stack);
   }
  }
- Future<void> deleteCard(int cardId) async {
+ Future<void> deleteCard(String cardId) async {
   try {
    await _repository.deleteScratchCard(cardId);
    state = const AsyncValue.loading();

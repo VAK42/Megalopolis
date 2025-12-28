@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../shared/widgets/appButton.dart';
 import '../../../providers/authProvider.dart';
-import '../../../providers/profileProvider.dart';
+import '../../../providers/addressProvider.dart';
 import '../constants/profileConstants.dart';
 class AddressAddScreen extends ConsumerStatefulWidget {
  const AddressAddScreen({super.key});
@@ -30,7 +30,7 @@ class _AddressAddScreenState extends ConsumerState<AddressAddScreen> {
     child: Column(
      crossAxisAlignment: CrossAxisAlignment.start,
      children: [
-      const Text('Address Type', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+      const Text(ProfileConstants.addressType, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
       const SizedBox(height: 12),
       Row(
        children: [ProfileConstants.home, ProfileConstants.work, ProfileConstants.other].map((type) {
@@ -52,20 +52,28 @@ class _AddressAddScreenState extends ConsumerState<AddressAddScreen> {
       const SizedBox(height: 24),
       _buildTextField(ProfileConstants.streetAddress, address1Controller, Icons.location_on),
       const SizedBox(height: 16),
-      _buildTextField('Apartment, Suite, Etc. (Optional)', address2Controller, Icons.home),
+      _buildTextField(ProfileConstants.apartmentSuiteOptional, address2Controller, Icons.home),
       const SizedBox(height: 16),
       _buildTextField(ProfileConstants.city, cityController, Icons.location_city),
       const SizedBox(height: 16),
       _buildTextField(ProfileConstants.zipCode, zipController, Icons.pin_drop, keyboardType: TextInputType.number),
       const SizedBox(height: 24),
-      SwitchListTile(title: const Text('Set As Default Address'), value: isDefault, onChanged: (value) => setState(() => isDefault = value), contentPadding: EdgeInsets.zero),
+      SwitchListTile(title: const Text(ProfileConstants.setAsDefaultAddress), value: isDefault, onChanged: (value) => setState(() => isDefault = value), contentPadding: EdgeInsets.zero),
       const SizedBox(height: 32),
       AppButton(
        text: ProfileConstants.saveAddress,
        onPressed: () async {
+        if (address1Controller.text.trim().isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.pleaseEnterStreetAddress), backgroundColor: Colors.red));
+         return;
+        }
         final userId = ref.read(currentUserIdProvider) ?? 'user1';
-        await ref.read(profileRepositoryProvider).addAddress({'userId': userId, 'label': selectedType, 'street': address1Controller.text, 'unit': address2Controller.text, 'city': cityController.text, 'zipCode': zipController.text, 'isDefault': isDefault ? 1 : 0});
-        if (mounted) context.pop();
+        final fullAddress = '${address1Controller.text.trim()}${address2Controller.text.isNotEmpty ? ', ${address2Controller.text.trim()}' : ''}, ${cityController.text.trim()} ${zipController.text.trim()}'.trim();
+        await ref.read(addressProvider(userId).notifier).addAddress(label: selectedType, fullAddress: fullAddress, isDefault: isDefault);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.addressSaved), backgroundColor: Colors.green));
+          context.pop();
+         }
        },
        icon: Icons.check,
       ),

@@ -21,12 +21,34 @@ class ProfileQrScreen extends ConsumerWidget {
      child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-       Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
-        child: const Icon(Icons.person, color: Colors.white, size: 50),
-       ),
+        userAsync.when(
+         data: (user) => Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+           gradient: AppColors.primaryGradient,
+           shape: BoxShape.circle,
+           image: user?.avatar != null && user!.avatar!.isNotEmpty
+               ? DecorationImage(image: NetworkImage(user.avatar!), fit: BoxFit.cover)
+               : null,
+          ),
+          child: user?.avatar == null || user!.avatar!.isEmpty
+              ? const Icon(Icons.person, color: Colors.white, size: 50)
+              : null,
+         ),
+         loading: () => Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
+          child: const Icon(Icons.person, color: Colors.white, size: 50),
+         ),
+         error: (_, __) => Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
+          child: const Icon(Icons.person, color: Colors.white, size: 50),
+         ),
+        ),
        const SizedBox(height: 16),
        userAsync.when(
         data: (user) => Column(
@@ -62,7 +84,7 @@ class ProfileQrScreen extends ConsumerWidget {
        const SizedBox(height: 32),
        userAsync.when(
         data: (user) => Text(
-         'USER ID: #${user?.id ?? "GUEST"}',
+         '#${user?.id ?? "GUEST"}',
          style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
         ),
         loading: () => const SizedBox(),

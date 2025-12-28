@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
 import '../../../providers/serviceProvider.dart';
-import '../../../shared/models/itemModel.dart';
 import '../constants/servicesConstants.dart';
 class ServicesProvidersScreen extends ConsumerWidget {
  final String? category;

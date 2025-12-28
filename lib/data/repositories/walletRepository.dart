@@ -16,20 +16,20 @@ class WalletRepository {
  }
  Future<int> topUp(String userId, double amount, String method) async {
   final db = await dbHelper.database;
-  return await db.insert('transactions', {'userId': userId, 'type': 'topup', 'amount': amount, 'paymentMethod': method, 'status': 'completed', 'createdAt': DateTime.now().toIso8601String()});
+  return await db.insert('transactions', {'userId': userId, 'type': 'topup', 'amount': amount, 'reference': method, 'status': 'completed', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<int> transfer(String fromUserId, String toUserId, double amount) async {
   final db = await dbHelper.database;
-  await db.insert('transactions', {'userId': fromUserId, 'type': 'transfer', 'amount': amount, 'toUserId': toUserId, 'status': 'completed', 'createdAt': DateTime.now().toIso8601String()});
-  return await db.insert('transactions', {'userId': toUserId, 'type': 'credit', 'amount': amount, 'fromUserId': fromUserId, 'status': 'completed', 'createdAt': DateTime.now().toIso8601String()});
+  await db.insert('transactions', {'userId': fromUserId, 'type': 'transfer', 'amount': amount, 'reference': 'To: $toUserId', 'status': 'completed', 'createdAt': DateTime.now().millisecondsSinceEpoch});
+  return await db.insert('transactions', {'userId': toUserId, 'type': 'credit', 'amount': amount, 'reference': 'From: $fromUserId', 'status': 'completed', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<int> payBill(String userId, double amount, String billType) async {
   final db = await dbHelper.database;
-  return await db.insert('transactions', {'userId': userId, 'type': 'payment', 'amount': amount, 'description': billType, 'status': 'completed', 'createdAt': DateTime.now().toIso8601String()});
+  return await db.insert('transactions', {'userId': userId, 'type': 'payment', 'amount': amount, 'reference': billType, 'status': 'completed', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<int> withdraw(String userId, double amount, String bankAccount) async {
   final db = await dbHelper.database;
-  return await db.insert('transactions', {'userId': userId, 'type': 'debit', 'amount': amount, 'description': 'Withdrawal to $bankAccount', 'status': 'pending', 'createdAt': DateTime.now().toIso8601String()});
+  return await db.insert('transactions', {'userId': userId, 'type': 'debit', 'amount': amount, 'reference': 'Withdrawal To $bankAccount', 'status': 'pending', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<List<Map<String, dynamic>>> getCards(String userId) async {
   final db = await dbHelper.database;
@@ -39,7 +39,11 @@ class WalletRepository {
   final db = await dbHelper.database;
   return await db.insert('walletCards', card);
  }
- Future<int> removeCard(int id) async {
+ Future<int> updateCard(String id, Map<String, dynamic> card) async {
+  final db = await dbHelper.database;
+  return await db.update('walletCards', card, where: 'id = ?', whereArgs: [id]);
+ }
+ Future<int> removeCard(String id) async {
   final db = await dbHelper.database;
   return await db.delete('walletCards', where: 'id = ?', whereArgs: [id]);
  }
@@ -64,7 +68,7 @@ class WalletRepository {
  Future<int> payExistingBill(String billId, String userId, double amount) async {
   final db = await dbHelper.database;
   await db.update('bills', {'status': 'paid', 'lastPaymentDate': DateTime.now().millisecondsSinceEpoch}, where: 'id = ?', whereArgs: [billId]);
-  return await db.insert('transactions', {'id': 'txn_${DateTime.now().millisecondsSinceEpoch}', 'userId': userId, 'type': 'payment', 'amount': amount, 'status': 'completed', 'reference': 'Bill Payment - $billId', 'createdAt': DateTime.now().millisecondsSinceEpoch});
+  return await db.insert('transactions', {'id': 'txn${DateTime.now().millisecondsSinceEpoch}', 'userId': userId, 'type': 'payment', 'amount': amount, 'status': 'completed', 'reference': 'Bill Payment - $billId', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<Map<String, int>> getBillSummary(String userId) async {
   final bills = await getBills(userId);
@@ -119,7 +123,7 @@ class WalletRepository {
  }
  Future<int> createMoneyRequest(Map<String, dynamic> request) async {
   final db = await dbHelper.database;
-  return await db.insert('transactions', {'userId': request['userId'], 'type': 'request', 'amount': request['amount'], 'description': request['reason'], 'status': 'pending', 'createdAt': DateTime.now().millisecondsSinceEpoch});
+  return await db.insert('transactions', {'userId': request['userId'], 'type': 'request', 'amount': request['amount'], 'reference': request['reason'], 'status': 'pending', 'createdAt': DateTime.now().millisecondsSinceEpoch});
  }
  Future<Map<String, dynamic>?> getMoneyRequest(int id) async {
   final db = await dbHelper.database;
@@ -168,6 +172,6 @@ class WalletRepository {
  }
  Future<List<Map<String, dynamic>>> getBankAccounts(String userId) async {
   final db = await dbHelper.database;
-  return await db.query('bankAccounts', where: 'userId = ?', whereArgs: [userId]);
+  return await db.query('walletCards', where: 'userId = ?', whereArgs: [userId]);
  }
 }

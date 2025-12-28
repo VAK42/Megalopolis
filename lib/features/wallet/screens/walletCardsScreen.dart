@@ -36,7 +36,7 @@ class WalletCardsScreen extends ConsumerWidget {
         itemBuilder: (context, index) {
          final card = cards[index];
          return GestureDetector(
-          onTap: () => context.go(Routes.walletCardDetail),
+          onTap: () => context.go('/wallet/card/${card['id']}'),
           child: Container(
            margin: const EdgeInsets.only(bottom: 16),
            padding: const EdgeInsets.all(20),
@@ -47,12 +47,12 @@ class WalletCardsScreen extends ConsumerWidget {
              Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-               Text(card['cardType']?.toString() ?? WalletConstants.creditCard, style: const TextStyle(color: Colors.white70)),
+               Text(card['type']?.toString().toUpperCase() ?? WalletConstants.creditCard, style: const TextStyle(color: Colors.white70)),
                const Icon(Icons.credit_card, color: Colors.white),
               ],
              ),
              const SizedBox(height: 24),
-             Text(card['cardNumber']?.toString() ?? WalletConstants.unknown, style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 2)),
+             Text(card['number']?.toString() ?? WalletConstants.unknown, style: const TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 2)),
              const SizedBox(height: 16),
              Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,14 +61,14 @@ class WalletCardsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                  const Text(WalletConstants.cardHolderName, style: TextStyle(color: Colors.white70, fontSize: 10)),
-                 Text(card['holderName']?.toString() ?? WalletConstants.unknown, style: const TextStyle(color: Colors.white)),
+                 Text(card['holder']?.toString() ?? WalletConstants.unknown, style: const TextStyle(color: Colors.white)),
                 ],
                ),
                Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                  const Text(WalletConstants.expiryDate, style: TextStyle(color: Colors.white70, fontSize: 10)),
-                 Text(card['expiryDate']?.toString() ?? WalletConstants.unknown, style: const TextStyle(color: Colors.white)),
+                 Text(card['expiry']?.toString() ?? WalletConstants.unknown, style: const TextStyle(color: Colors.white)),
                 ],
                ),
               ],

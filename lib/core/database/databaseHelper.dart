@@ -81,7 +81,11 @@ class DatabaseHelper {
   id TEXT PRIMARY KEY,
   userId TEXT NOT NULL,
   label TEXT,
-  fullAddress TEXT NOT NULL,
+  street TEXT,
+  unit TEXT,
+  city TEXT,
+  zipCode TEXT,
+  fullAddress TEXT,
   lat REAL,
   lng REAL,
   isDefault INTEGER DEFAULT 0,
@@ -212,8 +216,11 @@ class DatabaseHelper {
   CREATE TABLE tickets (
   id TEXT PRIMARY KEY,
   userId TEXT NOT NULL,
-  subject TEXT NOT NULL,
+  category TEXT,
+  title TEXT,
+  subject TEXT,
   description TEXT,
+  type TEXT,
   status TEXT DEFAULT 'open',
   priority TEXT DEFAULT 'medium',
   createdAt INTEGER NOT NULL,
@@ -293,7 +300,9 @@ class DatabaseHelper {
   number TEXT,
   holder TEXT,
   expiry TEXT,
-  balance REAL
+  cvv TEXT,
+  balance REAL,
+  isDefault INTEGER DEFAULT 0
   )
   ''');
   await db.execute('''
@@ -325,10 +334,28 @@ class DatabaseHelper {
   await db.execute('''
   CREATE TABLE appSettings (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  userId TEXT NOT NULL,
-  key TEXT NOT NULL,
-  value TEXT NOT NULL,
-  type TEXT NOT NULL,
+  userId TEXT NOT NULL UNIQUE,
+  theme TEXT DEFAULT 'System Default',
+  language TEXT DEFAULT 'en',
+  pushNotifications INTEGER DEFAULT 1,
+  emailNotifications INTEGER DEFAULT 0,
+  smsNotifications INTEGER DEFAULT 0,
+  orderUpdates INTEGER DEFAULT 1,
+  promotions INTEGER DEFAULT 0,
+  rideUpdates INTEGER DEFAULT 1,
+  chatMessages INTEGER DEFAULT 1,
+  sound INTEGER DEFAULT 1,
+  vibration INTEGER DEFAULT 1,
+  twoFactorAuth INTEGER DEFAULT 0,
+  biometricLogin INTEGER DEFAULT 0,
+  loginAlerts INTEGER DEFAULT 1,
+  shareLocation INTEGER DEFAULT 1,
+  shareActivity INTEGER DEFAULT 0,
+  showOnlineStatus INTEGER DEFAULT 1,
+  allowMessages INTEGER DEFAULT 1,
+  allowCalls INTEGER DEFAULT 1,
+  dataCollection INTEGER DEFAULT 0,
+  personalizedAds INTEGER DEFAULT 0,
   updatedAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
@@ -420,6 +447,7 @@ class DatabaseHelper {
   userId TEXT NOT NULL,
   reward REAL DEFAULT 0.0,
   isScratched INTEGER DEFAULT 0,
+  scratchedAt INTEGER,
   claimedAt INTEGER,
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
@@ -482,6 +510,89 @@ class DatabaseHelper {
   lng REAL NOT NULL,
   sharedAt TEXT NOT NULL,
   isActive INTEGER DEFAULT 1,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE recurringPayments (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  title TEXT NOT NULL,
+  amount REAL NOT NULL,
+  frequency TEXT NOT NULL,
+  nextPayDate INTEGER NOT NULL,
+  isActive INTEGER DEFAULT 1,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE budgets (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  monthlyBudget REAL NOT NULL,
+  spent REAL DEFAULT 0.0,
+  remaining REAL DEFAULT 0.0,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE budgetCategories (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  budget REAL NOT NULL,
+  spent REAL DEFAULT 0.0,
+  color TEXT,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE investments (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  type TEXT NOT NULL,
+  currentValue REAL NOT NULL,
+  returns REAL DEFAULT 0.0,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE loanOffers (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  amount REAL NOT NULL,
+  interestRate REAL NOT NULL,
+  tenure INTEGER NOT NULL,
+  emi REAL NOT NULL,
+  totalRepayment REAL NOT NULL,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE cashbackOffers (
+  id TEXT PRIMARY KEY,
+  userId TEXT,
+  title TEXT NOT NULL,
+  description TEXT,
+  percentage REAL NOT NULL,
+  expiresAt INTEGER,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE cashbackHistory (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  amount REAL NOT NULL,
+  source TEXT NOT NULL,
+  earnedAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
   ''');

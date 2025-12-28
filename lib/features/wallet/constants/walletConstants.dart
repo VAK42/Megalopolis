@@ -173,5 +173,27 @@ class WalletConstants {
  static const String bills = 'Bills';
  static const String visaCardType = 'Visa';
  static const String masterCardType = 'Mastercard';
+ static const String americanExpress = 'American Express';
  static const String idPrefix = 'ID:';
+ static const String msgSelectContactAndAmount = 'Please Select A Contact & Enter Amount';
+ static const String msgFillAllFields = 'Please Fill All Fields';
+ static const String msgSelectBill = 'Please Select A Bill To Pay';
+ static const String msgConfirmDeleteCard = 'Are You Sure You Want To Delete This Card?';
+ static const String cancel = 'Cancel';
+ static const String delete = 'Delete';
+ static const String save = 'Save';
+ static const String defaultEmail = 'user@example.com';
+ static const String txnPrefix = 'txn';
+ static const String cardType = 'Card Type';
+ static const String receipt = 'Receipt';
+ static const String close = 'Close';
+ static const String provider = 'Provider';
+ static const String reference = 'Reference';
+ static const String msgEnterAmount = 'Please Enter An Amount';
+ static const String msgEnterValidAmount = 'Please Enter A Valid Amount';
+ static const String reasonOptional = 'Reason (Optional)';
+ static const String enterReasonForRequest = 'Enter Reason For Request';
+ static const String moneyRequest = 'Money Request';
+ static const String requestSentTo = 'Request Sent To';
+ static const String failedToSendRequest = 'Failed To Send Request';
 }

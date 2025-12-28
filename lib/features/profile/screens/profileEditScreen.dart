@@ -51,6 +51,16 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.nameCannotBeEmpty), backgroundColor: AppColors.error));
    return;
   }
+  final emailText = emailController.text.trim();
+  if (emailText.isNotEmpty && !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(emailText)) {
+   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.pleaseEnterValidEmail), backgroundColor: AppColors.error));
+   return;
+  }
+  final phoneText = phoneController.text.trim();
+  if (phoneText.isNotEmpty && phoneText.length < 10) {
+   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.pleaseEnterValidPhone), backgroundColor: AppColors.error));
+   return;
+  }
   setState(() => _isLoading = true);
   try {
    final updatedUser = UserModel(
@@ -67,7 +77,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     updatedAt: DateTime.now(),
    );
    await ref.read(userRepositoryProvider).updateUser(updatedUser);
-   ref.invalidate(authProvider);
+   await ref.read(authProvider.notifier).refreshUser();
    ref.invalidate(currentUserProvider);
    if (mounted) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.profileUpdatedSuccessfully), backgroundColor: AppColors.success));

@@ -10,8 +10,7 @@ class AddressesScreen extends ConsumerWidget {
  const AddressesScreen({super.key});
  @override
  Widget build(BuildContext context, WidgetRef ref) {
-  final userAsync = ref.watch(authProvider);
-  final userId = userAsync.value?.id.toString() ?? '';
+  final userId = ref.watch(currentUserIdProvider) ?? '';
   final addressesAsync = ref.watch(addressProvider(userId));
   return Scaffold(
    appBar: AppBar(

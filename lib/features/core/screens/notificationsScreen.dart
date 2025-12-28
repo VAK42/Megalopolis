@@ -151,7 +151,7 @@ class NotificationsScreen extends ConsumerWidget {
        await ref.read(notificationsRepositoryProvider).markAsRead(notification['id'].toString());
        ref.invalidate(notificationsProvider(userId));
       }
-      if (context.mounted) context.go('${Routes.notificationDetail}/${notification['id']}');
+      if (context.mounted) context.go('/notifications/${notification['id']}');
      },
     ),
    ),

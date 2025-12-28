@@ -40,6 +40,7 @@ class _WalletSendScreenState extends ConsumerState<WalletSendScreen> {
          itemBuilder: (context, index) {
           final friend = friends[index];
           final name = friend['name']?.toString() ?? WalletConstants.unknown;
+          final avatar = friend['avatar']?.toString();
           final isSelected = selectedContact == name;
           return GestureDetector(
            onTap: () => setState(() => selectedContact = name),
@@ -53,9 +54,10 @@ class _WalletSendScreenState extends ConsumerState<WalletSendScreen> {
                decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: isSelected ? Border.all(color: AppColors.primary, width: 2) : null,
-                gradient: AppColors.primaryGradient,
+                gradient: avatar == null ? AppColors.primaryGradient : null,
+                image: avatar != null ? DecorationImage(image: NetworkImage(avatar), fit: BoxFit.cover) : null,
                ),
-               child: const Icon(Icons.person, color: Colors.white),
+               child: avatar == null ? const Icon(Icons.person, color: Colors.white) : null,
               ),
               const SizedBox(height: 4),
               Text(name, style: TextStyle(fontSize: 12, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
@@ -98,7 +100,28 @@ class _WalletSendScreenState extends ConsumerState<WalletSendScreen> {
        ],
       ),
       const SizedBox(height: 32),
-      AppButton(text: WalletConstants.continueText, onPressed: () => context.go(Routes.walletSendConfirm), icon: Icons.arrow_forward),
+      AppButton(
+       text: WalletConstants.continueText,
+       onPressed: () {
+        if (selectedContact == null || amountController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.msgSelectContactAndAmount)));
+          return;
+        }
+        final friend = friendsAsync.value?.firstWhere((f) => f['name'] == selectedContact, orElse: () => {});
+        final email = friend?['email'] ?? WalletConstants.defaultEmail;
+        final recipientId = friend?['id']?.toString() ?? WalletConstants.unknown;
+        final avatar = friend?['avatar']?.toString() ?? '';
+        final amount = double.tryParse(amountController.text) ?? 0.0;
+        context.go(Routes.walletSendConfirm, extra: {
+          'name': selectedContact,
+          'email': email,
+          'amount': amount,
+          'recipientId': recipientId,
+          'avatar': avatar,
+        });
+       },
+       icon: Icons.arrow_forward,
+      ),
      ],
     ),
    ),

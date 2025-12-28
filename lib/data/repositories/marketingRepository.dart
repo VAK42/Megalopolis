@@ -12,12 +12,11 @@ class MarketingRepository {
  Future<List<Map<String, dynamic>>> getChallenges(String userId) async {
   final db = await dbHelper.database;
   return await db.rawQuery(
-   '''
+  '''
   SELECT c.*, uc.currentProgress, uc.isCompleted 
   FROM challenges c
   LEFT JOIN userChallenges uc ON c.id = uc.challengeId AND uc.userId = ?
-  ''',
-   [userId],
+  ''', [userId],
   );
  }
  Future<Map<String, dynamic>> getCheckInStatus(String userId) async {
@@ -41,13 +40,12 @@ class MarketingRepository {
  Future<int> performCheckIn(String userId) async {
   final db = await dbHelper.database;
   final now = DateTime.now().millisecondsSinceEpoch;
-  return await db.insert('checkIns', {'userId': userId, 'checkInDate': now, 'reward': 10});
+  return await db.insert('checkIns', {'id': 'ci$now', 'userId': userId, 'checkInDate': now, 'reward': 10.0, 'streak': 1, 'createdAt': now});
  }
  Future<List<Map<String, dynamic>>> getLeaderboard() async {
   final db = await dbHelper.database;
   return await db.rawQuery('''
-  SELECT u.id, u.name, u.rating, 
-   (SELECT COUNT(*) FROM orders WHERE userId = u.id AND status = 'completed') as points
+  SELECT u.id, u.name, u.rating, (SELECT COUNT(*) FROM orders WHERE userId = u.id AND status = 'completed') as points
   FROM users u
   WHERE u.role = 'user'
   ORDER BY points DESC
@@ -64,28 +62,34 @@ class MarketingRepository {
   return leaderboard.length + 1;
  }
  Future<Map<String, dynamic>> getScratchCard(String userId) async {
-  final db = await dbHelper.database;
-  final result = await db.query('scratchCards', where: 'userId = ? AND isScratched = 0', whereArgs: [userId], limit: 1);
-  if (result.isEmpty) {
-   final now = DateTime.now().millisecondsSinceEpoch;
-   final rewards = [5, 10, 15, 20, 25, 50];
-   final reward = rewards[now % rewards.length];
-   final id = await db.insert('scratchCards', {'userId': userId, 'reward': reward, 'isScratched': 0, 'createdAt': now});
-   return {'id': id, 'reward': reward, 'isScratched': false};
+  try {
+   final db = await dbHelper.database;
+   await db.delete('scratchCards', where: 'id IS NULL');
+   final result = await db.query('scratchCards', where: 'userId = ? AND isScratched = 0 AND id IS NOT NULL', whereArgs: [userId], limit: 1);
+   if (result.isEmpty) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final rewards = [5, 10, 15, 20, 25, 50];
+    final reward = rewards[now % rewards.length];
+    final id = 'sc$now';
+    await db.insert('scratchCards', {'id': id, 'userId': userId, 'reward': reward, 'isScratched': 0, 'createdAt': now});
+    return {'id': id, 'reward': reward, 'isScratched': false};
+   }
+   return {'id': result.first['id'], 'reward': result.first['reward'], 'isScratched': result.first['isScratched'] == 1};
+  } catch (e) {
+   return {};
   }
-  return {'id': result.first['id'], 'reward': result.first['reward'], 'isScratched': result.first['isScratched'] == 1};
  }
- Future<int> scratchCard(int cardId) async {
+ Future<int> scratchCard(String cardId) async {
   final db = await dbHelper.database;
   return await db.update('scratchCards', {'isScratched': 1, 'scratchedAt': DateTime.now().millisecondsSinceEpoch}, where: 'id = ?', whereArgs: [cardId]);
  }
- Future<int> claimReward(int cardId, String userId) async {
+ Future<int> claimReward(String cardId, String userId) async {
   final db = await dbHelper.database;
   final card = await db.query('scratchCards', where: 'id = ?', whereArgs: [cardId]);
   if (card.isEmpty) return 0;
-  final reward = card.first['reward'] as int;
+  final reward = (card.first['reward'] as num).toInt();
   await db.rawUpdate('UPDATE users SET balance = balance + ? WHERE id = ?', [reward, userId]);
-  return await db.update('scratchCards', {'isClaimed': 1}, where: 'id = ?', whereArgs: [cardId]);
+  return await db.update('scratchCards', {'claimedAt': DateTime.now().millisecondsSinceEpoch}, where: 'id = ?', whereArgs: [cardId]);
  }
  Future<List<int>> getSpinWheelOptions() async {
   final db = await dbHelper.database;
@@ -103,11 +107,11 @@ class MarketingRepository {
   final db = await dbHelper.database;
   return await db.delete('checkIns', where: 'id = ?', whereArgs: [checkInId]);
  }
- Future<int> deleteScratchCard(int cardId) async {
+ Future<int> deleteScratchCard(String cardId) async {
   final db = await dbHelper.database;
   return await db.delete('scratchCards', where: 'id = ?', whereArgs: [cardId]);
  }
- Future<int> deleteBadge(int badgeId) async {
+ Future<int> deleteBadge(String badgeId) async {
   final db = await dbHelper.database;
   return await db.delete('badges', where: 'id = ?', whereArgs: [badgeId]);
  }

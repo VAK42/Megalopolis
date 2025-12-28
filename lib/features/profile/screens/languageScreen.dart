@@ -12,6 +12,7 @@ class LanguageScreen extends ConsumerStatefulWidget {
 }
 class _LanguageScreenState extends ConsumerState<LanguageScreen> {
  String selectedLanguage = ProfileConstants.english;
+ bool _loaded = false;
  final List<Map<String, String>> languages = [
   {'name': 'English', 'code': 'en'},
   {'name': 'Spanish', 'code': 'es'},
@@ -26,6 +27,23 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen> {
   {'name': 'Arabic', 'code': 'ar'},
   {'name': 'Hindi', 'code': 'hi'},
  ];
+ @override
+ void didChangeDependencies() {
+  super.didChangeDependencies();
+  if (!_loaded) {
+   _loadSettings();
+   _loaded = true;
+  }
+ }
+ void _loadSettings() async {
+  final userId = ref.read(currentUserIdProvider) ?? 'user1';
+  final settings = await ref.read(profileRepositoryProvider).getUserSettings(userId);
+  if (settings != null && mounted) {
+   final code = settings['language']?.toString() ?? 'en';
+   final lang = languages.firstWhere((l) => l['code'] == code, orElse: () => {'name': 'English', 'code': 'en'});
+   setState(() => selectedLanguage = lang['name']!);
+  }
+ }
  @override
  Widget build(BuildContext context) {
   return Scaffold(

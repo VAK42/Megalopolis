@@ -14,6 +14,26 @@ class _ProfileSecurityScreenState extends ConsumerState<ProfileSecurityScreen> {
  bool twoFactorAuth = false;
  bool biometricLogin = true;
  bool loginAlerts = true;
+ bool _loaded = false;
+ @override
+ void didChangeDependencies() {
+  super.didChangeDependencies();
+  if (!_loaded) {
+   _loadSettings();
+   _loaded = true;
+  }
+ }
+ void _loadSettings() async {
+  final userId = ref.read(currentUserIdProvider) ?? 'user1';
+  final settings = await ref.read(profileRepositoryProvider).getUserSettings(userId);
+  if (settings != null && mounted) {
+   setState(() {
+    twoFactorAuth = settings['twoFactorAuth'] == 1;
+    biometricLogin = settings['biometricLogin'] == 1;
+    loginAlerts = settings['loginAlerts'] == 1;
+   });
+  }
+ }
  @override
  Widget build(BuildContext context) {
   return Scaffold(

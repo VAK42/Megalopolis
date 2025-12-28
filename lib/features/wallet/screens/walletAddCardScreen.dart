@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../shared/widgets/appButton.dart';
+import '../../../providers/walletProvider.dart';
+import '../../../providers/authProvider.dart';
 import '../constants/walletConstants.dart';
 class WalletAddCardScreen extends ConsumerStatefulWidget {
  const WalletAddCardScreen({super.key});
@@ -14,6 +16,7 @@ class _WalletAddCardScreenState extends ConsumerState<WalletAddCardScreen> {
  final holderNameController = TextEditingController();
  final expiryController = TextEditingController();
  final cvvController = TextEditingController();
+ String selectedCardType = WalletConstants.visaCardType;
  @override
  Widget build(BuildContext context) {
   return Scaffold(
@@ -35,7 +38,7 @@ class _WalletAddCardScreenState extends ConsumerState<WalletAddCardScreen> {
          Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-           const Text(WalletConstants.creditCard, style: TextStyle(color: Colors.white70)),
+           Text(selectedCardType.toUpperCase(), style: const TextStyle(color: Colors.white70)),
            const Icon(Icons.credit_card, color: Colors.white),
           ],
          ),
@@ -67,12 +70,26 @@ class _WalletAddCardScreenState extends ConsumerState<WalletAddCardScreen> {
       const SizedBox(height: 24),
       const Text(WalletConstants.cardDetails, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       const SizedBox(height: 16),
+      DropdownButtonFormField<String>(
+       initialValue: selectedCardType,
+       decoration: InputDecoration(
+        labelText: WalletConstants.cardType,
+        prefixIcon: const Icon(Icons.credit_card),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+       ),
+       items: [
+        DropdownMenuItem(value: WalletConstants.visaCardType, child: Text(WalletConstants.visaCardType)),
+        DropdownMenuItem(value: WalletConstants.masterCardType, child: Text(WalletConstants.masterCardType)),
+       ],
+       onChanged: (value) => setState(() => selectedCardType = value ?? WalletConstants.visaCardType),
+      ),
+      const SizedBox(height: 16),
       TextField(
        controller: cardNumberController,
        keyboardType: TextInputType.number,
        decoration: InputDecoration(
         labelText: WalletConstants.cardNumber,
-        prefixIcon: const Icon(Icons.credit_card),
+        prefixIcon: const Icon(Icons.numbers),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
        ),
        onChanged: (value) => setState(() {}),
@@ -116,7 +133,29 @@ class _WalletAddCardScreenState extends ConsumerState<WalletAddCardScreen> {
        ],
       ),
       const SizedBox(height: 32),
-      AppButton(text: WalletConstants.saveCard, onPressed: () => context.pop(), icon: Icons.save),
+      AppButton(
+       text: WalletConstants.saveCard,
+       onPressed: () {
+        if (cardNumberController.text.isEmpty || holderNameController.text.isEmpty || expiryController.text.isEmpty || cvvController.text.isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.msgFillAllFields)));
+         return;
+        }
+        final userId = ref.read(currentUserIdProvider) ?? WalletConstants.defaultUserId;
+        final newCard = {
+         'id': 'card${DateTime.now().millisecondsSinceEpoch}',
+         'userId': userId,
+         'type': selectedCardType,
+         'number': cardNumberController.text,
+         'holder': holderNameController.text,
+         'expiry': expiryController.text,
+         'cvv': cvvController.text,
+         'balance': 0.0,
+        };
+        ref.read(walletCardsProvider(userId).notifier).addCard(newCard);
+        context.pop();
+       },
+       icon: Icons.save,
+      ),
      ],
     ),
    ),

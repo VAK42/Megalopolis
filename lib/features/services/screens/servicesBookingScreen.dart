@@ -27,7 +27,6 @@ class _ServicesBookingScreenState extends ConsumerState<ServicesBookingScreen> {
   final servicePrice = bookingState['price'] ?? 50.0;
   final platformFee = 2.50;
   final total = servicePrice + platformFee;
-  final providerName = bookingState['providerName'] ?? ServicesConstants.serviceProvider;
   return Scaffold(
    appBar: AppBar(
     leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),

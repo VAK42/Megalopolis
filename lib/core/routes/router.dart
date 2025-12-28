@@ -787,18 +787,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'orders/:orderId/tracking',
-                    builder: (context, state) =>
-                        const MartOrderTrackingScreen(),
+                    builder: (context, state) => const MartOrderTrackingScreen(),
                   ),
                   GoRoute(
                     path: 'orders/:orderId/return',
-                    builder: (context, state) =>
-                        const MartReturnRequestScreen(),
+                    builder: (context, state) => const MartReturnRequestScreen(),
                   ),
                   GoRoute(
                     path: 'returnSubmitted',
-                    builder: (context, state) =>
-                        const MartReturnSubmittedScreen(),
+                    builder: (context, state) => const MartReturnSubmittedScreen(),
                   ),
                   GoRoute(
                     path: 'wishlist',
@@ -893,13 +890,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'checkout/address',
-                    builder: (context, state) =>
-                        const FoodCheckoutAddressScreen(),
+                    builder: (context, state) => const FoodCheckoutAddressScreen(),
                   ),
                   GoRoute(
                     path: 'checkout/promo',
-                    builder: (context, state) =>
-                        const FoodCheckoutPromoScreen(),
+                    builder: (context, state) => const FoodCheckoutPromoScreen(),
                   ),
                   GoRoute(
                     path: 'checkout/note',
@@ -907,13 +902,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'checkout/payment',
-                    builder: (context, state) =>
-                        const FoodCheckoutPaymentScreen(),
+                    builder: (context, state) => const FoodCheckoutPaymentScreen(),
                   ),
                   GoRoute(
                     path: 'paymentProcessing',
-                    builder: (context, state) =>
-                        const FoodPaymentProcessingScreen(),
+                    builder: (context, state) => const FoodPaymentProcessingScreen(),
                   ),
                   GoRoute(
                     path: 'orderPlaced',
@@ -1018,8 +1011,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'reservations',
-                    builder: (context, state) =>
-                        const FoodReservationHistoryScreen(),
+                    builder: (context, state) => const FoodReservationHistoryScreen(),
                   ),
                   GoRoute(
                     path: 'loyalty',
@@ -1041,7 +1033,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'card/:id',
-                    builder: (context, state) => const WalletCardDetailScreen(),
+                    builder: (context, state) {
+                      final cardId = state.pathParameters['id'] ?? '';
+                      return WalletCardDetailScreen(cardId: cardId);
+                    },
                   ),
                   GoRoute(
                     path: 'cards',
@@ -1053,8 +1048,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'transactions',
-                    builder: (context, state) =>
-                        const WalletTransactionsScreen(),
+                    builder: (context, state) => const WalletTransactionsScreen(),
                   ),
                   GoRoute(
                     path: 'send',
@@ -1062,19 +1056,27 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'send/confirm',
-                    builder: (context, state) => const WalletSendConfirmScreen(
-                      recipientName: '',
-                      recipientEmail: '',
-                      amount: 0,
-                    ),
+                    builder: (context, state) {
+                      final extra = state.extra as Map<String, dynamic>?;
+                      return WalletSendConfirmScreen(
+                        recipientName: extra?['name'] ?? '',
+                        recipientEmail: extra?['email'] ?? '',
+                        amount: (extra?['amount'] as num?)?.toDouble() ?? 0.0,
+                        recipientId: extra?['recipientId'] ?? '',
+                        recipientAvatar: extra?['avatar'] ?? '',
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'send/success',
-                    builder: (context, state) => const WalletSendSuccessScreen(
-                      recipientName: '',
-                      amount: 0,
-                      transactionId: '',
-                    ),
+                    builder: (context, state) {
+                      final extra = state.extra as Map<String, dynamic>?;
+                      return WalletSendSuccessScreen(
+                        recipientName: extra?['name'] ?? '',
+                        amount: (extra?['amount'] as num?)?.toDouble() ?? 0.0,
+                        transactionId: extra?['transactionId'] ?? '',
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'request',
@@ -1093,8 +1095,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'topUp/confirm',
-                    builder: (context, state) =>
-                        const WalletTopUpConfirmScreen(amount: 0, method: ''),
+                    builder: (context, state) {
+                      final extra = state.extra as Map<String, dynamic>?;
+                      return WalletTopUpConfirmScreen(
+                        amount: (extra?['amount'] as num?)?.toDouble() ?? 0.0,
+                        method: extra?['method'] ?? '',
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'topUp/success',
@@ -1115,17 +1122,22 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'billPayment',
-                    builder: (context, state) =>
-                        const WalletBillPaymentsScreen(),
+                    builder: (context, state) => const WalletBillPaymentsScreen(),
                   ),
                   GoRoute(
                     path: 'payBill',
-                    builder: (context, state) => const WalletPayBillScreen(),
+                    builder: (context, state) {
+                      final extra = state.extra as Map<String, dynamic>?;
+                      return WalletPayBillScreen(
+                        provider: extra?['provider'] ?? '',
+                        amount: (extra?['amount'] as num?)?.toDouble() ?? 0.0,
+                        billId: extra?['billId'] ?? '',
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'linkedBanks',
-                    builder: (context, state) =>
-                        const WalletBankAccountsScreen(),
+                    builder: (context, state) => const WalletBankAccountsScreen(),
                   ),
                   GoRoute(
                     path: 'withdraw',
@@ -1157,8 +1169,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'recurring',
-                    builder: (context, state) =>
-                        const WalletRecurringPaymentsScreen(),
+                    builder: (context, state) => const WalletRecurringPaymentsScreen(),
                   ),
                 ],
               ),
@@ -1183,8 +1194,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'providers',
-                    builder: (context, state) =>
-                        const ServicesProvidersScreen(),
+                    builder: (context, state) => const ServicesProvidersScreen(),
                   ),
                   GoRoute(
                     path: 'provider/:id',
@@ -1224,8 +1234,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'subscription',
-                    builder: (context, state) =>
-                        const ServicesSubscriptionScreen(),
+                    builder: (context, state) => const ServicesSubscriptionScreen(),
                   ),
                   GoRoute(
                     path: 'warranty',
@@ -1233,8 +1242,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'insurance',
-                    builder: (context, state) =>
-                        const ServicesInsuranceScreen(),
+                    builder: (context, state) => const ServicesInsuranceScreen(),
                   ),
                 ],
               ),
@@ -1288,8 +1296,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'notificationSettings',
-                    builder: (context, state) =>
-                        const NotificationSettingsScreen(),
+                    builder: (context, state) => const NotificationSettingsScreen(),
                   ),
                   GoRoute(
                     path: 'privacy',

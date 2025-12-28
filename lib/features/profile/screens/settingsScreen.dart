@@ -3,9 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
-import '../../../core/database/databaseHelper.dart';
-import '../../../core/database/databaseSeeder.dart';
-import '../../../providers/authProvider.dart';
 import '../constants/profileConstants.dart';
 class SettingsScreen extends ConsumerWidget {
  const SettingsScreen({super.key});
@@ -36,37 +33,6 @@ class SettingsScreen extends ConsumerWidget {
      _buildSettingItem(context, Icons.info, ProfileConstants.appVersion, ProfileConstants.versionNumber, () => context.go(Routes.about)),
      _buildSettingItem(context, Icons.description, ProfileConstants.termsOfService, '', () => context.go(Routes.about)),
      _buildSettingItem(context, Icons.policy, ProfileConstants.privacyPolicy, '', () => context.go(Routes.about)),
-     const SizedBox(height: 24),
-     const Text(ProfileConstants.developerOptions, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-     const SizedBox(height: 12),
-     _buildDangerSettingItem(context, Icons.restart_alt, ProfileConstants.resetDatabase, ProfileConstants.clearAllDataAndReseed, () => _showResetDialog(context, ref)),
-    ],
-   ),
-  );
- }
- void _showResetDialog(BuildContext context, WidgetRef ref) {
-  showDialog(
-   context: context,
-   builder: (ctx) => AlertDialog(
-    title: const Text(ProfileConstants.resetDatabaseQuestion),
-    content: const Text(ProfileConstants.resetDatabaseWarning),
-    actions: [
-     TextButton(onPressed: () => Navigator.pop(ctx), child: const Text(ProfileConstants.cancel)),
-     TextButton(
-      onPressed: () async {
-       Navigator.pop(ctx);
-       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.resettingDatabase)));
-       await DatabaseHelper.instance.resetDatabase();
-       await DatabaseSeeder().seed();
-       ref.read(currentUserIdProvider.notifier).state = null;
-       ref.invalidate(authProvider);
-       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.databaseResetComplete), backgroundColor: AppColors.success));
-        context.go(Routes.welcome);
-       }
-      },
-      child: const Text(ProfileConstants.reset, style: TextStyle(color: AppColors.error)),
-     ),
     ],
    ),
   );
@@ -79,19 +45,6 @@ class SettingsScreen extends ConsumerWidget {
     title: Text(title),
     subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-    onTap: onTap,
-   ),
-  );
- }
- Widget _buildDangerSettingItem(BuildContext context, IconData icon, String title, String subtitle, VoidCallback onTap) {
-  return Card(
-   margin: const EdgeInsets.only(bottom: 8),
-   color: AppColors.error.withValues(alpha: 0.1),
-   child: ListTile(
-    leading: Icon(icon, color: AppColors.error),
-    title: Text(title, style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
-    subtitle: Text(subtitle, style: TextStyle(color: AppColors.error.withValues(alpha: 0.7))),
-    trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.error),
     onTap: onTap,
    ),
   );

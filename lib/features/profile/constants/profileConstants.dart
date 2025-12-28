@@ -157,7 +157,7 @@ class ProfileConstants {
  static const String storageUsed = 'Storage Used';
  static const String clearCache = 'Clear Cache';
  static const String downloadedFiles = 'Downloaded Files';
- static const String appName = 'Super App';
+ static const String appName = 'Megalopolis';
  static const String version = 'Version 1.0.0';
  static const String developer = 'Developed By';
  static const String companyName = 'VAK';
@@ -231,9 +231,9 @@ class ProfileConstants {
  static const String deleteAccount = 'Delete Account';
  static const String permanentlyDeleteAccount = 'Permanently Delete Your Account And Data';
  static const String membershipBenefits = 'Membership Benefits';
- static const String aboutAppName = 'Super App';
+ static const String aboutAppName = 'Megalopolis';
  static const String copyrightYear = '2025';
- static const String developedBy = 'Developed By VAK';
+ static const String developedBy = 'Developed By';
  static const String versionInfo = 'Version 1.0.0';
  static const String feedbackPlaceholder = 'Tell Us What You Think...';
  static const String qrCodeTitle = 'Your QR Code';
@@ -304,4 +304,15 @@ class ProfileConstants {
  static const String reset = 'Reset';
  static const String profileUpdatedSuccessfully = 'Profile Updated Successfully!';
  static const String logoutQuestion = 'Are You Sure You Want To Logout?';
+ static const String deletePaymentMethodTitle = 'Delete Payment Method?';
+ static const String deletePaymentMethodContent = 'Are You Sure You Want To Remove This Payment Method?';
+ static const String setAsDefault = 'Set As Default';
+ static const String pleaseEnterSubject = 'Please Enter A Subject';
+ static const String pleaseDescribeIssue = 'Please Describe Your Issue';
+ static const String emailSentSuccessfully = 'Email Sent Successfully!';
+ static const String pleaseEnterStreetAddress = 'Please Enter A Street Address';
+ static const String addressSaved = 'Address Saved!';
+ static const String apartmentSuiteOptional = 'Apartment, Suite,... (Optional)';
+ static const String pleaseEnterValidEmail = 'Please Enter A Valid Email Address';
+ static const String pleaseEnterValidPhone = 'Please Enter A Valid Phone Number';
 }

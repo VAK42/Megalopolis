@@ -20,6 +20,32 @@ class _NotificationSettingsScreenState extends ConsumerState<NotificationSetting
  bool chatMessages = true;
  bool sound = true;
  bool vibration = true;
+ bool _loaded = false;
+ @override
+ void didChangeDependencies() {
+  super.didChangeDependencies();
+  if (!_loaded) {
+   _loadSettings();
+   _loaded = true;
+  }
+ }
+ void _loadSettings() async {
+  final userId = ref.read(currentUserIdProvider) ?? 'user1';
+  final settings = await ref.read(profileRepositoryProvider).getUserSettings(userId);
+  if (settings != null && mounted) {
+   setState(() {
+    pushNotifications = settings['pushNotifications'] == 1;
+    emailNotifications = settings['emailNotifications'] == 1;
+    smsNotifications = settings['smsNotifications'] == 1;
+    orderUpdates = settings['orderUpdates'] == 1;
+    promotions = settings['promotions'] == 1;
+    rideUpdates = settings['rideUpdates'] == 1;
+    chatMessages = settings['chatMessages'] == 1;
+    sound = settings['sound'] == 1;
+    vibration = settings['vibration'] == 1;
+   });
+  }
+ }
  @override
  Widget build(BuildContext context) {
   return Scaffold(

@@ -18,6 +18,30 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
  bool allowCalls = true;
  bool dataCollection = false;
  bool personalizedAds = false;
+ bool _loaded = false;
+ @override
+ void didChangeDependencies() {
+  super.didChangeDependencies();
+  if (!_loaded) {
+   _loadSettings();
+   _loaded = true;
+  }
+ }
+ void _loadSettings() async {
+  final userId = ref.read(currentUserIdProvider) ?? 'user1';
+  final settings = await ref.read(profileRepositoryProvider).getUserSettings(userId);
+  if (settings != null && mounted) {
+   setState(() {
+    shareLocation = settings['shareLocation'] == 1;
+    shareActivity = settings['shareActivity'] == 1;
+    showOnlineStatus = settings['showOnlineStatus'] == 1;
+    allowMessages = settings['allowMessages'] == 1;
+    allowCalls = settings['allowCalls'] == 1;
+    dataCollection = settings['dataCollection'] == 1;
+    personalizedAds = settings['personalizedAds'] == 1;
+   });
+  }
+ }
  @override
  Widget build(BuildContext context) {
   return Scaffold(

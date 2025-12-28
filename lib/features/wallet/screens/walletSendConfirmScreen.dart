@@ -4,15 +4,19 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appButton.dart';
+import '../../../providers/walletProvider.dart';
+import '../../../providers/authProvider.dart';
 import '../constants/walletConstants.dart';
 class WalletSendConfirmScreen extends ConsumerWidget {
  final String recipientName;
  final String recipientEmail;
+ final String recipientId;
+ final String recipientAvatar;
  final double amount;
- const WalletSendConfirmScreen({super.key, required this.recipientName, required this.recipientEmail, required this.amount});
+ const WalletSendConfirmScreen({super.key, required this.recipientName, required this.recipientEmail, required this.amount, required this.recipientId, this.recipientAvatar = ''});
  @override
  Widget build(BuildContext context, WidgetRef ref) {
-  final fee = 0.0;
+  const fee = 0.0;
   final total = amount + fee;
   return Scaffold(
    appBar: AppBar(
@@ -27,8 +31,12 @@ class WalletSendConfirmScreen extends ConsumerWidget {
       Container(
        width: 100,
        height: 100,
-       decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
-       child: const Icon(Icons.person, color: Colors.white, size: 50),
+       decoration: BoxDecoration(
+        gradient: recipientAvatar.isEmpty ? AppColors.primaryGradient : null,
+        shape: BoxShape.circle,
+        image: recipientAvatar.isNotEmpty ? DecorationImage(image: NetworkImage(recipientAvatar), fit: BoxFit.cover) : null,
+       ),
+       child: recipientAvatar.isEmpty ? const Icon(Icons.person, color: Colors.white, size: 50) : null,
       ),
       const SizedBox(height: 16),
       Text(recipientName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -47,7 +55,22 @@ class WalletSendConfirmScreen extends ConsumerWidget {
        child: Column(children: [_buildInfoRow(WalletConstants.from, WalletConstants.wallet), const Divider(height: 24), _buildInfoRow(WalletConstants.to, recipientName), const Divider(height: 24), _buildInfoRow(WalletConstants.transactionFee, '${WalletConstants.currencySymbol}${fee.toStringAsFixed(2)}'), const Divider(height: 24), _buildInfoRow(WalletConstants.totalAmount, '${WalletConstants.currencySymbol}${total.toStringAsFixed(2)}', isTotal: true)]),
       ),
       const Spacer(),
-      AppButton(text: WalletConstants.confirmTransfer, onPressed: () => context.go(Routes.walletSendSuccess), icon: Icons.check_circle),
+      AppButton(
+       text: WalletConstants.confirmTransfer,
+       onPressed: () async {
+        final userId = ref.read(currentUserIdProvider) ?? WalletConstants.defaultUserId;
+        final success = await ref.read(walletNotifierProvider(userId).notifier).transfer(recipientId, amount);
+        if (success && context.mounted) {
+         ref.invalidate(walletBalanceProvider(userId));
+         context.go(Routes.walletSendSuccess, extra: {
+          'name': recipientName,
+          'amount': amount,
+          'transactionId': '${WalletConstants.txnPrefix}${DateTime.now().millisecondsSinceEpoch}',
+         });
+        }
+       },
+       icon: Icons.check_circle,
+      ),
      ],
     ),
    ),

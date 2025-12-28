@@ -24,9 +24,14 @@ class RidePaymentMethodScreen extends ConsumerWidget {
      return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-       _buildPaymentOption(context, Icons.money, RideConstants.cash, 'Pay with cash', true),
-       ...methods.map((m) => _buildPaymentOption(context, Icons.credit_card, m['cardType'] ?? RideConstants.card, '${m['cardType'] ?? 'Card'} ${m['lastFour'] ?? '****'}', false)),
-       _buildPaymentOption(context, Icons.account_balance_wallet, RideConstants.wallet, 'Balance: \$${walletBalance.toStringAsFixed(2)}', false),
+       _buildPaymentOption(context, Icons.money, RideConstants.cash, RideConstants.payWithCash, true),
+       ...methods.map((m) {
+        final cardType = m['type']?.toString().toUpperCase() ?? RideConstants.card;
+        final numberStr = m['number']?.toString() ?? '';
+        final lastFour = numberStr.length >= 4 ? numberStr.substring(numberStr.length - 4) : '****';
+        return _buildPaymentOption(context, Icons.credit_card, cardType, '$cardType •••• $lastFour', false);
+       }),
+       _buildPaymentOption(context, Icons.account_balance_wallet, RideConstants.wallet, '${RideConstants.balanceLabel}: \$${walletBalance.toStringAsFixed(2)}', false),
        const SizedBox(height: 16),
        OutlinedButton.icon(
         onPressed: () => context.go(Routes.rideAddPayment),

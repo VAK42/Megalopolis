@@ -15,26 +15,32 @@ class MarketingBadgesScreen extends ConsumerWidget {
      .watch(userBadgesProvider(userId))
      .when(
       data: (badges) => GridView.builder(
-       padding: const EdgeInsets.all(16),
-       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, mainAxisSpacing: 16, crossAxisSpacing: 16),
+       padding: const EdgeInsets.all(8),
+       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, mainAxisSpacing: 8, crossAxisSpacing: 8),
        itemCount: badges.length,
        itemBuilder: (c, i) {
-        final unlocked = badges[i]['achieved'] == true;
-        final badgeId = badges[i]['id'] as int?;
+        final unlocked = badges[i]['achieved'] == true || badges[i]['earnedAt'] != null;
+        final badgeId = badges[i]['id']?.toString();
+        final colors = [Colors.amber, Colors.teal, Colors.purple, Colors.orange, Colors.pink, Colors.indigo];
+        final badgeColor = colors[i % colors.length];
         return GestureDetector(
          onLongPress: unlocked && badgeId != null ? () => _showDeleteDialog(context, ref, badgeId, userId) : null,
          child: Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: unlocked ? AppColors.primary.withValues(alpha: 0.1) : Colors.grey[200], borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+           color: Colors.white,
+           borderRadius: BorderRadius.circular(16),
+           border: Border.all(color: unlocked ? badgeColor : Colors.grey.shade300, width: 2),
+          ),
           child: Column(
            mainAxisAlignment: MainAxisAlignment.center,
            children: [
-            Icon(Icons.emoji_events, size: 40, color: unlocked ? AppColors.primary : Colors.grey),
+            Icon(Icons.emoji_events, size: 40, color: unlocked ? badgeColor : Colors.grey),
             const SizedBox(height: 8),
             Text(
              badges[i]['name']?.toString() ?? MarketingConstants.badgeDefaultName,
              textAlign: TextAlign.center,
-             style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: unlocked ? Colors.black : Colors.grey),
+             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: unlocked ? badgeColor.shade700 : Colors.grey),
             ),
            ],
           ),
@@ -47,7 +53,7 @@ class MarketingBadgesScreen extends ConsumerWidget {
      ),
   );
  }
- void _showDeleteDialog(BuildContext context, WidgetRef ref, int badgeId, String userId) {
+ void _showDeleteDialog(BuildContext context, WidgetRef ref, String badgeId, String userId) {
   showDialog(
    context: context,
    builder: (ctx) => AlertDialog(

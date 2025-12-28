@@ -27,13 +27,16 @@ class AuthNotifier extends AsyncNotifier<UserModel?> {
  @override
  Future<UserModel?> build() async {
   _repository = ref.watch(userRepositoryProvider);
-  return null;
+  final userId = ref.watch(currentUserIdProvider);
+  if (userId == null) return null;
+  return await _repository.getUserById(userId);
  }
  Future<void> login(String email, String password) async {
   state = const AsyncValue.loading();
   try {
    final user = await _repository.getUserByEmail(email);
    if (user != null && user.password == password) {
+    ref.read(currentUserIdProvider.notifier).state = user.id;
     state = AsyncValue.data(user);
    } else {
     state = AsyncValue.error('Invalid Credentials!', StackTrace.current);
@@ -52,13 +55,26 @@ class AuthNotifier extends AsyncNotifier<UserModel?> {
    }
    await _repository.createUser(user);
    final createdUser = await _repository.getUserById(user.id);
+   ref.read(currentUserIdProvider.notifier).state = user.id;
    state = AsyncValue.data(createdUser);
   } catch (e, stack) {
    state = AsyncValue.error(e, stack);
   }
  }
  void logout() {
+  ref.read(currentUserIdProvider.notifier).state = null;
   state = const AsyncValue.data(null);
+ }
+ Future<void> refreshUser() async {
+  final currentUser = state.valueOrNull;
+  if (currentUser == null) return;
+  state = const AsyncValue.loading();
+  try {
+   final user = await _repository.getUserById(currentUser.id);
+   state = AsyncValue.data(user);
+  } catch (e, stack) {
+   state = AsyncValue.error(e, stack);
+  }
  }
 }
 final authProvider = AsyncNotifierProvider<AuthNotifier, UserModel?>(() {

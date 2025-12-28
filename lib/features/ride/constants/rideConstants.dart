@@ -96,6 +96,8 @@ class RideConstants {
  static const String card = 'Card';
  static const String wallet = 'Wallet';
  static const String addPromoCode = 'Add Promo Code';
+ static const String payWithCash = 'Pay With Cash';
+ static const String balanceLabel = 'Balance';
  static const String pickupTitle = 'Pickup';
  static const String destinationTitle = 'Destination';
  static const String searchLocation = 'Search Location...';
@@ -141,7 +143,7 @@ class RideConstants {
  static const String downloadReceipt = 'Download Receipt';
  static const String emailReceipt = 'Email Receipt';
  static const String mins = 'Mins';
- static const String km = 'km';
+ static const String km = 'Km';
  static const String comfortableAffordable = 'Comfortable & Affordable';
  static const String selectDestination = 'Select Destination';
  static const String defaultUserId = 'user1';

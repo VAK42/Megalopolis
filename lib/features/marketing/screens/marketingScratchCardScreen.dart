@@ -20,8 +20,10 @@ class _MarketingScratchCardScreenState extends ConsumerState<MarketingScratchCar
    appBar: AppBar(title: const Text(MarketingConstants.scratchCardTitle)),
    body: cardAsync.when(
     data: (card) {
-     final reward = card['reward'] as int? ?? 0;
-     final cardId = card['id'] as int?;
+     final reward = (card['reward'] as num?)?.toInt() ?? 0;
+     final cardId = card['id']?.toString();
+     final cardAlreadyScratched = card['isScratched'] == true || card['isScratched'] == 1;
+     final canScratch = cardId != null && !isScratched && !cardAlreadyScratched;
      return Center(
       child: Padding(
        padding: const EdgeInsets.all(24),
@@ -29,7 +31,13 @@ class _MarketingScratchCardScreenState extends ConsumerState<MarketingScratchCar
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
          GestureDetector(
-          onPanUpdate: cardId != null && !isScratched
+          onTap: canScratch
+            ? () {
+              setState(() => isScratched = true);
+              ref.read(scratchCardProvider(userId).notifier).scratchCard(cardId);
+             }
+            : null,
+          onPanUpdate: canScratch
             ? (details) {
               setState(() => isScratched = true);
               ref.read(scratchCardProvider(userId).notifier).scratchCard(cardId);

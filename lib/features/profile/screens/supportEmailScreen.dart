@@ -80,9 +80,20 @@ class _SupportEmailScreenState extends ConsumerState<SupportEmailScreen> {
       AppButton(
        text: ProfileConstants.sendEmail,
        onPressed: () async {
+        if (subjectController.text.trim().isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.pleaseEnterSubject), backgroundColor: Colors.red));
+         return;
+        }
+        if (messageController.text.trim().isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.pleaseDescribeIssue), backgroundColor: Colors.red));
+         return;
+        }
         final userId = ref.read(currentUserIdProvider) ?? 'user1';
-        await ref.read(profileRepositoryProvider).createSupportTicket({'userId': userId, 'category': selectedCategory, 'title': subjectController.text, 'description': messageController.text, 'type': 'email'});
-        if (mounted) context.pop();
+        await ref.read(profileRepositoryProvider).createSupportTicket({'userId': userId, 'category': selectedCategory, 'title': subjectController.text.trim(), 'description': messageController.text.trim(), 'type': 'email'});
+        if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(ProfileConstants.emailSentSuccessfully), backgroundColor: Colors.green));
+         context.pop();
+        }
        },
        icon: Icons.send,
       ),

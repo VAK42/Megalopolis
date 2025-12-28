@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
-import '../../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appButton.dart';
 import '../../../providers/socialProvider.dart';
 import '../../../providers/authProvider.dart';
+import '../../../providers/walletProvider.dart';
 import '../constants/walletConstants.dart';
 class WalletRequestScreen extends ConsumerStatefulWidget {
  const WalletRequestScreen({super.key});
@@ -16,6 +16,7 @@ class _WalletRequestScreenState extends ConsumerState<WalletRequestScreen> {
  final TextEditingController amountController = TextEditingController();
  final TextEditingController reasonController = TextEditingController();
  String? selectedContact;
+ bool isLoading = false;
  @override
  Widget build(BuildContext context) {
   final userId = ref.watch(currentUserIdProvider) ?? WalletConstants.defaultUserId;
@@ -41,6 +42,7 @@ class _WalletRequestScreenState extends ConsumerState<WalletRequestScreen> {
          itemBuilder: (context, index) {
           final friend = friends[index];
           final name = friend['name']?.toString() ?? WalletConstants.unknown;
+          final avatar = friend['avatar']?.toString();
           final isSelected = selectedContact == name;
           return GestureDetector(
            onTap: () => setState(() => selectedContact = name),
@@ -54,9 +56,10 @@ class _WalletRequestScreenState extends ConsumerState<WalletRequestScreen> {
                decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: isSelected ? Border.all(color: AppColors.primary, width: 2) : null,
-                gradient: AppColors.primaryGradient,
+                gradient: avatar == null ? AppColors.primaryGradient : null,
+                image: avatar != null ? DecorationImage(image: NetworkImage(avatar), fit: BoxFit.cover) : null,
                ),
-               child: const Icon(Icons.person, color: Colors.white),
+               child: avatar == null ? const Icon(Icons.person, color: Colors.white) : null,
               ),
               const SizedBox(height: 4),
               Text(name, style: TextStyle(fontSize: 12, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
@@ -98,8 +101,51 @@ class _WalletRequestScreenState extends ConsumerState<WalletRequestScreen> {
         Expanded(child: _buildQuickAmount(WalletConstants.quickAmount200)),
        ],
       ),
+      const SizedBox(height: 16),
+      TextField(
+       controller: reasonController,
+       decoration: InputDecoration(
+        labelText: WalletConstants.reasonOptional,
+        hintText: WalletConstants.enterReasonForRequest,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+       ),
+      ),
       const SizedBox(height: 32),
-      AppButton(text: WalletConstants.sendRequest, onPressed: () => context.go(Routes.walletRequestSent), icon: Icons.send),
+      AppButton(
+       text: isLoading ? WalletConstants.loading : WalletConstants.sendRequest,
+       onPressed: isLoading ? null : () async {
+        if (selectedContact == null || amountController.text.isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.msgSelectContactAndAmount)));
+         return;
+        }
+        final amount = double.tryParse(amountController.text) ?? 0.0;
+        if (amount <= 0) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.msgEnterValidAmount)));
+         return;
+        }
+        setState(() => isLoading = true);
+        try {
+         final repository = ref.read(walletRepositoryProvider);
+         await repository.createMoneyRequest({
+          'userId': userId,
+          'amount': amount,
+          'reason': reasonController.text.isNotEmpty ? reasonController.text : WalletConstants.moneyRequest,
+          'fromContact': selectedContact,
+         });
+         setState(() => isLoading = false);
+         if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${WalletConstants.requestSentTo} $selectedContact: ${WalletConstants.currencySymbol}${amount.toStringAsFixed(2)}')));
+          context.pop();
+         }
+        } catch (e) {
+         setState(() => isLoading = false);
+         if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.failedToSendRequest)));
+         }
+        }
+       },
+       icon: Icons.send,
+      ),
      ],
     ),
    ),

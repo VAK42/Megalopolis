@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
-import '../../../core/routes/routeNames.dart';
 import '../../../shared/widgets/appButton.dart';
 import '../../../providers/walletProvider.dart';
 import '../../../providers/authProvider.dart';
@@ -15,6 +14,7 @@ class WalletTopUpScreen extends ConsumerStatefulWidget {
 class _WalletTopUpScreenState extends ConsumerState<WalletTopUpScreen> {
  final TextEditingController amountController = TextEditingController();
  String selectedMethod = WalletConstants.bankTransfer;
+ bool isLoading = false;
  @override
  Widget build(BuildContext context) {
   final userId = ref.watch(currentUserIdProvider) ?? WalletConstants.defaultUserId;
@@ -41,14 +41,8 @@ class _WalletTopUpScreenState extends ConsumerState<WalletTopUpScreen> {
            '${WalletConstants.currencySymbol}${balance.toStringAsFixed(2)}',
            style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          loading: () => const Text(
-           WalletConstants.loading,
-           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          error: (_, __) => const Text(
-           WalletConstants.errorText,
-           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          loading: () => const Text(WalletConstants.loading, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+          error: (_, __) => const Text(WalletConstants.errorText, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
          ),
         ],
        ),
@@ -88,7 +82,29 @@ class _WalletTopUpScreenState extends ConsumerState<WalletTopUpScreen> {
       _buildPaymentMethod(Icons.credit_card, WalletConstants.debitCard, WalletConstants.feePercentage25),
       _buildPaymentMethod(Icons.credit_card, WalletConstants.creditCard, WalletConstants.feePercentage3),
       const SizedBox(height: 32),
-      AppButton(text: WalletConstants.continueText, onPressed: () => context.go(Routes.walletTopUpConfirm), icon: Icons.arrow_forward),
+      AppButton(
+       text: isLoading ? WalletConstants.loading : WalletConstants.confirmTopUp,
+       onPressed: isLoading ? null : () async {
+        if (amountController.text.isEmpty) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.msgEnterAmount)));
+         return;
+        }
+        final amount = double.tryParse(amountController.text) ?? 0.0;
+        if (amount <= 0) {
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(WalletConstants.msgEnterValidAmount)));
+         return;
+        }
+        setState(() => isLoading = true);
+        final success = await ref.read(walletNotifierProvider(userId).notifier).topUp(amount, selectedMethod);
+        setState(() => isLoading = false);
+        if (success && context.mounted) {
+         ref.invalidate(walletBalanceProvider(userId));
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${WalletConstants.topUpSuccessful} ${WalletConstants.currencySymbol}${amount.toStringAsFixed(2)}')));
+         context.pop();
+        }
+       },
+       icon: Icons.check_circle,
+      ),
      ],
     ),
    ),

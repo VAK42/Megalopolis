@@ -20,8 +20,12 @@ class AboutScreen extends ConsumerWidget {
       Container(
        width: 100,
        height: 100,
-       decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(20)),
-       child: const Icon(Icons.apps, color: Colors.white, size: 50),
+       clipBehavior: Clip.hardEdge,
+       decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+       ),
+       child: Image.asset('assets/icon.png', fit: BoxFit.contain),
       ),
       const SizedBox(height: 16),
       const Text(ProfileConstants.aboutAppName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),

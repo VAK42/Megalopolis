@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/routes/routeNames.dart';
 import '../../../providers/authProvider.dart';
 import '../../../providers/profileProvider.dart';
 import '../constants/profileConstants.dart';
@@ -20,10 +21,10 @@ class PaymentMethodsScreen extends ConsumerWidget {
     data: (methods) => ListView(
      padding: const EdgeInsets.all(16),
      children: [
-      ...methods.asMap().entries.map((entry) => _buildPaymentCard(entry.key, entry.value, ref, userId)),
+      ...methods.asMap().entries.map((entry) => _buildPaymentCard(context, entry.key, entry.value, ref, userId)),
       const SizedBox(height: 8),
       OutlinedButton.icon(
-       onPressed: () {},
+       onPressed: () => context.go(Routes.walletAddCard),
        icon: const Icon(Icons.add),
        label: const Text(ProfileConstants.addPaymentMethodBtn),
        style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(16)),
@@ -37,20 +38,22 @@ class PaymentMethodsScreen extends ConsumerWidget {
       children: [
        const Text(ProfileConstants.noAddressesFound),
        const SizedBox(height: 16),
-       OutlinedButton.icon(onPressed: () {}, icon: const Icon(Icons.add), label: const Text(ProfileConstants.addPaymentMethodBtn)),
+       OutlinedButton.icon(onPressed: () => context.go(Routes.walletAddCard), icon: const Icon(Icons.add), label: const Text(ProfileConstants.addPaymentMethodBtn)),
       ],
      ),
     ),
    ),
   );
  }
- Widget _buildPaymentCard(int index, Map<String, dynamic> method, WidgetRef ref, String userId) {
+ Widget _buildPaymentCard(BuildContext context, int index, Map<String, dynamic> method, WidgetRef ref, String userId) {
   final gradients = [AppColors.primaryGradient, AppColors.secondaryGradient];
-  final cardType = method['cardType'] ?? method['type'] ?? 'Card';
-  final lastFour = method['lastFour'] ?? method['cardNumber']?.toString().substring(method['cardNumber'].toString().length - 4) ?? '****';
-  final holderName = method['holderName'] ?? method['cardHolder'] ?? '';
-  final expiry = method['expiry'] ?? method['expiryDate'] ?? '';
+  final cardType = method['type']?.toString().toUpperCase() ?? 'Card';
+  final numberStr = method['number']?.toString() ?? '';
+  final lastFour = numberStr.length >= 4 ? numberStr.substring(numberStr.length - 4) : '****';
+  final holderName = method['holder']?.toString() ?? '';
+  final expiry = method['expiry']?.toString() ?? '';
   final isDefault = method['isDefault'] == 1 || method['isDefault'] == true;
+  final methodId = method['id']?.toString() ?? '';
   return Container(
    margin: const EdgeInsets.only(bottom: 16),
    padding: const EdgeInsets.all(20),
@@ -61,24 +64,17 @@ class PaymentMethodsScreen extends ConsumerWidget {
      Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-       Text(
-        cardType,
-        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-       ),
-       Row(
-        children: [
-         if (isDefault)
-          Container(
-           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-           decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(12)),
-           child: const Text(ProfileConstants.defaultLabel, style: TextStyle(color: Colors.white, fontSize: 10)),
-          ),
-         IconButton(
-          icon: const Icon(Icons.more_vert, color: Colors.white),
-          onPressed: () => _showOptionsMenu(ref, userId, method['id']?.toString() ?? ''),
-         ),
-        ],
-       ),
+       Text(cardType, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        Row(
+         children: [
+          if (isDefault)
+           Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(12)),
+            child: const Text(ProfileConstants.defaultLabel, style: TextStyle(color: Colors.white, fontSize: 10)),
+           ),
+         ],
+        ),
       ],
      ),
      const SizedBox(height: 24),
@@ -109,5 +105,4 @@ class PaymentMethodsScreen extends ConsumerWidget {
    ),
   );
  }
- void _showOptionsMenu(WidgetRef ref, String userId, String methodId) {}
 }

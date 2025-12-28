@@ -21,7 +21,7 @@ class WalletHomeScreen extends ConsumerWidget {
        leading: IconButton(icon: const Icon(Icons.home), onPressed: () => context.go(Routes.superDashboard)),
        flexibleSpace: FlexibleSpaceBar(
         background: Container(
-         decoration: BoxDecoration(gradient: AppColors.primaryGradient),
+         decoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xFF4CAF50), Color(0xFF81C784)], begin: Alignment.topLeft, end: Alignment.bottomRight)),
          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -192,7 +192,7 @@ class WalletHomeScreen extends ConsumerWidget {
  }
  Widget _buildCard(BuildContext context, WidgetRef ref, Map<String, dynamic> card) {
   return GestureDetector(
-   onTap: () => context.go(Routes.walletCardDetail.replaceFirst(':id', card['id'].toString())),
+   onTap: () => context.go('/wallet/card/${card['id']}'),
    child: Container(
     width: 300,
     margin: const EdgeInsets.only(right: 16),
