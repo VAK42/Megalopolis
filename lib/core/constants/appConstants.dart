@@ -1,4 +1,3 @@
-import '../database/databaseHelper.dart';
 class AppConstants {
  static String appName = 'Megalopolis';
  static String appVersion = '1.0.0';

@@ -53,7 +53,6 @@ class PaymentMethodsScreen extends ConsumerWidget {
   final holderName = method['holder']?.toString() ?? '';
   final expiry = method['expiry']?.toString() ?? '';
   final isDefault = method['isDefault'] == 1 || method['isDefault'] == true;
-  final methodId = method['id']?.toString() ?? '';
   return Container(
    margin: const EdgeInsets.only(bottom: 16),
    padding: const EdgeInsets.all(20),
