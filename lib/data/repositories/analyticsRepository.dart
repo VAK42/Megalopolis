@@ -12,13 +12,12 @@ class AnalyticsRepository {
  Future<Map<String, double>> getSpendingByCategory(String userId) async {
   final db = await dbHelper.database;
   final result = await db.rawQuery(
-   '''
+  '''
   SELECT orderType, SUM(total) as total 
   FROM orders 
   WHERE userId = ? AND status = ? 
   GROUP BY orderType
-  ''',
-   [userId, 'completed'],
+  ''', [userId, 'completed'],
   );
   final Map<String, double> spending = {};
   for (var row in result) {
@@ -32,7 +31,7 @@ class AnalyticsRepository {
  }
  Future<List<Map<String, dynamic>>> getBudgets(String userId) async {
   final db = await dbHelper.database;
-  final budgetsResult = await db.query('budgets', where: 'userId = ?', whereArgs: [userId]);
+  final budgetsResult = await db.query('analyticsBudgets', where: 'userId = ?', whereArgs: [userId]);
   if (budgetsResult.isEmpty) {
    return [];
   }
@@ -44,7 +43,7 @@ class AnalyticsRepository {
  }
  Future<List<Map<String, dynamic>>> getGoals(String userId) async {
   final db = await dbHelper.database;
-  final goalsResult = await db.query('goals', where: 'userId = ?', whereArgs: [userId]);
+  final goalsResult = await db.query('analyticsGoals', where: 'userId = ?', whereArgs: [userId]);
   if (goalsResult.isEmpty) {
    return [];
   }
@@ -53,19 +52,19 @@ class AnalyticsRepository {
  Future<int> createGoal({required String userId, required String title, required double target, double current = 0}) async {
   final db = await dbHelper.database;
   final now = DateTime.now().millisecondsSinceEpoch;
-  return await db.insert('goals', {'id': 'goal_$now', 'userId': userId, 'title': title, 'target': target, 'current': current, 'createdAt': now});
+  return await db.insert('analyticsGoals', {'id': 'goal$now', 'userId': userId, 'title': title, 'target': target, 'current': current, 'createdAt': now});
  }
  Future<int> updateGoal(String goalId, Map<String, dynamic> updates) async {
   final db = await dbHelper.database;
-  return await db.update('goals', updates, where: 'id = ?', whereArgs: [goalId]);
+  return await db.update('analyticsGoals', updates, where: 'id = ?', whereArgs: [goalId]);
  }
  Future<int> deleteGoal(String goalId) async {
   final db = await dbHelper.database;
-  return await db.delete('goals', where: 'id = ?', whereArgs: [goalId]);
+  return await db.delete('analyticsGoals', where: 'id = ?', whereArgs: [goalId]);
  }
  Future<int> updateGoalProgress(String goalId, double amount) async {
   final db = await dbHelper.database;
-  return await db.rawUpdate('UPDATE goals SET current = current + ? WHERE id = ?', [amount, goalId]);
+  return await db.rawUpdate('UPDATE analyticsGoals SET current = current + ? WHERE id = ?', [amount, goalId]);
  }
  Future<double> getTotalIncome(String userId) async {
   final db = await dbHelper.database;
@@ -81,7 +80,7 @@ class AnalyticsRepository {
  }
  Future<Map<String, dynamic>> getInvestments(String userId) async {
   final db = await dbHelper.database;
-  final result = await db.query('investments', where: 'userId = ?', whereArgs: [userId]);
+  final result = await db.query('analyticsInvestments', where: 'userId = ?', whereArgs: [userId]);
   if (result.isEmpty) {
    return {'total': 0.0, 'growth': 0.0, 'growthPercentage': 0.0, 'portfolio': <Map<String, dynamic>>[]};
   }
@@ -96,7 +95,7 @@ class AnalyticsRepository {
  }
  Future<Map<String, dynamic>> getSavings(String userId) async {
   final db = await dbHelper.database;
-  final result = await db.query('savingsGoals', where: 'userId = ?', whereArgs: [userId]);
+  final result = await db.query('analyticsSavingsGoals', where: 'userId = ?', whereArgs: [userId]);
   if (result.isEmpty) {
    return {'total': 0.0, 'month': 0.0, 'goal': 0.0};
   }
@@ -125,14 +124,13 @@ class AnalyticsRepository {
   final now = DateTime.now();
   final weekAgo = now.subtract(const Duration(days: 7)).millisecondsSinceEpoch;
   final result = await db.rawQuery(
-   '''
+  '''
   SELECT strftime('%w', createdAt/1000, 'unixepoch') as dayNum, SUM(total) as amount
   FROM orders
   WHERE userId = ? AND status = ? AND createdAt >= ?
   GROUP BY dayNum
   ORDER BY dayNum
-  ''',
-   [userId, 'completed', weekAgo],
+  ''', [userId, 'completed', weekAgo],
   );
   final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   if (result.isEmpty) {

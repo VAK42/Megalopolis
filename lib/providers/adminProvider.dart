@@ -6,7 +6,7 @@ final adminUsersProvider = FutureProvider((ref) async {
 });
 final adminTicketsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
  final repository = AdminRepository();
- return await repository.getTickets();
+ return await repository.getSupportTickets();
 });
 final adminRevenueStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
  final repository = AdminRepository();
@@ -21,7 +21,7 @@ final adminDashboardStatsProvider = FutureProvider<Map<String, dynamic>>((ref) a
  return await repository.getDashboardStats();
 });
 final adminReportsProvider = FutureProvider((ref) async {
- return await ref.watch(adminRepositoryProvider).getReports();
+ return await ref.watch(adminRepositoryProvider).getContentReports();
 });
 final reportTypesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
  return await ref.watch(adminRepositoryProvider).getReportTypes();

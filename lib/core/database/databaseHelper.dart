@@ -181,11 +181,14 @@ class DatabaseHelper {
   description TEXT,
   code TEXT,
   discount REAL NOT NULL,
+  minOrder REAL DEFAULT 0.0,
+  maxDiscount REAL DEFAULT 0.0,
   startDate INTEGER,
   endDate INTEGER,
   type TEXT DEFAULT 'general',
   merchantId TEXT,
   usageCount INTEGER DEFAULT 0,
+  usageLimit INTEGER DEFAULT 0,
   isActive INTEGER DEFAULT 1,
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (merchantId) REFERENCES users (id)
@@ -361,6 +364,42 @@ class DatabaseHelper {
   )
   ''');
   await db.execute('''
+  CREATE TABLE systemSettings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  key TEXT NOT NULL UNIQUE,
+  value TEXT NOT NULL,
+  type TEXT DEFAULT 'string',
+  updatedAt INTEGER NOT NULL
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE supportTickets (
+  id TEXT PRIMARY KEY,
+  userId TEXT,
+  subject TEXT NOT NULL,
+  message TEXT,
+  status TEXT DEFAULT 'open',
+  priority TEXT DEFAULT 'normal',
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE contentReports (
+  id TEXT PRIMARY KEY,
+  userId TEXT,
+  reportedBy TEXT,
+  type TEXT DEFAULT 'content',
+  content TEXT,
+  reason TEXT,
+  status TEXT DEFAULT 'pending',
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
   CREATE TABLE challenges (
   id TEXT PRIMARY KEY,
   userId TEXT,
@@ -527,12 +566,12 @@ class DatabaseHelper {
   )
   ''');
   await db.execute('''
-  CREATE TABLE budgets (
+  CREATE TABLE analyticsBudgets (
   id TEXT PRIMARY KEY,
   userId TEXT NOT NULL,
-  monthlyBudget REAL NOT NULL,
+  category TEXT NOT NULL,
+  budgetLimit REAL NOT NULL,
   spent REAL DEFAULT 0.0,
-  remaining REAL DEFAULT 0.0,
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
@@ -557,6 +596,18 @@ class DatabaseHelper {
   type TEXT NOT NULL,
   currentValue REAL NOT NULL,
   returns REAL DEFAULT 0.0,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE analyticsInvestments (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  name TEXT NOT NULL,
+  value REAL NOT NULL,
+  growth REAL DEFAULT 0,
+  growthPercent REAL DEFAULT 0,
   createdAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
@@ -595,6 +646,40 @@ class DatabaseHelper {
   earnedAt INTEGER NOT NULL,
   FOREIGN KEY (userId) REFERENCES users (id)
   )
+  ''');
+  await db.execute('''
+  CREATE TABLE analyticsGoals (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  title TEXT NOT NULL,
+  target REAL NOT NULL,
+  current REAL DEFAULT 0,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  CREATE TABLE analyticsSavingsGoals (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  title TEXT NOT NULL,
+  target REAL NOT NULL,
+  current REAL DEFAULT 0,
+  createdAt INTEGER NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users (id)
+  )
+  ''');
+  await db.execute('''
+  INSERT INTO supportTickets (id, userId, subject, message, status, priority, createdAt, updatedAt) VALUES
+  ('t1', 'user1', 'Login Issue', 'I Cannot Login To My Account Even With Correct Password', 'Open', 'High', ${DateTime.now().subtract(const Duration(hours: 2)).millisecondsSinceEpoch}, ${DateTime.now().millisecondsSinceEpoch}),
+  ('t2', 'user2', 'Payment Failed', 'My Card Was Charged But Order Status Is Pending', 'In Progress', 'Normal', ${DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch}, ${DateTime.now().millisecondsSinceEpoch}),
+  ('t3', 'user3', 'Feature Request', 'Can You Add Dark Mode?', 'Closed', 'Normal', ${DateTime.now().subtract(const Duration(days: 5)).millisecondsSinceEpoch}, ${DateTime.now().millisecondsSinceEpoch})
+  ''');
+  await db.execute('''
+  INSERT INTO contentReports (id, reportedBy, type, content, reason, status, createdAt, updatedAt) VALUES
+  ('r1', 'user4', 'Review', 'This Driver Was Rude!', 'Harassment', 'Pending', ${DateTime.now().subtract(const Duration(hours: 4)).millisecondsSinceEpoch}, ${DateTime.now().millisecondsSinceEpoch}),
+  ('r2', 'user5', 'Image', 'This Image Is Inappropriate!', 'Inappropriate Content', 'Pending', ${DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch}, ${DateTime.now().millisecondsSinceEpoch}),
+  ('r3', 'user6', 'Profile', 'This Profile Is Fake!', 'Spam', 'Approved', ${DateTime.now().subtract(const Duration(days: 2)).millisecondsSinceEpoch}, ${DateTime.now().millisecondsSinceEpoch})
   ''');
  }
  Future<void> resetDatabase() async {

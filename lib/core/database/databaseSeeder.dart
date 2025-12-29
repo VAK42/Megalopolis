@@ -334,12 +334,6 @@ class DatabaseSeeder {
   ('rp4', '2', 'Gym Membership', 49.99, 'Monthly', ?, 1, ?)
   ''', [now + 604800000, now, now + 432000000, now, now + 259200000, now, now + 864000000, now]);
   await db.rawInsert('''
-  INSERT INTO budgets (id, userId, monthlyBudget, spent, remaining, createdAt)
-  VALUES 
-  ('budget1', '1', 2000.00, 1250.50, 749.50, ?),
-  ('budget2', '2', 3000.00, 1800.00, 1200.00, ?)
-  ''', [now, now]);
-  await db.rawInsert('''
   INSERT INTO budgetCategories (id, userId, name, budget, spent, color, createdAt)
   VALUES 
   ('bc1', '1', 'Food', 500.00, 320.00, '#FF6B6B', ?),
@@ -376,6 +370,91 @@ class DatabaseSeeder {
   ('cbh3', '1', 3.25, 'Ride', ?),
   ('cbh4', '2', 8.00, 'Food Order', ?)
   ''', [now - 604800000, now - 432000000, now - 259200000, now - 86400000]);
+  await db.rawInsert('''
+  INSERT INTO supportTickets (id, userId, subject, message, status, priority, createdAt, updatedAt)
+  VALUES 
+  ('st1', '1', 'Login Issue', 'I Cannot Login To My Account Even With Correct Password', 'open', 'high', ?, ?),
+  ('st2', '2', 'Payment Failed', 'My Card Was Charged But Order Status Is Pending', 'inProgress', 'normal', ?, ?),
+  ('st3', '3', 'Feature Request', 'Can You Add Dark Mode?', 'closed', 'normal', ?, ?)
+  ''', [now - 7200000, now, now - 86400000, now, now - 432000000, now]);
+  await db.rawInsert('''
+  INSERT INTO contentReports (id, reportedBy, type, content, reason, status, createdAt, updatedAt)
+  VALUES 
+  ('cr1', '1', 'review', 'This Driver Was Rude!', 'Harassment', 'pending', ?, ?),
+  ('cr2', '2', 'image', 'This Image Is Inappropriate!', 'Inappropriate Content', 'pending', ?, ?),
+  ('cr3', '3', 'profile', 'This Profile Is Fake!', 'Spam', 'approved', ?, ?)
+  ''', [now - 14400000, now, now - 86400000, now, now - 172800000, now]);
+  await db.rawInsert('''
+  INSERT INTO analyticsGoals (id, userId, title, target, current, createdAt)
+  VALUES 
+  ('goal1', '1', 'Emergency Fund', 10000.00, 3500.00, ?),
+  ('goal2', '1', 'Vacation Fund', 5000.00, 1200.00, ?),
+  ('goal3', '1', 'New Car', 25000.00, 8000.00, ?),
+  ('goal4', '2', 'House Down Payment', 50000.00, 15000.00, ?)
+  ''', [now - 2592000000, now - 1296000000, now - 864000000, now - 432000000]);
+  await db.rawInsert('''
+  INSERT INTO analyticsBudgets (id, userId, category, budgetLimit, spent, createdAt)
+  VALUES 
+  ('bud1', '1', 'food', 500.00, 320.00, ?),
+  ('bud2', '1', 'ride', 200.00, 150.00, ?),
+  ('bud3', '1', 'mart', 300.00, 180.00, ?),
+  ('bud4', '1', 'bill', 400.00, 250.00, ?),
+  ('bud5', '1', 'entertainment', 150.00, 100.00, ?)
+  ''', [now, now, now, now, now]);
+  await db.rawInsert('''
+  INSERT INTO analyticsInvestments (id, userId, name, value, growth, growthPercent, createdAt)
+  VALUES 
+  ('inv1', '1', 'Tech ETF', 5000.00, 450.00, 9.0, ?),
+  ('inv2', '1', 'Bond Fund', 3000.00, 120.00, 4.0, ?),
+  ('inv3', '1', 'Real Estate REIT', 2500.00, 175.00, 7.0, ?),
+  ('inv4', '1', 'S&P 500 Index', 4000.00, 520.00, 13.0, ?)
+  ''', [now - 2592000000, now - 2592000000, now - 1296000000, now - 864000000]);
+  await db.rawInsert('''
+  INSERT INTO analyticsSavingsGoals (id, userId, title, target, current, createdAt)
+  VALUES 
+  ('sav1', '1', 'Retirement', 100000.00, 25000.00, ?),
+  ('sav2', '1', 'College Fund', 30000.00, 8000.00, ?),
+  ('sav3', '2', 'Wedding', 20000.00, 5000.00, ?),
+  ('sav4', '15', 'Admin Emergency Fund', 50000.00, 35000.00, ?),
+  ('sav5', '15', 'Admin Travel Fund', 20000.00, 12000.00, ?)
+  ''', [now - 2592000000, now - 1296000000, now - 864000000, now - 432000000, now - 216000000]);
+  await db.rawInsert('''
+  INSERT INTO analyticsGoals (id, userId, title, target, current, createdAt)
+  VALUES 
+  ('goal5', '15', 'Admin Savings Goal', 30000.00, 18000.00, ?),
+  ('goal6', '15', 'Admin Investment Goal', 50000.00, 25000.00, ?)
+  ''', [now - 864000000, now - 432000000]);
+  await db.rawInsert('''
+  INSERT INTO analyticsBudgets (id, userId, category, budgetLimit, spent, createdAt)
+  VALUES 
+  ('bud6', '15', 'food', 800.00, 450.00, ?),
+  ('bud7', '15', 'ride', 300.00, 200.00, ?),
+  ('bud8', '15', 'mart', 500.00, 320.00, ?),
+  ('bud9', '15', 'bill', 600.00, 400.00, ?),
+  ('bud10', '15', 'entertainment', 400.00, 250.00, ?)
+  ''', [now, now, now, now, now]);
+  await db.rawInsert('''
+  INSERT INTO analyticsInvestments (id, userId, name, value, growth, growthPercent, createdAt)
+  VALUES 
+  ('inv5', '15', 'Admin Tech Portfolio', 15000.00, 1800.00, 12.0, ?),
+  ('inv6', '15', 'Admin Bond Fund', 8000.00, 400.00, 5.0, ?),
+  ('inv7', '15', 'Admin Real Estate', 20000.00, 2500.00, 12.5, ?)
+  ''', [now - 2592000000, now - 1296000000, now - 864000000]);
+  await db.rawInsert('''
+  INSERT INTO orders (id, userId, driverId, providerId, orderType, rideType, items, total, status, address, pickupAddress, dropoffAddress, completedAt, createdAt)
+  VALUES 
+  ('order_admin1', '15', null, '9', 'food', null, '[{\"name\": \"Admin Lunch\", \"qty\": 2, \"price\": 25.00}]', 50.00, 'completed', '456 Admin Street', null, null, ?, ?),
+  ('order_admin2', '15', '4', null, 'ride', 'car', null, 35.00, 'completed', null, 'Office Building', 'Downtown', ?, ?),
+  ('order_admin3', '15', null, '11', 'mart', null, '[{\"name\": \"Groceries\", \"qty\": 1, \"price\": 85.00}]', 85.00, 'completed', '456 Admin Street', null, null, ?, ?),
+  ('order_admin4', '15', null, '12', 'service', null, '[{\"name\": \"Cleaning\", \"qty\": 1, \"price\": 120.00}]', 120.00, 'completed', '456 Admin Street', null, null, ?, ?)
+  ''', [now - 86400000, now - 172800000, now - 259200000, now - 345600000, now - 432000000, now - 518400000, now - 604800000, now - 691200000]);
+  await db.rawInsert('''
+  INSERT INTO transactions (id, userId, type, amount, status, reference, createdAt)
+  VALUES 
+  ('txn_admin1', '15', 'topup', 5000.00, 'completed', 'Admin Salary', ?),
+  ('txn_admin2', '15', 'topup', 2000.00, 'completed', 'Admin Bonus', ?),
+  ('txn_admin3', '15', 'topup', 1500.00, 'completed', 'Admin Refund', ?)
+  ''', [now - 2592000000, now - 1296000000, now - 604800000]);
   debugPrint('Database Seeded Successfully With Comprehensive Data!');
  }
 }

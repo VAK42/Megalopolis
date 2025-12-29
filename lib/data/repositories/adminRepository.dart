@@ -9,13 +9,13 @@ class AdminRepository {
   final db = await dbHelper.database;
   return await db.query('orders', orderBy: 'createdAt DESC');
  }
- Future<List<Map<String, dynamic>>> getTickets() async {
+ Future<List<Map<String, dynamic>>> getSupportTickets() async {
   final db = await dbHelper.database;
-  return await db.query('tickets', orderBy: 'createdAt DESC');
+  return await db.query('supportTickets', orderBy: 'createdAt DESC');
  }
- Future<List<Map<String, dynamic>>> getReports() async {
+ Future<List<Map<String, dynamic>>> getContentReports() async {
   final db = await dbHelper.database;
-  return await db.query('reports', orderBy: 'createdAt DESC');
+  return await db.query('contentReports', orderBy: 'createdAt DESC');
  }
  Future<List<Map<String, dynamic>>> getReportTypes() async {
   final db = await dbHelper.database;
@@ -77,7 +77,7 @@ class AdminRepository {
  }
  Future<int> getSupportTicketCount() async {
   final db = await dbHelper.database;
-  final tickets = await db.query('tickets', where: 'status = ?', whereArgs: ['open']);
+  final tickets = await db.query('supportTickets', where: 'status = ?', whereArgs: ['open']);
   return tickets.length;
  }
  Future<Map<String, dynamic>> getDashboardStats() async {
@@ -138,27 +138,27 @@ class AdminRepository {
   final users = await db.query('users');
   int count = 0;
   for (var user in users) {
-   await db.insert('notifications', {'id': 'notif_${now}_${user['id']}', 'userId': user['id'], 'title': title, 'body': body, 'type': 'admin', 'isRead': 0, 'createdAt': now});
+   await db.insert('notifications', {'id': 'notif${now}${user['id']}', 'userId': user['id'], 'title': title, 'body': body, 'type': 'admin', 'isRead': 0, 'createdAt': now});
    count++;
   }
   return count;
  }
- Future<int> updateTicketStatus(String ticketId, String status) async {
+ Future<int> updateSupportTicketStatus(String ticketId, String status) async {
   final db = await dbHelper.database;
-  return await db.update('tickets', {'status': status}, where: 'id = ?', whereArgs: [ticketId]);
+  return await db.update('supportTickets', {'status': status}, where: 'id = ?', whereArgs: [ticketId]);
  }
- Future<int> updateReportStatus(String reportId, String status) async {
+ Future<int> updateContentReportStatus(String reportId, String status) async {
   final db = await dbHelper.database;
-  return await db.update('reports', {'status': status}, where: 'id = ?', whereArgs: [reportId]);
+  return await db.update('contentReports', {'status': status}, where: 'id = ?', whereArgs: [reportId]);
  }
  Future<int> updateSystemSetting(String key, String value, String type) async {
   final db = await dbHelper.database;
   final now = DateTime.now().millisecondsSinceEpoch;
-  return await db.update('appSettings', {'value': value, 'updatedAt': now}, where: 'key = ?', whereArgs: [key]);
+  return await db.update('systemSettings', {'value': value, 'updatedAt': now}, where: 'key = ?', whereArgs: [key]);
  }
  Future<int> createSystemSetting(String key, String value, String type) async {
   final db = await dbHelper.database;
   final now = DateTime.now().millisecondsSinceEpoch;
-  return await db.insert('appSettings', {'key': key, 'value': value, 'type': type, 'updatedAt': now});
+  return await db.insert('systemSettings', {'key': key, 'value': value, 'type': type, 'updatedAt': now});
  }
 }
