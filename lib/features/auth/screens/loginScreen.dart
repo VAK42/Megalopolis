@@ -33,6 +33,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ref.read(currentUserIdProvider.notifier).state = user.id;
       if (user.role == 'admin') {
        context.go(Routes.adminDashboard);
+      } else if (user.role == 'driver') {
+       context.go(Routes.driverDashboard);
+      } else if (user.role == 'merchant') {
+       context.go(Routes.merchantDashboard);
       } else {
        context.go(Routes.dashboard);
       }

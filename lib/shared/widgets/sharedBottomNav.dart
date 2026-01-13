@@ -16,8 +16,6 @@ class SharedBottomNavBar extends StatelessWidget {
       _NavBarItem(icon: Icons.handyman, label: 'Services', route: Routes.servicesHome, shellIndex: 3),
       _NavBarItem(icon: Icons.account_balance_wallet, label: 'Wallet', route: Routes.walletHome, shellIndex: 2),
       _NavBarItem(icon: Icons.chat_bubble, label: 'Chat', route: Routes.chatInbox),
-      _NavBarItem(icon: Icons.drive_eta, label: 'Driver', route: Routes.driverHome),
-      _NavBarItem(icon: Icons.storefront, label: 'Merchant', route: Routes.merchantHome),
       _NavBarItem(icon: Icons.campaign, label: 'Marketing', route: Routes.marketingHome),
       _NavBarItem(icon: Icons.people, label: 'Social', route: Routes.socialHome),
       _NavBarItem(icon: Icons.person, label: 'Profile', route: Routes.profileHome, shellIndex: 4),
